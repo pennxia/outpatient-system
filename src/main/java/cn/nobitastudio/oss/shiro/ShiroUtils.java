@@ -29,8 +29,8 @@ public class ShiroUtils {
 		return (User) SecurityUtils.getSubject().getPrincipal();
 	}
 
-	public static Long getUserId() {
-		return getUserEntity().getUserId();
+	public static Integer getUserId() {
+		return getUserEntity().getId();
 	}
 
 	public static void setSessionAttribute(Object key, Object value) {

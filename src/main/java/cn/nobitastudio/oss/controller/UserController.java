@@ -2,29 +2,41 @@ package cn.nobitastudio.oss.controller;
 
 import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.oss.entity.CcTemp;
+import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.repo.CcTempRepo;
+import cn.nobitastudio.oss.service.inter.UserService;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 
 @RestController
+@RequestMapping("/user")
 public class UserController {
 
     @Inject
     private CcTempRepo ccTempRepo;
+    @Inject
+    private UserService userService;
 
-    @GetMapping("/test")
-    public String test() {
-        return "a";
+    @GetMapping("/{id}")
+    @ApiOperation("通过用户id获取用户信息")
+    public ServiceResult<User> getById(@PathVariable(name = "id") Integer id) {
+        try {
+            return ServiceResult.success(userService.getById(id));
+        } catch (Exception e) {
+            return ServiceResult.failure(e.getMessage());
+        }
     }
 
-    @PostMapping("/111")
-    public ServiceResult<CcTemp> show2(@RequestBody CcTemp ccTemp){
-        return ServiceResult.success(ccTempRepo.save(ccTemp));
+    @GetMapping("/phone/{phone}")
+    @ApiOperation("通过指定手机号的用户信息")
+    public ServiceResult<User> getByPhone(@PathVariable(name = "phone") String phone) {
+        try {
+            return ServiceResult.success(userService.getByPhone(phone));
+        } catch (Exception e) {
+            return ServiceResult.failure(e.getMessage());
+        }
     }
 
 }
