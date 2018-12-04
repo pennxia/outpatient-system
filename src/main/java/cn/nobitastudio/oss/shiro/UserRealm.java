@@ -28,6 +28,10 @@ public class UserRealm extends AuthorizingRealm { ;
     protected AuthenticationInfo doGetAuthenticationInfo(
             AuthenticationToken authcToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
+        // 查询数据库
+
+
+        // 验证密码，保存session
         return new SimpleAuthenticationInfo();
     }
 

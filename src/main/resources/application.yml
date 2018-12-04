@@ -1,0 +1,38 @@
+# Tomcat
+server:
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 1000
+    min-spare-threads: 30
+  port: 8080
+
+spring:
+  # profiles:
+  #   active: dev
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    druid:
+      url: 'jdbc:mysql://localhost:3306/oss?characterEncoding=utf8'
+      username: root
+      password: cx19970522
+    type:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+      enabled: true
+  jpa:
+    show-sql: true
+
+shiro.unauthorizedUrl: /401
+#spring.jpa.generate-ddl: true
+
+logging:
+  level: info
+  level.com.iwellmass.cba.syndloan: debug
+  path: /web/logs/cba-syndloan/
+  file: biz.log
