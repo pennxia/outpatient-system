@@ -1,5 +1,6 @@
 package cn.nobitastudio.oss.entity;
 
+import cn.nobitastudio.oss.vo.UserCreateVO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.Getter;
@@ -16,6 +17,16 @@ import java.io.Serializable;
 public class User implements Serializable {
 
 	private static final long serialVersionUID = -2738521069482377465L;
+
+    public User() {
+    }
+
+    public User(UserCreateVO userCreateVO, String sha256Password, String salt) {
+        this.phone = userCreateVO.getPhone();
+        this.password = sha256Password;
+        this.username = userCreateVO.getUsername();
+        this.salt = salt;
+    }
 
     @Column(name = "id")
 	@Id

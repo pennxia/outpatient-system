@@ -21,4 +21,5 @@ public class UserQueryVO {
     @ApiModelProperty("用户名")
     @Like
     private String username;
+
 }

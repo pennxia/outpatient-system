@@ -1,17 +1,23 @@
 package cn.nobitastudio.oss.service.impl;
 
+import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.criteria.SpecificationBuilder;
+import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.repo.UserRepo;
 import cn.nobitastudio.oss.service.inter.UserService;
+import cn.nobitastudio.oss.shiro.ShiroUtils;
+import cn.nobitastudio.oss.util.Utility;
+import cn.nobitastudio.oss.vo.UserCreateVO;
 import cn.nobitastudio.oss.vo.UserQueryVO;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import sun.misc.BASE64Encoder;
 
 import javax.inject.Inject;
+import java.security.SecureRandom;
+import java.util.Random;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,19 +26,37 @@ public class UserServiceImpl implements UserService {
     private UserRepo userRepo;
 
     @Override
-    public User getById(Integer id) throws Exception {
-        return userRepo.findById(id).orElseThrow(() -> new Exception("未查找到指定id的用户信息"));
+    public User getById(Integer id) {
+        return userRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定id的用户信息"));
     }
 
     @Override
-    public User getByPhone(String phone) throws Exception {
-        return userRepo.findByPhone(phone).orElseThrow(() -> new Exception("未查找phone对应的用户信息"));
+    public User getByPhone(String phone) {
+        return userRepo.findByPhone(phone).orElseThrow(() -> new AppException("未查找phone对应的用户信息"));
     }
 
     @Override
-    public PageImpl<User> query(UserQueryVO userQueryVO, PageRequest pageRequest) {
+    public PageImpl<User> query(UserQueryVO userQueryVO, Pager pager) {
         Specification<User> spec = userQueryVO == null ? null : SpecificationBuilder.toSpecification(userQueryVO);
-        Page<User> users = userRepo.findAll(spec,pageRequest);
-        return new PageImpl<>(users.getContent(),pageRequest,users.getTotalElements());
+        Pageable pageable = PageRequest.of(pager.getPage(), pager.getLimit(), new Sort(Sort.Direction.ASC, "id"));
+        Page<User> users = userRepo.findAll(spec, pageable);
+        return new PageImpl<>(users.getContent(), pageable, users.getTotalElements());
+    }
+
+    @Override
+    public User add(UserCreateVO userCreateVO) throws IllegalAccessException {
+        //检查传递参数
+        Utility.checkObjectFieldIsNull(userCreateVO);
+        // 检查该手机号是否已被注册
+        if (userRepo.findByPhone(userCreateVO.getPhone()).isPresent()) {
+            throw new AppException("该手机号已注册");
+        }
+        // 创建用户 1.加密密码,生成盐
+        Random RANDOM = new SecureRandom();
+        byte[] saltByte = new byte[16];
+        RANDOM.nextBytes(saltByte);
+        String salt = new BASE64Encoder().encode(saltByte);
+        String sha256Password = ShiroUtils.sha256(userCreateVO.getPassword(), salt);
+        return userRepo.save(new User(userCreateVO, sha256Password, salt));
     }
 }

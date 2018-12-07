@@ -1,12 +1,15 @@
 package cn.nobitastudio.oss.controller;
 
+import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.common.util.PageData;
+import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.CcTemp;
 import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.repo.CcTempRepo;
 import cn.nobitastudio.oss.service.inter.UserService;
 import cn.nobitastudio.oss.shiro.ShiroUtils;
+import cn.nobitastudio.oss.vo.UserCreateVO;
 import cn.nobitastudio.oss.vo.UserLoginVO;
 import cn.nobitastudio.oss.vo.UserQueryVO;
 import io.swagger.annotations.ApiOperation;
@@ -32,7 +35,7 @@ public class UserController {
     public ServiceResult<User> getById(@PathVariable(name = "id") Integer id) {
         try {
             return ServiceResult.success(userService.getById(id));
-        } catch (Exception e) {
+        } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());
         }
     }
@@ -42,7 +45,7 @@ public class UserController {
     public ServiceResult<User> getByPhone(@PathVariable(name = "phone") String phone) {
         try {
             return ServiceResult.success(userService.getByPhone(phone));
-        } catch (Exception e) {
+        } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());
         }
     }
@@ -67,27 +70,43 @@ public class UserController {
         ShiroUtils.getSession().setTimeout(1800000);  // session 30分钟
         try {
             return ServiceResult.success(userService.getByPhone(userLoginVO.getPhone()));
-        } catch (Exception e) {
+        } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());
         }
     }
 
     @ApiOperation("用户注销登录")
-    @GetMapping
+    @GetMapping("logout")
     public void logout() {
         // 会清除session.
         ShiroUtils.logout();
     }
 
+    @ApiOperation("在用户登录情况下通过session获取用户信息")
+    @GetMapping("/info")
+    public ServiceResult<User> info() {
+        User user = (User) ShiroUtils.getSubject().getPrincipal();
+        if (user == null) {
+            return ServiceResult.failure("用户尚未登录");
+        }
+        return ServiceResult.success(user);
+    }
+
     @ApiOperation("对用户进行查询")
     @PostMapping("/list")
-    public ServiceResult<PageImpl<User>> query(@RequestBody UserQueryVO userQueryVO, PageRequest pageRequest) {
-        return ServiceResult.success(userService.query(userQueryVO,pageRequest));
+    public ServiceResult<PageImpl<User>> query(@RequestBody UserQueryVO userQueryVO, Pager pager) {
+        return ServiceResult.success(userService.query(userQueryVO,pager));
     }
 
     @ApiOperation("用户注册,或者新增用户")
     @PostMapping("/register")
-    public ServiceResult<User> register()
+    public ServiceResult<User> register(@RequestBody UserCreateVO userCreateVO) {
+        try {
+            return ServiceResult.success(userService.add(userCreateVO));
+        } catch (Exception e) {
+            return ServiceResult.failure(e.getMessage());
+        }
+    }
 
 
 }
