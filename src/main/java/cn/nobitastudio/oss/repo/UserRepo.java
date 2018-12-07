@@ -8,5 +8,7 @@ import java.util.Optional;
 
 public interface UserRepo extends CrudRepository<User,Integer>,JpaSpecificationExecutor {
 
+    // 登录时调用
     Optional<User> findByPhone(String phone);
+
 }
