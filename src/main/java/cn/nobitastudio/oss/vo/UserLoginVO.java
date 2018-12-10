@@ -4,6 +4,12 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * @author chenxiong
+ * @email nobita0522@qq.com
+ * @date 2018/12/10 17:34
+ * @description
+ */
 @Getter
 @Setter
 public class UserLoginVO {

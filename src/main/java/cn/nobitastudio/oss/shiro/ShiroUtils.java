@@ -6,6 +6,12 @@ import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 
+/**
+ * @author chenxiong
+ * @email nobita0522@qq.com
+ * @date 2018/12/10 17:34
+ * @description
+ */
 public class ShiroUtils {
 	
 	/** 加密算法 */

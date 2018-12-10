@@ -9,6 +9,12 @@ import org.springframework.util.MimeType;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+/**
+ * @author chenxiong
+ * @email nobita0522@qq.com
+ * @date 2018/12/10 17:34
+ * @description
+ */
 public class RestFormAuthenticationFilter extends FormAuthenticationFilter{
 
 	@Override

@@ -5,7 +5,10 @@ import cn.nobitastudio.common.AppException;
 import java.lang.reflect.Field;
 
 /**
- * created by chenxiong 20181207
+ * @author chenxiong
+ * @email nobita0522@qq.com
+ * @date 2018/12/10 17:34
+ * @description
  */
 public class Utility {
 

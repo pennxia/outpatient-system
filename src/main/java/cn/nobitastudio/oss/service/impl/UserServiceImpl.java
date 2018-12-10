@@ -19,6 +19,12 @@ import javax.inject.Inject;
 import java.security.SecureRandom;
 import java.util.Random;
 
+/**
+ * @author chenxiong
+ * @email nobita0522@qq.com
+ * @date 2018/12/10 17:34
+ * @description
+ */
 @Service
 public class UserServiceImpl implements UserService {
 

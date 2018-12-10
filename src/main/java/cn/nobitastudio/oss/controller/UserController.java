@@ -2,11 +2,8 @@ package cn.nobitastudio.oss.controller;
 
 import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.ServiceResult;
-import cn.nobitastudio.common.util.PageData;
 import cn.nobitastudio.common.util.Pager;
-import cn.nobitastudio.oss.entity.CcTemp;
 import cn.nobitastudio.oss.entity.User;
-import cn.nobitastudio.oss.repo.CcTempRepo;
 import cn.nobitastudio.oss.service.inter.UserService;
 import cn.nobitastudio.oss.shiro.ShiroUtils;
 import cn.nobitastudio.oss.vo.UserCreateVO;
@@ -15,16 +12,17 @@ import cn.nobitastudio.oss.vo.UserQueryVO;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 
-@RestController
-@RequestMapping("/user")
+/**
+ * @author chenxiong
+ * @email nobita0522@qq.com
+ * @date 2018/12/10 17:34
+ * @description
+ */
 public class UserController {
 
     @Inject
@@ -95,7 +93,7 @@ public class UserController {
     @ApiOperation("对用户进行查询")
     @PostMapping("/list")
     public ServiceResult<PageImpl<User>> query(@RequestBody UserQueryVO userQueryVO, Pager pager) {
-        return ServiceResult.success(userService.query(userQueryVO,pager));
+        return ServiceResult.success(userService.query(userQueryVO, pager));
     }
 
     @ApiOperation("用户注册,或者新增用户")
@@ -107,6 +105,5 @@ public class UserController {
             return ServiceResult.failure(e.getMessage());
         }
     }
-
 
 }

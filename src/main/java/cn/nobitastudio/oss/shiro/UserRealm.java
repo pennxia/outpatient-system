@@ -1,6 +1,5 @@
 package cn.nobitastudio.oss.shiro;
 
-
 import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.repo.UserRepo;
 import org.apache.shiro.authc.*;
@@ -15,6 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Inject;
 
+/**
+ * @author chenxiong
+ * @email nobita0522@qq.com
+ * @date 2018/12/10 17:34
+ * @description
+ */
 public class UserRealm extends AuthorizingRealm {
 
     @Inject
