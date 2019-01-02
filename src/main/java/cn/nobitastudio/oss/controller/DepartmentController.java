@@ -20,7 +20,7 @@ import javax.inject.Inject;
  */
 @RestController
 @RequestMapping("/department")
-public class OutpatientController {
+public class DepartmentController {
 
     @Inject
     private DepartmentService departmentService;

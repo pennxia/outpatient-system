@@ -24,7 +24,7 @@ public interface DepartmentService {
     Department getById(Integer id);
 
     /**
-     * 查询所有
+     * 查询所有,结果进行分页
      *
      * @param pager 分页参数
      * @return

@@ -37,7 +37,7 @@ public class User implements Serializable,UserDetails {
     public User(UserCreateVO userCreateVO, String sha256Password, String salt) {
         this.mobile = userCreateVO.getMobile();
         this.password = sha256Password;
-        this.username = userCreateVO.getUsername();
+        this.name = userCreateVO.getUsername();
         this.salt = salt;
         this.lastChangePassword = LocalDateTime.now();
         this.locked = Boolean.FALSE;
@@ -61,9 +61,9 @@ public class User implements Serializable,UserDetails {
     private String password;
 
     @ApiModelProperty("用户名")
-    @Column(name = "username")
+    @Column(name = "name")
     @Like
-    private String username;
+    private String name;
 
     @ApiModelProperty("盐")
     @Column(name = "salt")
@@ -89,6 +89,16 @@ public class User implements Serializable,UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
+    }
+
+    /**
+     * Returns the username used to authenticate the user. Cannot return <code>null</code>.
+     *
+     * @return the username (never <code>null</code>)
+     */
+    @Override
+    public String getUsername() {
+        return name;
     }
 
     /**

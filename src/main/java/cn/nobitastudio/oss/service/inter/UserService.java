@@ -14,7 +14,7 @@ public interface UserService {
 
     User getById(Integer id);
 
-    User getByPhone(String phone);
+    User getByMobile(String phone);
 
     PageImpl<User> query(UserQueryVO userQueryVO, Pager pager);
 

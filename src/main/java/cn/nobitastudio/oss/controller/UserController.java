@@ -3,21 +3,16 @@ package cn.nobitastudio.oss.controller;
 import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.common.util.Pager;
-import cn.nobitastudio.oss.entity.Role;
 import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.service.inter.UserService;
 import cn.nobitastudio.oss.shiro.ShiroUtils;
 import cn.nobitastudio.oss.vo.UserCreateVO;
-import cn.nobitastudio.oss.vo.UserLoginVO;
 import cn.nobitastudio.oss.vo.UserQueryVO;
 import io.swagger.annotations.ApiOperation;
-import org.apache.shiro.authc.*;
-import org.apache.shiro.subject.Subject;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-import java.util.List;
 
 /**
  * @author chenxiong
@@ -43,10 +38,10 @@ public class UserController {
     }
 
     @ApiOperation("通过指定手机号的用户信息")
-    @GetMapping("/{phone}/phone")
-    public ServiceResult<User> getByPhone(@PathVariable(name = "phone") String phone) {
+    @GetMapping("/{mobile}/mobile")
+    public ServiceResult<User> getByPhone(@PathVariable(name = "mobile") String mobile) {
         try {
-            return ServiceResult.success(userService.getByPhone(phone));
+            return ServiceResult.success(userService.getByMobile(mobile));
         } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());
         }
@@ -83,12 +78,6 @@ public class UserController {
         } catch (Exception e) {
             return ServiceResult.failure(e.getMessage());
         }
-    }
-
-    @ApiOperation("测试接口")
-    @GetMapping("/test")
-    public ServiceResult<List<Role>> getRoles(Integer userId) {
-        return ServiceResult.success(userService.getRoles(userId));
     }
 
 }

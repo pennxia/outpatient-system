@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService,UserDetailsService {
     }
 
     @Override
-    public User getByPhone(String mobile) {
+    public User getByMobile(String mobile) {
         return userRepo.findByMobile(mobile).orElseThrow(() -> new AppException("未查找phone对应的用户信息"));
     }
 

@@ -27,9 +27,8 @@ import java.util.Optional;
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
 
-    private static final String DELETE_SUCCESS = "删除成功";
-
-    private static final String SAVE_OR_UPDATE_SUCCESS = "添加或修改成功";
+    private static final String DELETE_SUCCESS = "科室信息删除成功";
+    private static final String SAVE_OR_UPDATE_SUCCESS = "科室信息添加或修改成功";
 
     @Inject
     private DepartmentRepo departmentRepo;
@@ -66,8 +65,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Override
     public String delete(Integer id) {
-        departmentRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定用户"));
-        departmentRepo.deleteById(id);
+        departmentRepo.delete(departmentRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定用户")));
         return DELETE_SUCCESS;
     }
 
