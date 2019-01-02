@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
  * @date 2018/12/10 17:34
  * @description
  */
-public class Utility {
+public final class CommonUtil {
 
     /**
      * 检查对象中的属性是否包含null

@@ -1,5 +1,6 @@
 package cn.nobitastudio.oss.vo;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,9 +13,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserCreateVO {
-    private String phone;
 
+    @ApiModelProperty("用户手机号")
+    private String mobile;
+
+    @ApiModelProperty("用户名")
     private String username;
 
+    @ApiModelProperty("用户密码")
     private String password;
 }

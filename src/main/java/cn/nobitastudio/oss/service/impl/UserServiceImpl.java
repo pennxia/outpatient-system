@@ -3,20 +3,27 @@ package cn.nobitastudio.oss.service.impl;
 import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.criteria.SpecificationBuilder;
 import cn.nobitastudio.common.util.Pager;
+import cn.nobitastudio.oss.entity.Role;
 import cn.nobitastudio.oss.entity.User;
+import cn.nobitastudio.oss.repo.RoleRepo;
 import cn.nobitastudio.oss.repo.UserRepo;
 import cn.nobitastudio.oss.service.inter.UserService;
 import cn.nobitastudio.oss.shiro.ShiroUtils;
-import cn.nobitastudio.oss.util.Utility;
+import cn.nobitastudio.oss.util.CommonUtil;
 import cn.nobitastudio.oss.vo.UserCreateVO;
 import cn.nobitastudio.oss.vo.UserQueryVO;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import sun.misc.BASE64Encoder;
 
 import javax.inject.Inject;
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -26,10 +33,12 @@ import java.util.Random;
  * @description
  */
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService,UserDetailsService {
 
     @Inject
     private UserRepo userRepo;
+    @Inject
+    private RoleRepo roleRepo;
 
     @Override
     public User getById(Integer id) {
@@ -37,8 +46,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getByPhone(String phone) {
-        return userRepo.findByPhone(phone).orElseThrow(() -> new AppException("未查找phone对应的用户信息"));
+    public User getByPhone(String mobile) {
+        return userRepo.findByMobile(mobile).orElseThrow(() -> new AppException("未查找phone对应的用户信息"));
     }
 
     @Override
@@ -52,9 +61,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User add(UserCreateVO userCreateVO) throws IllegalAccessException {
         //检查传递参数
-        Utility.checkObjectFieldIsNull(userCreateVO);
+        CommonUtil.checkObjectFieldIsNull(userCreateVO);
         // 检查该手机号是否已被注册
-        if (userRepo.findByPhone(userCreateVO.getPhone()).isPresent()) {
+        if (userRepo.findByMobile(userCreateVO.getMobile()).isPresent()) {
             throw new AppException("该手机号已注册");
         }
         // 创建用户 1.加密密码,生成盐
@@ -64,5 +73,16 @@ public class UserServiceImpl implements UserService {
         String salt = new BASE64Encoder().encode(saltByte);
         String sha256Password = ShiroUtils.sha256(userCreateVO.getPassword(), salt);
         return userRepo.save(new User(userCreateVO, sha256Password, salt));
+    }
+
+    @Override
+    public List<Role> getRoles(Integer userId) {
+        return roleRepo.queryRolesByUserId(userId);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String mobile) throws UsernameNotFoundException {
+        Assert.notNull(mobile,"未传入手机号");
+        return userRepo.findByMobile(mobile).orElseThrow(() -> new UsernameNotFoundException("未查找到该用户"));
     }
 }

@@ -1,7 +1,5 @@
 package oss.controller;
 
-import cn.nobitastudio.oss.entity.CcTemp;
-import cn.nobitastudio.oss.repo.CcTempRepo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +13,5 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootTest(classes = OSSApplication.class)
 @RestController
 public class JunitTest {
-
-    @Autowired
-    private CcTempRepo ccTempRepo;
-
-    @Test
-    public void show(){
-        try {
-            CcTemp ccTemp = ccTempRepo.findById(1).orElseThrow(() -> new Exception("11"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(111);
-        }
-    }
+    
 }

@@ -76,5 +76,17 @@ public class ServiceResult<T> {
 		f.setError(result);
 		return f;
 	}
+
+	public static <T> ServiceResult<T> exception(Object result) {
+		ServiceResult<T> f = new ServiceResult<>(null, STATE_EXCEPTION);
+		f.setError(result);
+		return f;
+	}
+
+	public static <T> ServiceResult<T> noSession(Object result) {
+		ServiceResult<T> f = new ServiceResult<>(null, STATE_NO_SESSION);
+		f.setError(result);
+		return f;
+	}
 	
 }

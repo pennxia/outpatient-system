@@ -41,7 +41,7 @@ public class UserRealm extends AuthorizingRealm {
             AuthenticationToken authcToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
         // 查询数据库
-        User user = userRepo.findByPhone(token.getUsername()).orElseThrow(() -> new UnknownAccountException("该账号未注册"));
+        User user = userRepo.findByMobile(token.getUsername()).orElseThrow(() -> new UnknownAccountException("该账号未注册"));
 
         // 校验用户是否已被锁定,暂未实现,实现方式是在用户表中添加一个字段控制其是否上锁.
 

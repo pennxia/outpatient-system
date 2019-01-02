@@ -3,6 +3,7 @@ package cn.nobitastudio.oss.controller;
 import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.common.util.Pager;
+import cn.nobitastudio.oss.entity.Role;
 import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.service.inter.UserService;
 import cn.nobitastudio.oss.shiro.ShiroUtils;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * @author chenxiong
@@ -23,6 +25,8 @@ import javax.inject.Inject;
  * @date 2018/12/10 17:34
  * @description
  */
+@RestController
+@RequestMapping("/user")
 public class UserController {
 
     @Inject
@@ -48,33 +52,8 @@ public class UserController {
         }
     }
 
-    @ApiOperation("用户登录,登陆成功后,用户信息保存在session中")
-    @PostMapping("/login")
-    public ServiceResult<User> login(@RequestBody UserLoginVO userLoginVO) {
-        try {
-            Subject subject = ShiroUtils.getSubject();
-            UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(userLoginVO.getPhone(), userLoginVO.getPassword());
-            subject.login(usernamePasswordToken);
-        } catch (UnknownAccountException e) {
-            return ServiceResult.failure(e.getMessage());
-        } catch (IncorrectCredentialsException e) {
-            return ServiceResult.failure("账号或密码不正确");
-        } catch (LockedAccountException e) {
-            return ServiceResult.failure("账号已被锁定,请联系管理员");
-        } catch (AuthenticationException e) {
-            return ServiceResult.failure("账户验证失败");
-        }
-        //验证成功
-        ShiroUtils.getSession().setTimeout(1800000);  // session 30分钟
-        try {
-            return ServiceResult.success(userService.getByPhone(userLoginVO.getPhone()));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
-    }
-
     @ApiOperation("用户注销登录")
-    @GetMapping("logout")
+    @GetMapping("/logout")
     public void logout() {
         // 会清除session.
         ShiroUtils.logout();
@@ -104,6 +83,12 @@ public class UserController {
         } catch (Exception e) {
             return ServiceResult.failure(e.getMessage());
         }
+    }
+
+    @ApiOperation("测试接口")
+    @GetMapping("/test")
+    public ServiceResult<List<Role>> getRoles(Integer userId) {
+        return ServiceResult.success(userService.getRoles(userId));
     }
 
 }

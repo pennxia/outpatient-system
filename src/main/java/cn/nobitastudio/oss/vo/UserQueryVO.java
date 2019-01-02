@@ -21,7 +21,7 @@ public class UserQueryVO {
     private Integer id;
 
     @ApiModelProperty("用户联系方式,登录所用的手机号")
-    @Equal(builder = TempDefinedBuilder.class)
+    @Equal
     private String phone;
 
     @ApiModelProperty("用户名")
