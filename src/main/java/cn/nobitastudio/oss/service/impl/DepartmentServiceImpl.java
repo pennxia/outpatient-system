@@ -41,7 +41,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Override
     public Department getById(Integer id) {
-        return departmentRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定用户"));
+        return departmentRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定科室信息"));
     }
 
     /**
@@ -65,7 +65,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Override
     public String delete(Integer id) {
-        departmentRepo.delete(departmentRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定用户")));
+        departmentRepo.delete(departmentRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定科室信息")));
         return DELETE_SUCCESS;
     }
 

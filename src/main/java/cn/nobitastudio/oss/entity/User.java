@@ -20,7 +20,7 @@ import java.util.Collection;
  * @author chenxiong
  * @email nobita0522@qq.com
  * @date 2018/12/10 17:34
- * @description
+ * @description 用户实例
  */
 @Data
 @Entity

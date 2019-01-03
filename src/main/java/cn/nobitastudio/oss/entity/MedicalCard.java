@@ -3,6 +3,7 @@ package cn.nobitastudio.oss.entity;
 import cn.nobitastudio.common.criteria.Equal;
 import cn.nobitastudio.common.criteria.Like;
 import cn.nobitastudio.oss.vo.Enum.Sex;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.Getter;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
  * @author chenxiong
  * @email nobita0522@qq.com
  * @date 2019/01/02 16:08
- * @description
+ * @description 诊疗卡实例
  */
 @Data
 @Entity
@@ -68,7 +69,31 @@ public class MedicalCard implements Serializable {
 
     @ApiModelProperty("创建日期")
     @Column(name = "create_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Equal
     private LocalDateTime createTime;
+
+    /**
+     * 更新诊疗卡信息
+     * @param medicalCard
+     */
+    public MedicalCard update(MedicalCard medicalCard) {
+        if (medicalCard.getOwnerName() != null) {
+            this.ownerName = medicalCard.getOwnerName();
+        }
+        if (medicalCard.getOwnerIdCard() != null) {
+            this.ownerIdCard = medicalCard.getOwnerIdCard();
+        }
+        if (medicalCard.getOwnerSex() != null) {
+            this.ownerSex = medicalCard.getOwnerSex();
+        }
+        if (medicalCard.getOwnerAddress() != null) {
+            this.ownerAddress = medicalCard.getOwnerAddress();
+        }
+        if (medicalCard.getOwnerMobile() != null) {
+            this.ownerMobile = medicalCard.getOwnerMobile();
+        }
+        return this;
+    }
 
 }

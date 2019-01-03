@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @date 2019/01/02 13:43
  * @description
  */
-public enum Level {
+public enum DoctorLevel {
     @ApiModelProperty("一级专家")
     ONE,
     @ApiModelProperty("二级专家")

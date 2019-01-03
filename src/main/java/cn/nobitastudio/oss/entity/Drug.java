@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
  * @author chenxiong
  * @email nobita0522@qq.com
  * @date 2019/01/02 15:31
- * @description
+ * @description 药品实例
  */
 @Data
 @Entity

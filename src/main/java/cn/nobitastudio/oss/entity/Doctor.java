@@ -2,7 +2,7 @@ package cn.nobitastudio.oss.entity;
 
 import cn.nobitastudio.common.criteria.Equal;
 import cn.nobitastudio.common.criteria.Like;
-import cn.nobitastudio.oss.vo.Enum.Level;
+import cn.nobitastudio.oss.vo.Enum.DoctorLevel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import java.io.Serializable;
  * @author chenxiong
  * @email nobita0522@qq.com
  * @date 2019/01/02 13:40
- * @description
+ * @description 医生实例
  */
 @Data
 @Entity
@@ -55,7 +55,7 @@ public class Doctor implements Serializable {
     @ApiModelProperty("医生级别")
     @Column(name = "level")
     @Equal
-    private Level level;
+    private DoctorLevel level;
 
     @ApiModelProperty("所属科室")
     @Column(name = "department_id")

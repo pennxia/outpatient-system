@@ -38,7 +38,7 @@ public interface DrugService {
     /**
      * 新增或更新药品信息
      *
-     * @param doctor 待新增或更新的药品信息
+     * @param drug 待新增或更新的药品信息
      * @return
      */
     Drug save(Drug drug);

@@ -35,3 +35,7 @@ logging:
   level.com.iwellmass.cba.syndloan: debug
   path: /web/logs/cba-syndloan/
   file: biz.log
+
+oss:
+  app:
+    maxBindCount: 5

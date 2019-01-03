@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @date 2019/01/02 13:11
  * @description
  */
-public enum Area {
+public enum DepartmentArea {
     @ApiModelProperty("A区")
     A,
     @ApiModelProperty("B区")

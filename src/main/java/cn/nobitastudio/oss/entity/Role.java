@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author chenxiong
  * @email nobita0522@qq.com
  * @date 2018/12/12 13:29
- * @description
+ * @description 角色实例
  */
 @Data
 @Entity

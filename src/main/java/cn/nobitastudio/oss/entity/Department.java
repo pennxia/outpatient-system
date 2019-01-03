@@ -2,7 +2,7 @@ package cn.nobitastudio.oss.entity;
 
 import cn.nobitastudio.common.criteria.Equal;
 import cn.nobitastudio.common.criteria.Like;
-import cn.nobitastudio.oss.vo.Enum.Area;
+import cn.nobitastudio.oss.vo.Enum.DepartmentArea;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import java.io.Serializable;
  * @author chenxiong
  * @email nobita0522@qq.com
  * @date 2019/01/02 10:14
- * @description
+ * @description 科室实例
  */
 @Data
 @Entity
@@ -56,7 +56,7 @@ public class Department implements Serializable {
     @Column(name = "area", length = 100)
     @ApiModelProperty("科室所在区域（a/b/c 区等）")
     @Equal
-    private Area area;
+    private DepartmentArea area;
 
     @Column(name = "introduction", length = 300)
     @ApiModelProperty("科室介绍")
