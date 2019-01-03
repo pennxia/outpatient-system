@@ -87,7 +87,7 @@ public class BindServiceImpl implements BindService {
      */
     @Transactional
     @Override
-    public Bind userBind(Bind bind) {
+    public Bind bind(Bind bind) {
         Integer medicalCardBindCount = bindRepo.countAllByMedicalCardNo(bind.getMedicalCardNo());
         if (medicalCardBindCount.equals(maxBindCount)) {
             // 诊疗卡绑定数已上限
@@ -108,7 +108,7 @@ public class BindServiceImpl implements BindService {
      * @return
      */
     @Override
-    public String userUnbind(Bind bind) {
+    public String unbind(Bind bind) {
         bindRepo.delete(bindRepo.findByMobileAndMedicalCardNo(bind.getMobile(),bind.getMedicalCardNo()).orElseThrow(() -> new AppException("未查找到指定绑定关系")));
         return UNBIND_SUCCESS;
     }

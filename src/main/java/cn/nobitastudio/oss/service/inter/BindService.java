@@ -51,12 +51,12 @@ public interface BindService {
      * @return
      */
     @Transactional
-    Bind userBind(Bind bind);
+    Bind bind(Bind bind);
 
     /**
      * 用户解绑诊疗卡
      * @param bind 待解绑参数
      * @return
      */
-    String userUnbind(Bind bind);
+    String unbind(Bind bind);
 }

@@ -25,8 +25,6 @@ public class MedicalCardController {
 
     @Inject
     private MedicalCardService medicalCardService;
-    @Inject
-    private BindService bindService;
 
     @ApiOperation("查询指定诊疗卡信息")
     @GetMapping("/{id}")
