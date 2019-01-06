@@ -8,10 +8,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -48,6 +45,7 @@ public class HealthArticle implements Serializable {
 
     @ApiModelProperty("健康咨询类别")
     @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     @Equal
     private HealthArticleType type;
 

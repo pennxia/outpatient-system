@@ -1,6 +1,7 @@
 package cn.nobitastudio.oss.service.impl;
 
 import cn.nobitastudio.common.AppException;
+import cn.nobitastudio.common.criteria.Like;
 import cn.nobitastudio.common.criteria.SpecificationBuilder;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.Doctor;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * @author chenxiong
@@ -72,5 +74,17 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public Doctor save(Doctor doctor) {
         return doctorRepo.save(doctor);
+    }
+
+    /**
+     * 查询指定用户的收藏医生,默认按照收藏时间进行倒序
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<Doctor> getCollectDoctor(Integer userId) {
+        List<Doctor> doctors = doctorRepo.findCollectDoctor(userId);
+        return doctors;
     }
 }

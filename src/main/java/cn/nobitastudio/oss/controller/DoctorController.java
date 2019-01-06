@@ -7,10 +7,11 @@ import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.Doctor;
 import cn.nobitastudio.oss.service.inter.DoctorService;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * @author chenxiong
@@ -59,6 +60,12 @@ public class DoctorController {
     @PostMapping
     public ServiceResult<Doctor> save(@RequestBody Doctor doctor) {
         return ServiceResult.success(doctorService.save(doctor));
+    }
+
+    @ApiOperation("查询我的收藏医生")
+    @GetMapping("/{userId}/collect-doctor")
+    public ServiceResult<List<Doctor>> getCollectDoctor(@PathVariable(name = "userId") Integer userId) {
+       return ServiceResult.success(doctorService.getCollectDoctor(userId));
     }
 
 

@@ -39,3 +39,4 @@ logging:
 oss:
   app:
     maxBindCount: 5
+    auto-start: true

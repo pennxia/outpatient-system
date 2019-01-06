@@ -2,16 +2,12 @@ package oss;
 
 import cn.nobitastudio.oss.scheduler.job.EatDrugRemindJob;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import cn.nobitastudio.oss.OSSApplication;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;

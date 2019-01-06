@@ -4,6 +4,8 @@ import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.Doctor;
 import org.springframework.data.domain.PageImpl;
 
+import java.util.List;
+
 /**
  * @author chenxiong
  * @email nobita0522@qq.com
@@ -43,4 +45,11 @@ public interface DoctorService {
      * @return
      */
     Doctor save(Doctor doctor);
+
+    /**
+     * 查询指定用户的收藏医生
+     * @param userId
+     * @return
+     */
+    List<Doctor> getCollectDoctor(Integer userId);
 }

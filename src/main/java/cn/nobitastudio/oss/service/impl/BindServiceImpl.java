@@ -28,7 +28,7 @@ public class BindServiceImpl implements BindService {
 
     @Inject
     private BindRepo bindRepo;
-    @Value("${oss.app.maxBindCount}")
+    @Value(value = "${oss.app.maxBindCount}")
     private Integer maxBindCount;
 
     /**
@@ -88,6 +88,9 @@ public class BindServiceImpl implements BindService {
     @Transactional
     @Override
     public Bind bind(Bind bind) {
+        if (bindRepo.findByMobileAndMedicalCardNo(bind.getMobile(),bind.getMedicalCardNo()).isPresent()){
+            throw new AppException("您已绑定该诊疗卡");
+        }
         Integer medicalCardBindCount = bindRepo.countAllByMedicalCardNo(bind.getMedicalCardNo());
         if (medicalCardBindCount.equals(maxBindCount)) {
             // 诊疗卡绑定数已上限

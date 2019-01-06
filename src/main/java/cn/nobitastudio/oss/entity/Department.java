@@ -55,6 +55,7 @@ public class Department implements Serializable {
 
     @Column(name = "area", length = 100)
     @ApiModelProperty("科室所在区域（a/b/c 区等）")
+    @Enumerated(EnumType.STRING)
     @Equal
     private DepartmentArea area;
 

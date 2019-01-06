@@ -9,6 +9,7 @@ import cn.nobitastudio.oss.shiro.ShiroUtils;
 import cn.nobitastudio.oss.vo.UserCreateVO;
 import cn.nobitastudio.oss.vo.UserQueryVO;
 import io.swagger.annotations.ApiOperation;
+import org.quartz.Scheduler;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,8 @@ public class UserController {
 
     @Inject
     private UserService userService;
+    @Inject
+    private Scheduler scheduler;
 
     @ApiOperation("通过用户id获取用户信息")
     @GetMapping("/{id}")
@@ -78,6 +81,12 @@ public class UserController {
         } catch (Exception e) {
             return ServiceResult.failure(e.getMessage());
         }
+    }
+
+    @ApiOperation("测试接口")
+    @GetMapping("/test")
+    public ServiceResult<String> test() {
+        return ServiceResult.success(scheduler.toString());
     }
 
 }

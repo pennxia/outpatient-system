@@ -105,6 +105,7 @@ public class VisitServiceImpl implements VisitService {
         if (visit.getLeftAmount() < 1) {
             throw new AppException("当前号源已被全部挂完");
         }
+        // 存储用户挂号记录
         visit.setLeftAmount(visit.getLeftAmount() - 1);
         return visitRepo.save(visit);
     }

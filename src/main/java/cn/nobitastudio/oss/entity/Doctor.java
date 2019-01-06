@@ -55,6 +55,7 @@ public class Doctor implements Serializable {
     @ApiModelProperty("医生级别")
     @Column(name = "level")
     @Equal
+    @Enumerated(EnumType.STRING)
     private DoctorLevel level;
 
     @ApiModelProperty("所属科室")

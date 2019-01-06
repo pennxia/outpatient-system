@@ -16,6 +16,8 @@ import java.util.List;
 public class DateUtil {
     static Logger logger = LoggerFactory.getLogger(DateUtil.class);
 
+    public static final String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
+
     public static String convertDate(String dateStr, String sourceFormat, String targetFormat) {
         if (StringUtils.isBlank(targetFormat)) {
             return null;

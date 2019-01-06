@@ -9,10 +9,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -54,6 +51,7 @@ public class MedicalCard implements Serializable {
 
     @ApiModelProperty("持卡者性别")
     @Column(name = "owner_sex")
+    @Enumerated(EnumType.STRING)
     @Equal
     private Sex ownerSex;
 

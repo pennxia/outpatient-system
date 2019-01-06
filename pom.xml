@@ -232,6 +232,13 @@
             <version>2.2.1</version>
         </dependency>
 
+        <!-- tencent message service -->
+        <dependency>
+            <groupId>com.github.qcloudsms</groupId>
+            <artifactId>qcloudsms</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
     </dependencies>
 
 

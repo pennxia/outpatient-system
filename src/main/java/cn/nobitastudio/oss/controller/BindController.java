@@ -81,6 +81,4 @@ public class BindController {
             return ServiceResult.failure(e.getMessage());
         }
     }
-
-
 }
