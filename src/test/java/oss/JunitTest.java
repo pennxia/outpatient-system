@@ -1,10 +1,16 @@
 package oss;
 
+import cn.nobitastudio.oss.OSSApplication;
 import cn.nobitastudio.oss.scheduler.job.EatDrugRemindJob;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
@@ -12,9 +18,14 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-@RestController
+@SpringBootTest(classes = OSSApplication.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 public class JunitTest {
+
+    static Logger logger = LoggerFactory.getLogger(JunitTest.class);
 
     @Test
     public void show() throws SchedulerException, InterruptedException {
@@ -36,5 +47,14 @@ public class JunitTest {
         // 时间戳 localdatetime 互转
 //        Long timestamp = LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli();
 //        LocalDateTime time2 =LocalDateTime.ofEpochSecond(timestamp/1000,0,ZoneOffset.ofHours(8));
+    }
+
+    @Test
+    public void test2() {
+        Map<String,String> map = new HashMap<>();
+        map.put("1","2");
+        map.put("2","3");
+        map.put("1","5");
+        logger.info(map.toString());
     }
 }

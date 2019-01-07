@@ -25,42 +25,51 @@ import java.io.Serializable;
 @Setter
 public class Department implements Serializable {
 
+    public interface DepartmentSimpleView {};
+    public interface DepartmentDetailView extends DepartmentSimpleView {};
+
     private static final long serialVersionUID = -3712970229472760165L;
 
+    @ApiModelProperty("科室号,id")
     @Column(name = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty("科室号,id")
     @Equal
     private Integer id;
 
-    @Column(name = "name", length = 100)
     @ApiModelProperty("科室名称")
+    @Column(name = "name", length = 100)
     @Like
+    @JsonView(DepartmentSimpleView.class)
     private String name;
 
-    @Column(name = "address", length = 100)
     @ApiModelProperty("科室地址")
+    @Column(name = "address", length = 100)
     @Like
+    @JsonView(DepartmentSimpleView.class)
     private String address;
 
-    @Column(name = "location", length = 100)
     @ApiModelProperty("科室顺序（第x科室）")
+    @Column(name = "location")
     @Equal
+    @JsonView(DepartmentSimpleView.class)
     private Integer location;
 
-    @Column(name = "floor")
     @ApiModelProperty("科室楼层")
+    @Column(name = "floor")
     @Equal
+    @JsonView(DepartmentDetailView.class)
     private Integer floor;
 
-    @Column(name = "area", length = 100)
     @ApiModelProperty("科室所在区域（a/b/c 区等）")
+    @Column(name = "area")
     @Enumerated(EnumType.STRING)
     @Equal
+    @JsonView(DepartmentDetailView.class)
     private DepartmentArea area;
 
-    @Column(name = "introduction", length = 300)
     @ApiModelProperty("科室介绍")
+    @Column(name = "introduction")
+    @JsonView(DepartmentDetailView.class)
     private String introduction;
 }

@@ -1,6 +1,8 @@
 package cn.nobitastudio.oss.controller;
 
+import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.ServiceResult;
+import cn.nobitastudio.oss.repo.DepartmentRepo;
 import cn.nobitastudio.oss.repo.DoctorRepo;
 import cn.nobitastudio.oss.scheduler.job.CheckRemindJob;
 import cn.nobitastudio.oss.scheduler.job.EatDrugRemindJob;
@@ -10,19 +12,21 @@ import cn.nobitastudio.oss.util.CommonUtil;
 import cn.nobitastudio.oss.util.DateUtil;
 import cn.nobitastudio.oss.vo.test.InitSchedulerJobVO;
 import cn.nobitastudio.oss.vo.test.JobDetailVO;
+import cn.nobitastudio.oss.vo.test.SimpleDepartmentVO;
 import cn.nobitastudio.oss.vo.test.TriggerVO;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
-import lombok.Getter;
-import lombok.Setter;
 import org.quartz.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import static cn.nobitastudio.oss.scheduler.job.RemindJob.*;
@@ -44,6 +48,10 @@ public class TestController {
     private DoctorRepo doctorRepo;
     @Inject
     private VisitService visitService;
+    @Inject
+    private DepartmentRepo departmentRepo;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @ApiModelProperty("测试方法")
     @GetMapping
@@ -200,6 +208,16 @@ public class TestController {
         return trigger;
     }
 
-
+    @ApiOperation("测试ORM")
+    @GetMapping("/{id}/orm")
+    public ServiceResult<List<SimpleDepartmentVO>> get(@PathVariable(name = "id") Integer id) throws Exception {
+        List<Object[]> objects = departmentRepo.findSimpleDepartments(id);
+        try {
+            List<SimpleDepartmentVO> simpleDepartmentVOS = CommonUtil.castEntity(objects, SimpleDepartmentVO.class,String.class);
+            return ServiceResult.success(simpleDepartmentVOS);
+        } catch (AppException e) {
+            return ServiceResult.failure(e.getMessage());
+        }
+    }
 
 }
