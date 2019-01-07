@@ -5,7 +5,6 @@ import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.service.inter.UserService;
-import cn.nobitastudio.oss.shiro.ShiroUtils;
 import cn.nobitastudio.oss.vo.UserCreateVO;
 import cn.nobitastudio.oss.vo.UserQueryVO;
 import io.swagger.annotations.ApiOperation;
@@ -54,17 +53,12 @@ public class UserController {
     @GetMapping("/logout")
     public void logout() {
         // 会清除session.
-        ShiroUtils.logout();
     }
 
     @ApiOperation("在用户登录情况下通过session获取用户信息")
     @GetMapping("/info")
     public ServiceResult<User> info() {
-        User user = (User) ShiroUtils.getSubject().getPrincipal();
-        if (user == null) {
-            return ServiceResult.failure("用户尚未登录");
-        }
-        return ServiceResult.success(user);
+        return null;
     }
 
     @ApiOperation("对用户进行查询")

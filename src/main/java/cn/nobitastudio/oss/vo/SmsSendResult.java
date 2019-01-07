@@ -11,7 +11,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class SendSmsResult {
+public class SmsSendResult {
 
     private Boolean result;
 
@@ -19,11 +19,11 @@ public class SendSmsResult {
 
     private String description;
 
-    public SendSmsResult() {
+    public SmsSendResult() {
         this(false,null,null);
     }
 
-    public SendSmsResult(Boolean result, Integer verificationCode, String description) {
+    public SmsSendResult(Boolean result, Integer verificationCode, String description) {
         this.result = result;
         this.verificationCode = verificationCode;
         this.description = description;

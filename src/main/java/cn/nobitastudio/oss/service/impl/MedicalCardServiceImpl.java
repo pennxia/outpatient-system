@@ -39,17 +39,6 @@ public class MedicalCardServiceImpl implements MedicalCardService {
     }
 
     /**
-     * 查询指定诊疗卡号medicalCardNo的诊疗卡信息
-     *
-     * @param medicalCardNo 指定诊疗卡卡号
-     * @return
-     */
-    @Override
-    public MedicalCard getById(String medicalCardNo) {
-        return medicalCardRepo.findByMedicalCardNo(medicalCardNo).orElseThrow(() -> new AppException("未查找到指定诊疗卡信息"));
-    }
-
-    /**
      * 查询所有诊疗卡,结果进行分页
      *
      * @param medicalCard
@@ -76,18 +65,6 @@ public class MedicalCardServiceImpl implements MedicalCardService {
     }
 
     /**
-     * 删除指定诊疗卡卡号的诊疗卡信息
-     *
-     * @param medicalCardNo 指定诊疗卡卡号
-     * @return
-     */
-    @Override
-    public String delete(String medicalCardNo) {
-        medicalCardRepo.delete(medicalCardRepo.findByMedicalCardNo(medicalCardNo).orElseThrow(() -> new AppException("未查找到指定诊疗卡信息")));
-        return DELETE_SUCCESS;
-    }
-
-    /**
      * 新增或更新诊疗卡信息
      *
      * @param medicalCard 待新增或更新的诊疗卡信息
@@ -95,7 +72,7 @@ public class MedicalCardServiceImpl implements MedicalCardService {
      */
     @Override
     public MedicalCard save(MedicalCard medicalCard) {
-        Optional<MedicalCard> optionalMedicalCard = medicalCardRepo.findByMedicalCardNo(medicalCard.getMedicalCardNo());
+        Optional<MedicalCard> optionalMedicalCard = medicalCardRepo.findById(medicalCard.getId());
         if (optionalMedicalCard.isPresent()) {
             // 更新
             return medicalCardRepo.save(optionalMedicalCard.get().update(medicalCard));

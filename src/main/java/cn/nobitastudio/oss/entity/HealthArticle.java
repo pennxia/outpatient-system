@@ -2,7 +2,7 @@ package cn.nobitastudio.oss.entity;
 
 import cn.nobitastudio.common.criteria.Equal;
 import cn.nobitastudio.common.criteria.Like;
-import cn.nobitastudio.oss.vo.Enum.HealthArticleType;
+import cn.nobitastudio.oss.vo.enumeration.HealthArticleType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.Getter;
@@ -30,6 +30,7 @@ public class HealthArticle implements Serializable {
     @ApiModelProperty("健康咨询id")
     @Column(name = "id")
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Equal
     private Integer id;
 

@@ -20,13 +20,6 @@ public interface MedicalCardService {
     MedicalCard getById(Integer id);
 
     /**
-     * 查询指定诊疗卡号medicalCardNo的诊疗卡信息
-     * @param medicalCardNo 指定诊疗卡卡号
-     * @return
-     */
-    MedicalCard getById(String medicalCardNo);
-
-    /**
      * 查询所有诊疗卡,结果进行分页
      * @param pager 分页参数
      * @return
@@ -39,13 +32,6 @@ public interface MedicalCardService {
      * @return
      */
     String delete(Integer id);
-
-    /**
-     * 删除指定诊疗卡卡号的诊疗卡信息
-     * @param medicalCardNo 指定诊疗卡卡号
-     * @return
-     */
-    String delete(String medicalCardNo);
 
     /**
      * 新增或更新诊疗卡信息

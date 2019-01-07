@@ -26,8 +26,8 @@ spring:
       enabled: true
   jpa:
     show-sql: true
+    
 
-shiro.unauthorizedUrl: /401
 #spring.jpa.generate-ddl: true
 
 logging:

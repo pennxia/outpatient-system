@@ -13,6 +13,4 @@ import java.util.Optional;
  * @description
  */
 public interface MedicalCardRepo extends CrudRepository<MedicalCard,Integer>,JpaSpecificationExecutor {
-
-    Optional<MedicalCard> findByMedicalCardNo(String medicalCardNo);
 }

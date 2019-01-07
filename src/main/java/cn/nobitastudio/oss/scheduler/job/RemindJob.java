@@ -1,7 +1,7 @@
 package cn.nobitastudio.oss.scheduler.job;
 
 import cn.nobitastudio.oss.util.SmsSendUtil;
-import cn.nobitastudio.oss.vo.SendSmsResult;
+import cn.nobitastudio.oss.vo.SmsSendResult;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +22,8 @@ public class RemindJob implements Job {
     public static final String MOBILE = "mobile";
     public static final String HOSPITAL_NAME = "hospitalName";
     public static final String DIAGNOSIS_NAME = "diagnosisName";
-    public static final String MEDICAL_CARD_NO = "medicalCardNo";
-    public static final String DOCTOR = "doctor";
+    public static final String MEDICAL_CARD_ID = "medicalCardNo";
+    public static final String DOCTOR_NAME = "doctor";
     public static final String DEPARTMENT = "medicalCardNo";
     public static final String ENROLL_COST = "enrollCost";
     public static final String DIAGNOSIS_TIME = "diagnosisTime";
@@ -32,7 +32,7 @@ public class RemindJob implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        SendSmsResult sendSmsResult = sendSms(jobExecutionContext.getJobDetail().getJobDataMap());
+        SmsSendResult smsSendResult = sendSms(jobExecutionContext.getJobDetail().getJobDataMap());
     }
 
     /**
@@ -40,7 +40,7 @@ public class RemindJob implements Job {
      *
      * @param jobDataMap
      */
-    private SendSmsResult sendSms(JobDataMap jobDataMap) {
+    private SmsSendResult sendSms(JobDataMap jobDataMap) {
         Integer messageType = jobDataMap.getInt(MESSAGE_TYPE); //短信文本类型
         String mobile = jobDataMap.getString(MOBILE);
         ArrayList<String> params = new ArrayList<>();
@@ -59,8 +59,8 @@ public class RemindJob implements Job {
         if (messageType.equals(SmsSendUtil.ENROLL_SUCCESS) || messageType.equals(SmsSendUtil.DIAGNOSIS_REMIND)) {
             params.add(jobDataMap.getString(HOSPITAL_NAME));
             params.add(jobDataMap.getString(DIAGNOSIS_NAME));
-            params.add(jobDataMap.getString(MEDICAL_CARD_NO));
-            params.add(jobDataMap.getString(DOCTOR));
+            params.add(jobDataMap.getString(MEDICAL_CARD_ID));
+            params.add(jobDataMap.getString(DOCTOR_NAME));
             params.add(jobDataMap.getString(DEPARTMENT));
             params.add(jobDataMap.getString(ENROLL_COST));
             params.add(jobDataMap.getString(DIAGNOSIS_TIME));
@@ -70,8 +70,8 @@ public class RemindJob implements Job {
         if (messageType.equals(SmsSendUtil.CHECK_REMIND)) {
             params.add(jobDataMap.getString(HOSPITAL_NAME));
             params.add(jobDataMap.getString(DIAGNOSIS_NAME));
-            params.add(jobDataMap.getString(MEDICAL_CARD_NO));
-            params.add(jobDataMap.getString(DOCTOR));
+            params.add(jobDataMap.getString(MEDICAL_CARD_ID));
+            params.add(jobDataMap.getString(DOCTOR_NAME));
             params.add(jobDataMap.getString(DEPARTMENT));
             params.add(jobDataMap.getString(DIAGNOSIS_TIME));
             params.add(jobDataMap.getString(DEPARTMENT_ADDRESS));

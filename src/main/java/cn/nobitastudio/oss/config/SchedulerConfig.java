@@ -4,7 +4,7 @@ package cn.nobitastudio.oss.config;
  * @author chenxiong
  * @email nobita0522@qq.com
  * @date 2019/01/03 17:57
- * @description
+ * @description 对quartz自动调度的支持
  */
 
 import org.quartz.Scheduler;

@@ -6,6 +6,7 @@ import cn.nobitastudio.common.criteria.CriteriaException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.Department;
 import cn.nobitastudio.oss.service.inter.DepartmentService;
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.*;

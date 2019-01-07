@@ -36,9 +36,9 @@ public class Bind {
     private String mobile;
 
     @ApiModelProperty("绑定的诊疗卡卡号")
-    @Column(name = "medical_card_no")
+    @Column(name = "medical_card_id")
     @Equal
-    private String medicalCardNo;
+    private Integer medicalCardId;
 
     @ApiModelProperty("绑定关系创建时间")
     @Column(name = "create_time")

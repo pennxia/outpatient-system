@@ -2,7 +2,8 @@ package cn.nobitastudio.oss.entity;
 
 import cn.nobitastudio.common.criteria.Equal;
 import cn.nobitastudio.common.criteria.Like;
-import cn.nobitastudio.oss.vo.Enum.DepartmentArea;
+import cn.nobitastudio.oss.vo.enumeration.DepartmentArea;
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.Getter;

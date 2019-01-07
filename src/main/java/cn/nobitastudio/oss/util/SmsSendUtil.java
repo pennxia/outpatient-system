@@ -1,6 +1,6 @@
 package cn.nobitastudio.oss.util;
 
-import cn.nobitastudio.oss.vo.SendSmsResult;
+import cn.nobitastudio.oss.vo.SmsSendResult;
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
@@ -35,6 +35,7 @@ public class SmsSendUtil {
     public static final int DIAGNOSIS_REMIND = 7;//就诊提醒
     public static final int CHECK_REMIND = 8;//检查提醒
     public static final int EAT_DRUG_REMIND = 9;//吃药提醒
+
     /**
      * 发送短信给指定用户
      *
@@ -42,27 +43,27 @@ public class SmsSendUtil {
      * @param messageType 短信文本类型
      * @param params      短信中的参数
      */
-    public static SendSmsResult sendSms(String account, int messageType, ArrayList<String> params) {
+    public static SmsSendResult sendSms(String account, int messageType, ArrayList<String> params) {
         SmsSingleSender ssender = new SmsSingleSender(appid, appkey);
         SmsSingleSenderResult result;  // 签名参数未提供或者为空时，会使用默认签名发送短信
-        SendSmsResult sendSmsResult = new SendSmsResult();
+        SmsSendResult smsSendResult = new SmsSendResult();
         try {
             result = ssender.sendWithParam("86", account, templateId[messageType], params, smsSign, "", "");
             if (result.result == 0) {
                 //send success
-                sendSmsResult.setResult(true);
-                logger.info("短信发送成功,接收者:{},短信类型：{},发送时间：{}",account,messageType,LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT)));
+                smsSendResult.setResult(true);
+                logger.info("短信发送成功,接收者:{},短信类型：{},发送时间：{}", account, messageType, DateUtil.formatLocalDateTimeToString(LocalDateTime.now()));
             } else {
                 //send fail
-                sendSmsResult.setResult(false);
-                logger.info("短信发送成功,接收者:{},短信类型：{},发送时间：{}",account,messageType,LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT)));
+                smsSendResult.setResult(false);
+                logger.info("短信发送成功,接收者:{},短信类型：{},发送时间：{}", account, messageType, DateUtil.formatLocalDateTimeToString(LocalDateTime.now()));
             }
         } catch (HTTPException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return sendSmsResult;
+        return smsSendResult;
     }
 
     /**

@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 @Setter
 public class RegistrationRecord {
 
-    @ApiModelProperty("挂号记录物理id,没有逻辑含义")
+    @ApiModelProperty("挂号记录id")
     @Column(name = "id")
     @Id
     @Equal
@@ -42,13 +42,13 @@ public class RegistrationRecord {
     @Equal
     private Integer visitId;
 
-    @ApiModelProperty("挂此号的诊疗卡卡号,即指明就诊人是谁")
-    @Column(name = "id")
+    @ApiModelProperty("挂此号的诊疗卡id/卡号")
+    @Column(name = "medical_card_id")
     @Equal
-    private String medicalCardNo;
+    private Integer medicalCardId;
 
     @ApiModelProperty("诊疗序号,即排在第几个")
-    @Column(name = "id")
+    @Column(name = "diagnosis_no")
     @Equal
     private Integer diagnosisNo;
 

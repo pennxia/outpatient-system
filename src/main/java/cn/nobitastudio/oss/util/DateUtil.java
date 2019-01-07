@@ -7,7 +7,9 @@ import org.slf4j.LoggerFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -87,6 +89,33 @@ public class DateUtil {
             }
         }
         return result;
+    }
+
+    /**
+     * 格式化 LocalDateTime 为String类型 "yyyy-MM-dd hh:mm:ss"，未传入时，返回调用时间
+     * @param localDateTime
+     * @return
+     */
+    public static String formatLocalDateTimeToString(LocalDateTime localDateTime) {
+        return localDateTime.format(DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT));
+    }
+
+
+    /**
+     * 格式化 LocalDateTime 为String类型 "yyyy-MM-dd hh:mm:ss"，未传入时，返回调用时间
+     * @return
+     */
+    public static String getCurrentDateTime() {
+        return formatLocalDateTimeToString(LocalDateTime.now());
+    }
+
+    /**
+     * 格式化LocalDateTime 为 Date 类型
+     * @param localDateTime
+     * @return
+     */
+    public static Date formatLocalDateTimeToDate(LocalDateTime localDateTime) {
+        return new Date(localDateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli());
     }
 
 

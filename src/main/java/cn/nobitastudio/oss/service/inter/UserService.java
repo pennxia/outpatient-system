@@ -6,10 +6,11 @@ import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.vo.UserCreateVO;
 import cn.nobitastudio.oss.vo.UserQueryVO;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
 
     User getById(Integer id);

@@ -8,7 +8,6 @@ import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.repo.RoleRepo;
 import cn.nobitastudio.oss.repo.UserRepo;
 import cn.nobitastudio.oss.service.inter.UserService;
-import cn.nobitastudio.oss.shiro.ShiroUtils;
 import cn.nobitastudio.oss.util.CommonUtil;
 import cn.nobitastudio.oss.vo.UserCreateVO;
 import cn.nobitastudio.oss.vo.UserQueryVO;
@@ -33,7 +32,7 @@ import java.util.Random;
  * @description
  */
 @Service
-public class UserServiceImpl implements UserService,UserDetailsService {
+public class UserServiceImpl implements UserService{
 
     @Inject
     private UserRepo userRepo;
@@ -67,12 +66,7 @@ public class UserServiceImpl implements UserService,UserDetailsService {
             throw new AppException("该手机号已注册");
         }
         // 创建用户 1.加密密码,生成盐
-        Random RANDOM = new SecureRandom();
-        byte[] saltByte = new byte[16];
-        RANDOM.nextBytes(saltByte);
-        String salt = new BASE64Encoder().encode(saltByte);
-        String sha256Password = ShiroUtils.sha256(userCreateVO.getPassword(), salt);
-        return userRepo.save(new User(userCreateVO, sha256Password, salt));
+        return null;
     }
 
     @Override

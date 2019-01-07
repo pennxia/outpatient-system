@@ -2,7 +2,7 @@ package cn.nobitastudio.oss.entity;
 
 import cn.nobitastudio.common.criteria.Equal;
 import cn.nobitastudio.common.criteria.Like;
-import cn.nobitastudio.oss.vo.Enum.Sex;
+import cn.nobitastudio.oss.vo.enumeration.Sex;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -28,16 +28,11 @@ public class MedicalCard implements Serializable {
 
     private static final long serialVersionUID = -914979755295639051L;
 
-    @ApiModelProperty("诊疗卡物理id,没有逻辑含义")
+    @ApiModelProperty("诊疗卡id,也是卡号")
     @Column(name = "id")
     @Id
     @Equal
     private Integer id;
-
-    @ApiModelProperty("诊疗卡号")
-    @Column(name = "medical_card_no")
-    @Equal
-    private String medicalCardNo;
 
     @ApiModelProperty("持卡者姓名")
     @Column(name = "owner_name")
