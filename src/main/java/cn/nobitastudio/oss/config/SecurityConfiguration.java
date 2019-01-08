@@ -51,13 +51,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .formLogin()
-                .loginPage("/html/login.html") // 网页登录地址
-                .loginProcessingUrl("/authentication/login") // 登录发起的请求
-                //.defaultSuccessUrl("/swagger-ui.html") // 登陆成功后跳转
-                //.usernameParameter("myusername").passwordParameter("mypassword") 提交的username 和 password的参数名
+                .loginPage("/user/login")
+                .loginProcessingUrl("/auth")
+//                .loginPage("/html/login.html") // 网页登录地址
+//                .loginProcessingUrl("/user/login") // 发起验证的请求
+//                .defaultSuccessUrl("/swagger-ui.html") // 登陆成功后跳转
+//                .usernameParameter("myusername").passwordParameter("mypassword")  // 验证请求的用户名和密码参数的username 和 password的参数名
                 .and()
                 .authorizeRequests()
-                .antMatchers("/html/login.html").permitAll() // 登录页面痛
+                .antMatchers("/user/login").permitAll() // 登录页面请求
+                .antMatchers("/html/login.html").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .csrf().disable();

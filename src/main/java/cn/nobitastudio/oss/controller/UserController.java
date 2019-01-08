@@ -8,11 +8,20 @@ import cn.nobitastudio.oss.service.inter.UserService;
 import cn.nobitastudio.oss.vo.UserCreateVO;
 import cn.nobitastudio.oss.vo.UserQueryVO;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.Scheduler;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author chenxiong
@@ -26,8 +35,10 @@ public class UserController {
 
     @Inject
     private UserService userService;
-    @Inject
-    private Scheduler scheduler;
+
+    private RequestCache requestCache = new HttpSessionRequestCache();
+    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+
 
     @ApiOperation("通过用户id获取用户信息")
     @GetMapping("/{id}")
@@ -47,6 +58,25 @@ public class UserController {
         } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());
         }
+    }
+
+    @ApiOperation("用户登录请求")
+    @RequestMapping("/login")
+    public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        SavedRequest savedRequest = requestCache.getRequest(request,response);
+        if (savedRequest != null) {
+            String targetUrl = savedRequest.getRedirectUrl();
+            System.out.println("引发跳转的请求是：" + targetUrl);
+            if (StringUtils.endsWith(targetUrl,".html")) {
+                redirectStrategy.sendRedirect(request,response,"/html/login.html");
+            }
+        }
+    }
+
+    @ApiOperation("用户验证")
+    @PostMapping("/auth")
+    public ServiceResult<User> auth(@RequestBody User user) {
+        return null;
     }
 
     @ApiOperation("用户注销登录")
