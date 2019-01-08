@@ -32,7 +32,7 @@ public class SwaggerConfiguration {
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder().title("门诊服务系统")
 			.description("outpatient service system")
-			.termsOfServiceUrl("http://localhost:80")
+			.termsOfServiceUrl("http://localhost:80/")
 			.version("1.0.0").build();
 	}
 

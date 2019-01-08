@@ -1,5 +1,6 @@
 package cn.nobitastudio.oss.vo;
 
+import cn.nobitastudio.common.criteria.Equal;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,4 +23,8 @@ public class UserCreateVO {
 
     @ApiModelProperty("用户密码")
     private String password;
+
+    @ApiModelProperty("用户身份证号码")
+    private String idCard;
+
 }

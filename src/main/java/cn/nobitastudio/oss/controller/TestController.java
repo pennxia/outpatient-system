@@ -16,6 +16,7 @@ import cn.nobitastudio.oss.vo.test.SimpleDepartmentVO;
 import cn.nobitastudio.oss.vo.test.TriggerVO;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,11 +56,8 @@ public class TestController {
 
     @ApiModelProperty("测试方法")
     @GetMapping
-    public ServiceResult<String> test() {
-
+    public void test() {
         System.out.println(scheduler);
-
-        return ServiceResult.success(scheduler.toString());
     }
 
     @ApiModelProperty("测试方法")
@@ -218,6 +216,7 @@ public class TestController {
         } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());
         }
+
     }
 
 }

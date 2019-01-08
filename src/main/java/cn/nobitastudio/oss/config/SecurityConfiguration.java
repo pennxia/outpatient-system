@@ -1,12 +1,14 @@
 package cn.nobitastudio.oss.config;
 
 import cn.nobitastudio.oss.service.inter.UserService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.inject.Inject;
 
@@ -16,58 +18,48 @@ import javax.inject.Inject;
  * @date 2018/12/12 12:41
  * @description 对于接口的访问权限进行控制
  */
-@EnableWebSecurity
+@Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Inject
     private UserService userService;
 
-    /**
-     * 认证时调用
-     *
-     * @param auth
-     * @throws Exception
-     */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        /**
-         * 在内存中创建一个名为 "user" 的用户，密码为 "pwd"，拥有 "USER" 权限，密码使用BCryptPasswordEncoder加密
-         */
-        auth.inMemoryAuthentication().passwordEncoder(new BCryptPasswordEncoder())
-                .withUser("user").password(new BCryptPasswordEncoder().encode("pwd")).roles("USER");
-        /**
-         * 在内存中创建一个名为 "admin" 的用户，密码为 "pwd"，拥有 "USER" 和"ADMIN"权限
-         */
-        auth.inMemoryAuthentication().passwordEncoder(new BCryptPasswordEncoder())
-                .withUser("admin").password(new BCryptPasswordEncoder().encode("pwd")).roles("USER", "ADMIN");
-        //将自定义验证类注册进去
-        //auth.authenticationProvider(backdoorAuthenticationProvider);
-        //加入数据库验证类，下面的语句实际上在验证链中加入了一个DaoAuthenticationProvider
         auth.userDetailsService(userService).passwordEncoder(new BCryptPasswordEncoder());
     }
 
-    /**
-     * 控制访问以下静态资源时进行忽略
-     *
-     * @param web
-     * @throws Exception
-     */
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/index.html", "/static/**", "/favicon.ico", "/error", "/login", "swagger-ui.html");
+        super.configure(web);
     }
 
     /**
      * 鉴权时进行调用
-     *
+     * 其中默认配置的 /** 映射到 /static （或/public、/resources、/META-INF/resources）
+     * 其中默认配置的 /webjars/** 映射到 classpath:/META-INF/resources/webjars/
+     * 请求相关网页的时候,不要带上/public /resources /META-INF/resources
      * @param http
      * @throws Exception
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .antMatcher("/**").authorizeRequests().anyRequest().authenticated()
+        http
+                .formLogin()
+                .loginPage("/html/login.html") // 网页登录地址
+                .loginProcessingUrl("/authentication/login") // 登录发起的请求
+                //.defaultSuccessUrl("/swagger-ui.html") // 登陆成功后跳转
+                //.usernameParameter("myusername").passwordParameter("mypassword") 提交的username 和 password的参数名
                 .and()
-                .antMatcher("/swagger-ui.html").authorizeRequests().anyRequest().permitAll();
+                .authorizeRequests()
+                .antMatchers("/html/login.html").permitAll() // 登录页面痛
+                .anyRequest().authenticated()
+                .and()
+                .csrf().disable();
     }
 }

@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -34,14 +35,14 @@ public class User implements Serializable,UserDetails {
     public User() {
     }
 
-    public User(UserCreateVO userCreateVO, String sha256Password, String salt) {
+    public User(UserCreateVO userCreateVO) {
         this.mobile = userCreateVO.getMobile();
-        this.password = sha256Password;
+        this.password = userCreateVO.getPassword();
         this.name = userCreateVO.getUsername();
-        this.salt = salt;
         this.lastChangePassword = LocalDateTime.now();
-        this.locked = Boolean.FALSE;
+        this.unlocked = Boolean.TRUE;
         this.enable = Boolean.TRUE;
+        this.idCard = userCreateVO.getIdCard();
     }
 
     @ApiModelProperty("用户Id")
@@ -65,29 +66,30 @@ public class User implements Serializable,UserDetails {
     @Like
     private String name;
 
-    @ApiModelProperty("盐")
-    @Column(name = "salt")
-    private String salt;
-
     @ApiModelProperty("上一次更改用户密码的时间")
     @Column(name = "last_change_password")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime lastChangePassword;
 
     @ApiModelProperty("用户是否锁定(0:未锁定,1:锁定)")
-    @Column(name = "locked")
-    private Boolean locked;
+    @Column(name = "unlocked")
+    private Boolean unlocked;
 
     @ApiModelProperty("用户是否启用(0:未启用,1:启用)")
     @Column(name = "enable")
     private Boolean enable;
 
+    @ApiModelProperty("用户是否启用(0:未启用,1:启用)")
+    @Column(name = "id_card")
+    private String idCard;
     /**
      * 认证时调用,返回登录用户所对应的权限
      * @return
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        // 查询权限
+        AuthorityUtils.createAuthorityList("ADMIN","USER");
         return null;
     }
 
@@ -98,7 +100,7 @@ public class User implements Serializable,UserDetails {
      */
     @Override
     public String getUsername() {
-        return name;
+        return this.mobile;
     }
 
     /**
@@ -107,7 +109,7 @@ public class User implements Serializable,UserDetails {
      */
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     /**
@@ -116,7 +118,7 @@ public class User implements Serializable,UserDetails {
      */
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return this.unlocked;
     }
 
     /**
@@ -125,7 +127,7 @@ public class User implements Serializable,UserDetails {
      */
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     /**
@@ -134,6 +136,6 @@ public class User implements Serializable,UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return false;
+        return this.enable;
     }
 }

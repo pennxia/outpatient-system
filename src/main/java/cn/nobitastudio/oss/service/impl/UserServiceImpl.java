@@ -11,11 +11,15 @@ import cn.nobitastudio.oss.service.inter.UserService;
 import cn.nobitastudio.oss.util.CommonUtil;
 import cn.nobitastudio.oss.vo.UserCreateVO;
 import cn.nobitastudio.oss.vo.UserQueryVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import sun.misc.BASE64Encoder;
@@ -34,13 +38,18 @@ import java.util.Random;
 @Service
 public class UserServiceImpl implements UserService{
 
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
     @Inject
     private UserRepo userRepo;
     @Inject
     private RoleRepo roleRepo;
+    @Inject
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User getById(Integer id) {
+        logger.info(passwordEncoder.encode("user"));
         return userRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定id的用户信息"));
     }
 
@@ -65,8 +74,10 @@ public class UserServiceImpl implements UserService{
         if (userRepo.findByMobile(userCreateVO.getMobile()).isPresent()) {
             throw new AppException("该手机号已注册");
         }
-        // 创建用户 1.加密密码,生成盐
-        return null;
+        // 创建用户 1.加密密码(spring security 将盐值自动放入密码中)
+        userCreateVO.setPassword(new BCryptPasswordEncoder().encode(userCreateVO.getPassword()));
+        User user = new User(userCreateVO);
+        return userRepo.save(user);
     }
 
     @Override
@@ -77,6 +88,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserDetails loadUserByUsername(String mobile) throws UsernameNotFoundException {
         Assert.notNull(mobile,"未传入手机号");
+        // 查询user对应的权限
         return userRepo.findByMobile(mobile).orElseThrow(() -> new UsernameNotFoundException("未查找到该用户"));
     }
 }

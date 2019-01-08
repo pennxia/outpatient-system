@@ -77,10 +77,4 @@ public class UserController {
         }
     }
 
-    @ApiOperation("测试接口")
-    @GetMapping("/test")
-    public ServiceResult<String> test() {
-        return ServiceResult.success(scheduler.toString());
-    }
-
 }

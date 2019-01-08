@@ -6,6 +6,7 @@ server:
     min-spare-threads: 30
   port: 80
 
+# spring
 spring:
   # profiles:
   #   active: dev
@@ -13,7 +14,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
     druid:
-      url: 'jdbc:mysql://localhost:3306/oss?characterEncoding=utf8'
+      url: jdbc:mysql://localhost:3306/oss?characterEncoding=utf8
       username: root
       password: cx19970522
   jackson:
@@ -26,7 +27,6 @@ spring:
       enabled: true
   jpa:
     show-sql: true
-    
 
 #spring.jpa.generate-ddl: true
 
