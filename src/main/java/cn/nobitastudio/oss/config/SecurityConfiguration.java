@@ -1,6 +1,7 @@
 package cn.nobitastudio.oss.config;
 
 import cn.nobitastudio.oss.service.inter.UserService;
+import cn.nobitastudio.oss.vo.enumeration.RoleName;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,17 +22,17 @@ import javax.inject.Inject;
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     @Inject
     private UserService userService;
+    @Inject
+    private PasswordEncoder passwordEncoder;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(new BCryptPasswordEncoder());
+        auth.inMemoryAuthentication().passwordEncoder(passwordEncoder).
+                withUser("test").password(passwordEncoder.encode("test")).roles("ADMIN","USER","DB_ADMIN"); // 测试用户.拥有所有权限
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
+
     }
 
     @Override
@@ -51,17 +52,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .formLogin()
-                .loginPage("/user/login")
-                .loginProcessingUrl("/auth")
 //                .loginPage("/html/login.html") // 网页登录地址
 //                .loginProcessingUrl("/user/login") // 发起验证的请求
 //                .defaultSuccessUrl("/swagger-ui.html") // 登陆成功后跳转
 //                .usernameParameter("myusername").passwordParameter("mypassword")  // 验证请求的用户名和密码参数的username 和 password的参数名
+                .loginPage("/user/login")
+                .loginProcessingUrl("/auth")
                 .and()
                 .authorizeRequests()
                 .antMatchers("/user/login").permitAll() // 登录页面请求
                 .antMatchers("/html/login.html").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/test").hasRole(RoleName.ADMIN.name()) // 控制权限
+                .anyRequest().hasRole(RoleName.USER.name())
                 .and()
                 .csrf().disable();
     }

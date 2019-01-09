@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,6 +27,7 @@ import sun.misc.BASE64Encoder;
 
 import javax.inject.Inject;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -88,7 +90,12 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserDetails loadUserByUsername(String mobile) throws UsernameNotFoundException {
         Assert.notNull(mobile,"未传入手机号");
+        User user = userRepo.findByMobile(mobile).orElseThrow(() -> new UsernameNotFoundException("未查找到该用户"));
         // 查询user对应的权限
-        return userRepo.findByMobile(mobile).orElseThrow(() -> new UsernameNotFoundException("未查找到该用户"));
+
+        List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+
+        return new org.springframework.security.core.userdetails.User(user.getMobile(),user.getPassword(),user.getEnable()
+                ,Boolean.TRUE,Boolean.TRUE,user.getUnlocked(),simpleGrantedAuthorities);
     }
 }

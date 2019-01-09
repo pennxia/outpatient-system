@@ -67,8 +67,11 @@ public class UserController {
         if (savedRequest != null) {
             String targetUrl = savedRequest.getRedirectUrl();
             System.out.println("引发跳转的请求是：" + targetUrl);
+            redirectStrategy.sendRedirect(request,response,"/html/login.html");
             if (StringUtils.endsWith(targetUrl,".html")) {
-                redirectStrategy.sendRedirect(request,response,"/html/login.html");
+                // 网页跳转
+            } else {
+                // 移动端登录请求
             }
         }
     }

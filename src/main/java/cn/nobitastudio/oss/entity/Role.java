@@ -1,5 +1,7 @@
 package cn.nobitastudio.oss.entity;
 
+import cn.nobitastudio.common.criteria.Equal;
+import cn.nobitastudio.common.criteria.Like;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.Getter;
@@ -27,13 +29,16 @@ public class Role implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty("角色Id")
+    @Equal
     private Integer id;
 
     @Column(name = "name")
     @ApiModelProperty("角色名")
+    @Like
     private String name;
 
     @Column(name = "description")
     @ApiModelProperty("角色描述")
+    @Equal
     private String description;
 }

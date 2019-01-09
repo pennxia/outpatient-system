@@ -28,7 +28,7 @@ import java.util.Collection;
 @Table(name = "user")
 @Getter
 @Setter
-public class User implements Serializable,UserDetails {
+public class User implements Serializable {
 
 	private static final long serialVersionUID = -2738521069482377465L;
 
@@ -82,60 +82,4 @@ public class User implements Serializable,UserDetails {
     @ApiModelProperty("用户是否启用(0:未启用,1:启用)")
     @Column(name = "id_card")
     private String idCard;
-    /**
-     * 认证时调用,返回登录用户所对应的权限
-     * @return
-     */
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        // 查询权限
-        AuthorityUtils.createAuthorityList("ADMIN","USER");
-        return null;
-    }
-
-    /**
-     * Returns the username used to authenticate the user. Cannot return <code>null</code>.
-     *
-     * @return the username (never <code>null</code>)
-     */
-    @Override
-    public String getUsername() {
-        return this.mobile;
-    }
-
-    /**
-     * 用户是否过期
-     * @return
-     */
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    /**
-     * 用户是否被锁定
-     * @return
-     */
-    @Override
-    public boolean isAccountNonLocked() {
-        return this.unlocked;
-    }
-
-    /**
-     * 凭证（密码）是否过期
-     * @return
-     */
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    /**
-     * 是否是启用状态
-     * @return
-     */
-    @Override
-    public boolean isEnabled() {
-        return this.enable;
-    }
 }
