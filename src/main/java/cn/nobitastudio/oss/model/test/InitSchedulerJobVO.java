@@ -1,4 +1,4 @@
-package cn.nobitastudio.oss.vo.test;
+package cn.nobitastudio.oss.model.test;
 
 import lombok.Getter;
 import lombok.Setter;

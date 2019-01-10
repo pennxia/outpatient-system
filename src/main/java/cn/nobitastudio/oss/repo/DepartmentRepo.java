@@ -1,7 +1,6 @@
 package cn.nobitastudio.oss.repo;
 
 import cn.nobitastudio.oss.entity.Department;
-import cn.nobitastudio.oss.vo.test.SimpleDepartmentVO;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

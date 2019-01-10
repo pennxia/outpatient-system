@@ -28,7 +28,7 @@ public class MedicalCardController {
 
     @ApiOperation("查询指定诊疗卡信息")
     @GetMapping("/{id}")
-    public ServiceResult<MedicalCard> getById(@PathVariable("id") Integer id) {
+    public ServiceResult<MedicalCard> getById(@PathVariable("id") String id) {
         try {
             return ServiceResult.success(medicalCardService.getById(id));
         } catch (AppException e) {
@@ -48,7 +48,7 @@ public class MedicalCardController {
 
     @ApiOperation("删除指定诊疗卡信息")
     @DeleteMapping("/{id}")
-    public ServiceResult<String> deleteById(@PathVariable("id") Integer id) {
+    public ServiceResult<String> deleteById(@PathVariable("id") String id) {
         try {
             return ServiceResult.success(medicalCardService.delete(id));
         } catch (AppException e) {

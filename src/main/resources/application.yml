@@ -32,11 +32,13 @@ spring:
 
 logging:
   level: info
-  level.com.iwellmass.cba.syndloan: debug
-  path: /web/logs/cba-syndloan/
+  level.cn.nobitastudio.oss: debug
+  path: /web/logs/oss/
   file: biz.log
 
 oss:
   app:
     maxBindCount: 5
     auto-start: true
+    browser:
+      loginPage: /html/login.html

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -21,7 +22,9 @@ import java.time.LocalDateTime;
 @Table(name = "collect_doctor")
 @Getter
 @Setter
-public class CollectDoctor {
+public class CollectDoctor  implements Serializable {
+
+    private static final long serialVersionUID = 2521556559394088770L;
 
     @ApiModelProperty("收藏物理id,无实力逻辑含义")
     @Column(name = "id")

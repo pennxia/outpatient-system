@@ -1,6 +1,6 @@
 package cn.nobitastudio.oss.util;
 
-import cn.nobitastudio.oss.vo.SmsSendResult;
+import cn.nobitastudio.oss.model.SmsSendResult;
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 @Component

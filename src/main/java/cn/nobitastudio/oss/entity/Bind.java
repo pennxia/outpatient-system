@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -21,7 +22,9 @@ import java.time.LocalDateTime;
 @Table(name = "bind")
 @Getter
 @Setter
-public class Bind {
+public class Bind implements Serializable {
+
+    private static final long serialVersionUID = -9124180682454727169L;
 
     @ApiModelProperty("绑定物理id,无实力逻辑含义")
     @Column(name = "id")
@@ -38,7 +41,7 @@ public class Bind {
     @ApiModelProperty("绑定的诊疗卡卡号")
     @Column(name = "medical_card_id")
     @Equal
-    private Integer medicalCardId;
+    private String medicalCardId;
 
     @ApiModelProperty("绑定关系创建时间")
     @Column(name = "create_time")

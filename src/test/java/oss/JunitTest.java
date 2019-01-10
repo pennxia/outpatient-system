@@ -57,4 +57,11 @@ public class JunitTest {
         map.put("1","5");
         logger.info(map.toString());
     }
+
+    @Test
+    public void test3() {
+        System.out.println(Long.toHexString(new Date().getTime()));
+
+    }
+
 }

@@ -10,13 +10,12 @@ import cn.nobitastudio.oss.scheduler.job.RemindJob;
 import cn.nobitastudio.oss.service.inter.VisitService;
 import cn.nobitastudio.oss.util.CommonUtil;
 import cn.nobitastudio.oss.util.DateUtil;
-import cn.nobitastudio.oss.vo.test.InitSchedulerJobVO;
-import cn.nobitastudio.oss.vo.test.JobDetailVO;
-import cn.nobitastudio.oss.vo.test.SimpleDepartmentVO;
-import cn.nobitastudio.oss.vo.test.TriggerVO;
+import cn.nobitastudio.oss.model.test.InitSchedulerJobVO;
+import cn.nobitastudio.oss.model.test.JobDetailVO;
+import cn.nobitastudio.oss.model.test.SimpleDepartmentVO;
+import cn.nobitastudio.oss.model.test.TriggerVO;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
 import org.quartz.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -216,7 +215,15 @@ public class TestController {
         } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());
         }
-
     }
+
+    @ApiModelProperty("测试并发")
+    @GetMapping("/concurrent")
+    public ServiceResult testConcurrent() {
+
+        return null;
+    }
+
+
 
 }

@@ -1,12 +1,7 @@
-package cn.nobitastudio.oss.vo.test;
+package cn.nobitastudio.oss.model.test;
 
-import cn.nobitastudio.oss.vo.enumeration.DepartmentArea;
+import cn.nobitastudio.oss.model.enumeration.Area;
 import lombok.*;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 
 /**
  * @author chenxiong
@@ -22,20 +17,20 @@ import javax.persistence.Enumerated;
 public class SimpleDepartmentVO {
 
     private Integer id;
-    private DepartmentArea area;
+    private Area area;
     private String introduction;
     private String name;
 
     public SimpleDepartmentVO(Integer id, String area, String introduction, String name) {
         this.id = id;
         if (area.equals("A")) {
-            this.area = DepartmentArea.A;
+            this.area = Area.A;
         } else if (area.equals("B")) {
-            this.area = DepartmentArea.B;
+            this.area = Area.B;
         } else if (area.equals("C")) {
-            this.area = DepartmentArea.C;
+            this.area = Area.C;
         } else if (area.equals("D")) {
-            this.area = DepartmentArea.D;
+            this.area = Area.D;
         }
         this.introduction = introduction;
         this.name = name;

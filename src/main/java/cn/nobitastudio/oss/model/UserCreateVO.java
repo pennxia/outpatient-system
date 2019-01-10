@@ -1,6 +1,5 @@
-package cn.nobitastudio.oss.vo;
+package cn.nobitastudio.oss.model;
 
-import cn.nobitastudio.common.criteria.Equal;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;

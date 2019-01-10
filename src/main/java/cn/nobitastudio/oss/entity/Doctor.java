@@ -2,7 +2,7 @@ package cn.nobitastudio.oss.entity;
 
 import cn.nobitastudio.common.criteria.Equal;
 import cn.nobitastudio.common.criteria.Like;
-import cn.nobitastudio.oss.vo.enumeration.DoctorLevel;
+import cn.nobitastudio.oss.model.enumeration.DoctorLevel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.Getter;

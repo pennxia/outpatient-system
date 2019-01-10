@@ -1,14 +1,15 @@
 package cn.nobitastudio.oss.config;
 
+import cn.nobitastudio.oss.authentication.hander.OSSAuthenticationFailureHandler;
+import cn.nobitastudio.oss.authentication.hander.OSSAuthenticationSuccessHandler;
+import cn.nobitastudio.oss.property.SecurityProperties;
 import cn.nobitastudio.oss.service.inter.UserService;
-import cn.nobitastudio.oss.vo.enumeration.RoleName;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import cn.nobitastudio.oss.model.enumeration.RoleName;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.inject.Inject;
@@ -19,20 +20,27 @@ import javax.inject.Inject;
  * @date 2018/12/12 12:41
  * @description 对于接口的访问权限进行控制
  */
-@Configuration
+@EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Inject
     private UserService userService;
     @Inject
     private PasswordEncoder passwordEncoder;
+    @Inject
+    private SecurityProperties securityProperties;
+    @Inject
+    private OSSAuthenticationSuccessHandler ossAuthenticationSuccessHandler;
+    @Inject
+    private OSSAuthenticationFailureHandler ossAuthenticationFailureHandler;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication().passwordEncoder(passwordEncoder).
-                withUser("test").password(passwordEncoder.encode("test")).roles("ADMIN","USER","DB_ADMIN"); // 测试用户.拥有所有权限
+                withUser("test").password(passwordEncoder.encode("test"))
+                .roles(RoleName.USER.name(), RoleName.ADMIN.name(), RoleName.DB_ADMIN.name()) // 角色
+                .authorities(RoleName.USER.name(), RoleName.ADMIN.name(), RoleName.DB_ADMIN.name()); //  权限
         auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
-
     }
 
     @Override
@@ -45,26 +53,36 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      * 其中默认配置的 /** 映射到 /static （或/public、/resources、/META-INF/resources）
      * 其中默认配置的 /webjars/** 映射到 classpath:/META-INF/resources/webjars/
      * 请求相关网页的时候,不要带上/public /resources /META-INF/resources
+     *
      * @param http
      * @throws Exception
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .formLogin()
-//                .loginPage("/html/login.html") // 网页登录地址
-//                .loginProcessingUrl("/user/login") // 发起验证的请求
-//                .defaultSuccessUrl("/swagger-ui.html") // 登陆成功后跳转
-//                .usernameParameter("myusername").passwordParameter("mypassword")  // 验证请求的用户名和密码参数的username 和 password的参数名
+
+//        http
+////                .loginPage("/html/login.html") // 网页登录地址
+////                .loginProcessingUrl("/user/login") // 发起验证的请求
+////                .usernameParameter("myusername").passwordParameter("mypassword")  // 验证请求的用户名和密码参数的username 和 password的参数名
+//                .authorizeRequests()
+//                .anyRequest().permitAll();
+        http.
+
+                formLogin()
                 .loginPage("/user/login")
                 .loginProcessingUrl("/auth")
+                .successHandler(ossAuthenticationSuccessHandler)
+                .failureHandler(ossAuthenticationFailureHandler)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/user/login").permitAll() // 登录页面请求
-                .antMatchers("/html/login.html").permitAll()
-                .antMatchers("/test").hasRole(RoleName.ADMIN.name()) // 控制权限
-                .anyRequest().hasRole(RoleName.USER.name())
+//                .antMatchers("/swagger-ui.html").hasRole(RoleName.ADMIN.name()) // 控制权限，角色应该拥有ROLE_XXX 这样的角色才能调用该接口 默认使用hasAuthority
+                .antMatchers("/user/login",securityProperties.getBrowser().getLoginPage()).permitAll()
+                .antMatchers("/swagger-ui.html").hasAuthority(RoleName.USER.name()) // 控制权限,下面的接口若需要权限,有可能无法扫描
+                .antMatchers("/**").hasAuthority(RoleName.USER.name()) // 控制所有接口调用都必须是普通用户才能调用
                 .and()
                 .csrf().disable();
+
+
+
     }
 }

@@ -12,5 +12,5 @@ import java.util.Optional;
  * @date 2019/01/02 16:32
  * @description
  */
-public interface MedicalCardRepo extends CrudRepository<MedicalCard,Integer>,JpaSpecificationExecutor {
+public interface MedicalCardRepo extends CrudRepository<MedicalCard,String>,JpaSpecificationExecutor {
 }

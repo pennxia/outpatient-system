@@ -4,13 +4,11 @@ import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.criteria.SpecificationBuilder;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.*;
+import cn.nobitastudio.oss.model.dto.RegisterDTO;
 import cn.nobitastudio.oss.repo.*;
-import cn.nobitastudio.oss.scheduler.job.RemindJob;
 import cn.nobitastudio.oss.scheduler.job.TestJob;
 import cn.nobitastudio.oss.service.inter.RegistrationRecordService;
 import cn.nobitastudio.oss.util.DateUtil;
-import cn.nobitastudio.oss.vo.test.JobDetailVO;
-import cn.nobitastudio.oss.vo.test.TriggerVO;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +58,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
      * @return
      */
     @Override
-    public RegistrationRecord getById(Integer id) {
+    public RegistrationRecord getById(String id) {
         return registrationRecordRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定id的挂号记录"));
     }
 
@@ -85,7 +83,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
      * @return
      */
     @Override
-    public String delete(Integer id) {
+    public String delete(String id) {
         registrationRecordRepo.delete(registrationRecordRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定id的挂号记录")));
         return DELETE_SUCCESS;
     }
@@ -104,19 +102,29 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
     /**
      * 用户进行挂号操作
      *
-     * @param registrationRecord
+     * @param registerDTO
      * @return
      */
+    @Transactional
     @Override
-    public RegistrationRecord register(RegistrationRecord registrationRecord) {
+    public RegistrationRecord register(RegisterDTO registerDTO) {
         // 待实现
+        Visit visit = visitRepo.findById(registerDTO.getVisitId()).orElseThrow(() -> new AppException("未查询到指定号源信息"));
+        if (visit.getLeftAmount().equals(0)) {
+            throw new AppException("挂号失败,该号源已全部挂完");
+        }
+        // 生成 挂号单单号,挂号单id
+
+
+
+        Integer diagnosisNo = visit.getAmount() - visit.getLeftAmount() + 1; // 就诊序号
+
 
         // 保存 RegistrationRecord
 
         // 挂号成功,发送通知短信.
-        User user = userRepo.findById(registrationRecord.getUserId()).orElseThrow(() -> new AppException("未查找到指定用户"));
-        MedicalCard medicalCard = medicalCardRepo.findById(registrationRecord.getMedicalCardId()).orElseThrow(() -> new AppException("未查找到指定诊疗卡"));
-        Visit visit = visitRepo.findById(registrationRecord.getVisitId()).orElseThrow(() -> new AppException("未查找到指定的号源信息"));
+        User user = userRepo.findById(registerDTO.getUserId()).orElseThrow(() -> new AppException("未查找到指定用户"));
+        MedicalCard medicalCard = medicalCardRepo.findById(registerDTO.getMedicalCardId()).orElseThrow(() -> new AppException("未查找到指定诊疗卡"));
         Doctor doctor = doctorRepo.findById(visit.getDoctorId()).orElseThrow(() -> new AppException("未查找到指定医生信息"));
         Department department = departmentRepo.findById(doctor.getDepartmentId()).orElseThrow(() -> new AppException("未查找到指定科室信息"));
         Trigger trigger = newTriggerInstance(medicalCard, visit);

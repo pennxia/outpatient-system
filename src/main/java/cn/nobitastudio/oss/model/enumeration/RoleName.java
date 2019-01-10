@@ -1,4 +1,4 @@
-package cn.nobitastudio.oss.vo.enumeration;
+package cn.nobitastudio.oss.model.enumeration;
 
 import io.swagger.annotations.ApiModelProperty;
 

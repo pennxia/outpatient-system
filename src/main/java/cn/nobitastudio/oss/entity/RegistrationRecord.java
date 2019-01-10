@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -18,19 +19,22 @@ import java.time.LocalDateTime;
  * @email nobita0522@qq.com
  * @date 2019/01/06 15:07
  * @description
+ * 生成策略：下单渠道1位 + 业务类型1位 + 时间信息4位 + 下单时间的Unix时间戳后8位（加上随机码随机后的数字）+ 用户user id后4位
  */
 @Data
 @Entity
 @Table(name = "registration_record")
 @Getter
 @Setter
-public class RegistrationRecord {
+public class RegistrationRecord implements Serializable {
 
-    @ApiModelProperty("挂号记录id")
+    private static final long serialVersionUID = -7653921447104816273L;
+
+    @ApiModelProperty("挂号记录id,挂号单号")
     @Column(name = "id")
     @Id
     @Equal
-    private Integer id;
+    private String id;
 
     @ApiModelProperty("挂号者的id")
     @Column(name = "user_id")
@@ -45,7 +49,7 @@ public class RegistrationRecord {
     @ApiModelProperty("挂此号的诊疗卡id/卡号")
     @Column(name = "medical_card_id")
     @Equal
-    private Integer medicalCardId;
+    private String medicalCardId;
 
     @ApiModelProperty("诊疗序号,即排在第几个")
     @Column(name = "diagnosis_no")

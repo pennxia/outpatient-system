@@ -34,7 +34,7 @@ public class MedicalCardServiceImpl implements MedicalCardService {
      * @return
      */
     @Override
-    public MedicalCard getById(Integer id) {
+    public MedicalCard getById(String id) {
         return medicalCardRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定诊疗卡信息"));
     }
 
@@ -59,7 +59,7 @@ public class MedicalCardServiceImpl implements MedicalCardService {
      * @return
      */
     @Override
-    public String delete(Integer id) {
+    public String delete(String id) {
         medicalCardRepo.delete(medicalCardRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定诊疗卡信息")));
         return DELETE_SUCCESS;
     }

@@ -2,6 +2,7 @@ package cn.nobitastudio.oss.entity;
 
 import cn.nobitastudio.common.criteria.Equal;
 import cn.nobitastudio.common.criteria.Like;
+import cn.nobitastudio.oss.model.enumeration.RoleName;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.Getter;
@@ -25,20 +26,21 @@ public class Role implements Serializable {
 
     private static final long serialVersionUID = -2791309956740231708L;
 
+    @ApiModelProperty("角色Id")
     @Column(name = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty("角色Id")
     @Equal
     private Integer id;
 
-    @Column(name = "name")
     @ApiModelProperty("角色名")
+    @Column(name = "name")
     @Like
-    private String name;
+    @Enumerated(EnumType.STRING) // 指定枚举映射为数据库的策略按照 name 映射,默认是按照顺序
+    private RoleName name;
 
-    @Column(name = "description")
     @ApiModelProperty("角色描述")
+    @Column(name = "description")
     @Equal
     private String description;
 }

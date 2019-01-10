@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -22,7 +23,9 @@ import java.util.Date;
 @Table(name = "visit")
 @Getter
 @Setter
-public class Visit {
+public class Visit implements Serializable {
+
+    private static final long serialVersionUID = -8300723782462137747L;
 
     @ApiModelProperty("号源id")
     @Column(name = "id")

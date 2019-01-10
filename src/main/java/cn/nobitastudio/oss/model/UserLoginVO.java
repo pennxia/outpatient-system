@@ -1,4 +1,4 @@
-package cn.nobitastudio.oss.vo;
+package cn.nobitastudio.oss.model;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package cn.nobitastudio.oss.vo.enumeration;
+package cn.nobitastudio.oss.model.enumeration;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @date 2019/01/02 13:11
  * @description
  */
-public enum DepartmentArea {
+public enum Area {
     @ApiModelProperty("A区")
     A,
     @ApiModelProperty("B区")

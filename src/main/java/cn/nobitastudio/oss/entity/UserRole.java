@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @author chenxiong
@@ -19,7 +20,10 @@ import javax.persistence.*;
 @Table(name = "user_role")
 @Getter
 @Setter
-public class UserRole {
+public class UserRole implements Serializable {
+
+    private static final long serialVersionUID = 4254637288594977399L;
+
     @ApiModelProperty("用户绑定角色的物理id")
     @Column(name = "id")
     @Id

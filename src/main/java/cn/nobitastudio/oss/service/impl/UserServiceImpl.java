@@ -9,27 +9,24 @@ import cn.nobitastudio.oss.repo.RoleRepo;
 import cn.nobitastudio.oss.repo.UserRepo;
 import cn.nobitastudio.oss.service.inter.UserService;
 import cn.nobitastudio.oss.util.CommonUtil;
-import cn.nobitastudio.oss.vo.UserCreateVO;
-import cn.nobitastudio.oss.vo.UserQueryVO;
+import cn.nobitastudio.oss.model.UserCreateVO;
+import cn.nobitastudio.oss.model.UserQueryVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import sun.misc.BASE64Encoder;
 
 import javax.inject.Inject;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * @author chenxiong
@@ -92,10 +89,25 @@ public class UserServiceImpl implements UserService{
         Assert.notNull(mobile,"未传入手机号");
         User user = userRepo.findByMobile(mobile).orElseThrow(() -> new UsernameNotFoundException("未查找到该用户"));
         // 查询user对应的权限
-
-        List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
-
-        return new org.springframework.security.core.userdetails.User(user.getMobile(),user.getPassword(),user.getEnable()
+        List<GrantedAuthority> simpleGrantedAuthorities = getSimpleGrantedAuthorities(user);
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getMobile(),user.getPassword(),user.getEnable()
                 ,Boolean.TRUE,Boolean.TRUE,user.getUnlocked(),simpleGrantedAuthorities);
+        return userDetails;
+    }
+
+    /**
+     * 得到指定用户的素有角色所对应的权限
+     * @param user
+     * @return
+     */
+    private List<GrantedAuthority> getSimpleGrantedAuthorities(User user) {
+        List<Role> roles = roleRepo.queryRolesByUserId(user.getId());
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>(roles.size());
+        for (Role role : roles) {
+            // grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName().name())); // 添加角色，对应于SpringSecurity的权限判断是 haeRole,即在权限名前添加"ROLE_即可"
+            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName().name())); // 添加权限,，对应于SpringSecurity的权限判断是 hasAuthority
+            logger.info(role.getName().name());
+        }
+        return grantedAuthorities;
     }
 }

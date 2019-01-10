@@ -2,6 +2,7 @@ package cn.nobitastudio.oss.service.inter;
 
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.RegistrationRecord;
+import cn.nobitastudio.oss.model.dto.RegisterDTO;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,7 @@ public interface RegistrationRecordService {
      * @param id 挂号记录id
      * @return
      */
-    RegistrationRecord getById(Integer id);
+    RegistrationRecord getById(String id);
 
     /**
      * 查询所有挂号记录,结果进行分页
@@ -36,7 +37,7 @@ public interface RegistrationRecordService {
      * @param id 指定挂号记录id
      * @return
      */
-    String delete(Integer id);
+    String delete(String id);
 
     /**
      * 新增或更新挂号记录
@@ -48,9 +49,9 @@ public interface RegistrationRecordService {
 
     /**
      * 用户进行挂号操作
-     * @param registrationRecord
+     * @param registerDTO
      * @return
      */
     @Transactional
-    RegistrationRecord register(RegistrationRecord registrationRecord);
+    RegistrationRecord register(RegisterDTO registerDTO);
 }

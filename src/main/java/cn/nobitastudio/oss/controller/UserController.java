@@ -4,13 +4,15 @@ import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.User;
+import cn.nobitastudio.oss.property.SecurityProperties;
 import cn.nobitastudio.oss.service.inter.UserService;
-import cn.nobitastudio.oss.vo.UserCreateVO;
-import cn.nobitastudio.oss.vo.UserQueryVO;
+import cn.nobitastudio.oss.model.UserCreateVO;
+import cn.nobitastudio.oss.model.UserQueryVO;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
-import org.quartz.Scheduler;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -35,6 +37,8 @@ public class UserController {
 
     @Inject
     private UserService userService;
+    @Inject
+    private SecurityProperties securityProperties;
 
     private RequestCache requestCache = new HttpSessionRequestCache();
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
@@ -61,19 +65,18 @@ public class UserController {
     }
 
     @ApiOperation("用户登录请求")
-    @RequestMapping("/login")
-    public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @GetMapping("/login")
+    public ServiceResult<String> login(HttpServletRequest request, HttpServletResponse response) throws IOException {
         SavedRequest savedRequest = requestCache.getRequest(request,response);
         if (savedRequest != null) {
             String targetUrl = savedRequest.getRedirectUrl();
             System.out.println("引发跳转的请求是：" + targetUrl);
-            redirectStrategy.sendRedirect(request,response,"/html/login.html");
             if (StringUtils.endsWith(targetUrl,".html")) {
                 // 网页跳转
-            } else {
-                // 移动端登录请求
+                redirectStrategy.sendRedirect(request,response,securityProperties.getBrowser().getLoginPage());
             }
         }
+        return ServiceResult.failure("访问的服务需要身份认证,请引导用户到登录页");
     }
 
     @ApiOperation("用户验证")
@@ -108,6 +111,12 @@ public class UserController {
         } catch (Exception e) {
             return ServiceResult.failure(e.getMessage());
         }
+    }
+
+    @ApiOperation("获取认证信息")
+    @GetMapping("/auth-info")
+    public ServiceResult<Authentication> getAuthInfo() {
+        return ServiceResult.success(SecurityContextHolder.getContext().getAuthentication());
     }
 
 }

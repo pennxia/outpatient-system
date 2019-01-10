@@ -1,7 +1,7 @@
 package cn.nobitastudio.oss.scheduler.job;
 
 import cn.nobitastudio.oss.util.SmsSendUtil;
-import cn.nobitastudio.oss.vo.SmsSendResult;
+import cn.nobitastudio.oss.model.SmsSendResult;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

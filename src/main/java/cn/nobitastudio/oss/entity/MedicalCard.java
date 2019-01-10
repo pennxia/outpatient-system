@@ -2,7 +2,7 @@ package cn.nobitastudio.oss.entity;
 
 import cn.nobitastudio.common.criteria.Equal;
 import cn.nobitastudio.common.criteria.Like;
-import cn.nobitastudio.oss.vo.enumeration.Sex;
+import cn.nobitastudio.oss.model.enumeration.Sex;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -32,7 +32,7 @@ public class MedicalCard implements Serializable {
     @Column(name = "id")
     @Id
     @Equal
-    private Integer id;
+    private String id;
 
     @ApiModelProperty("持卡者姓名")
     @Column(name = "owner_name")

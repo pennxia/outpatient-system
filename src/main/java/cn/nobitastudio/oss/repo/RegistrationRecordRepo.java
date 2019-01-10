@@ -12,5 +12,5 @@ import java.util.Optional;
  * @date 2019/01/03 14:47
  * @description
  */
-public interface RegistrationRecordRepo extends CrudRepository<RegistrationRecord, Integer>, JpaSpecificationExecutor {
+public interface RegistrationRecordRepo extends CrudRepository<RegistrationRecord, String>, JpaSpecificationExecutor {
 }

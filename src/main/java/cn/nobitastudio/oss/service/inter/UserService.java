@@ -3,8 +3,8 @@ package cn.nobitastudio.oss.service.inter;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.Role;
 import cn.nobitastudio.oss.entity.User;
-import cn.nobitastudio.oss.vo.UserCreateVO;
-import cn.nobitastudio.oss.vo.UserQueryVO;
+import cn.nobitastudio.oss.model.UserCreateVO;
+import cn.nobitastudio.oss.model.UserQueryVO;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 

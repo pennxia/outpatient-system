@@ -17,7 +17,7 @@ public interface BindRepo extends CrudRepository<Bind, Integer>, JpaSpecificatio
 
     Integer countAllByMobile(String mobile);
 
-    Integer countAllByMedicalCardId(Integer medicalCardId);
+    Integer countAllByMedicalCardId(String medicalCardId);
 
-    Optional<Bind> findByMobileAndMedicalCardId(String mobile, Integer medicalCardId);
+    Optional<Bind> findByMobileAndMedicalCardId(String mobile, String medicalCardId);
 }

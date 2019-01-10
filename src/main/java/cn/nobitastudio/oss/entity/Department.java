@@ -2,7 +2,7 @@ package cn.nobitastudio.oss.entity;
 
 import cn.nobitastudio.common.criteria.Equal;
 import cn.nobitastudio.common.criteria.Like;
-import cn.nobitastudio.oss.vo.enumeration.DepartmentArea;
+import cn.nobitastudio.oss.model.enumeration.Area;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -25,10 +25,10 @@ import java.io.Serializable;
 @Setter
 public class Department implements Serializable {
 
+    private static final long serialVersionUID = -3712970229472760165L;
+
     public interface DepartmentSimpleView {};
     public interface DepartmentDetailView extends DepartmentSimpleView {};
-
-    private static final long serialVersionUID = -3712970229472760165L;
 
     @ApiModelProperty("科室号,id")
     @Column(name = "id")
@@ -38,13 +38,13 @@ public class Department implements Serializable {
     private Integer id;
 
     @ApiModelProperty("科室名称")
-    @Column(name = "name", length = 100)
+    @Column(name = "name")
     @Like
     @JsonView(DepartmentSimpleView.class)
     private String name;
 
     @ApiModelProperty("科室地址")
-    @Column(name = "address", length = 100)
+    @Column(name = "address")
     @Like
     @JsonView(DepartmentSimpleView.class)
     private String address;
@@ -66,7 +66,7 @@ public class Department implements Serializable {
     @Enumerated(EnumType.STRING)
     @Equal
     @JsonView(DepartmentDetailView.class)
-    private DepartmentArea area;
+    private Area area;
 
     @ApiModelProperty("科室介绍")
     @Column(name = "introduction")
