@@ -71,8 +71,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 formLogin()
                 .loginPage("/user/login")
                 .loginProcessingUrl("/auth")
-                .successHandler(ossAuthenticationSuccessHandler)
-                .failureHandler(ossAuthenticationFailureHandler)
+//                .successHandler(ossAuthenticationSuccessHandler)  // 登陆成功后的处理器
+//                .failureHandler(ossAuthenticationFailureHandler)  // 登陆失败后的处理器
                 .and()
                 .authorizeRequests()
 //                .antMatchers("/swagger-ui.html").hasRole(RoleName.ADMIN.name()) // 控制权限，角色应该拥有ROLE_XXX 这样的角色才能调用该接口 默认使用hasAuthority

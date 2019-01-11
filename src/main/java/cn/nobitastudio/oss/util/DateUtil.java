@@ -18,7 +18,9 @@ import java.util.List;
 public class DateUtil {
     static Logger logger = LoggerFactory.getLogger(DateUtil.class);
 
-    public static final String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
+    public static final String STANDARD_DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
+    public static final String DATE_FORMAT = "yyyyMMddhhmmss";
+    public static final String SIMPLE_DATE_FORMAT = "yyyyMMdd";
 
     public static String convertDate(String dateStr, String sourceFormat, String targetFormat) {
         if (StringUtils.isBlank(targetFormat)) {
@@ -96,17 +98,25 @@ public class DateUtil {
      * @param localDateTime
      * @return
      */
-    public static String formatLocalDateTimeToString(LocalDateTime localDateTime) {
-        return localDateTime.format(DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT));
+    public static String formatLocalDateTimeToStardardString(LocalDateTime localDateTime) {
+        return localDateTime.format(DateTimeFormatter.ofPattern(DateUtil.STANDARD_DATE_FORMAT));
     }
 
-
+    /**
+     * 格式化 LocalDateTime 为String类型 "yyyyMMddhhmmss"，未传入时，返回调用时间
+     * @param localDateTime
+     * @return
+     */
+    public static String formatLocalDateTimeToSimpleString(LocalDateTime localDateTime) {
+        return localDateTime.format(DateTimeFormatter.ofPattern(DateUtil.SIMPLE_DATE_FORMAT));
+    }
+    
     /**
      * 格式化 LocalDateTime 为String类型 "yyyy-MM-dd hh:mm:ss"，未传入时，返回调用时间
      * @return
      */
     public static String getCurrentDateTime() {
-        return formatLocalDateTimeToString(LocalDateTime.now());
+        return formatLocalDateTimeToStardardString(LocalDateTime.now());
     }
 
     /**

@@ -1,6 +1,7 @@
 package oss;
 
 import cn.nobitastudio.oss.OSSApplication;
+import cn.nobitastudio.oss.model.enumeration.Channel;
 import cn.nobitastudio.oss.scheduler.job.EatDrugRemindJob;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,9 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -60,8 +59,11 @@ public class JunitTest {
 
     @Test
     public void test3() {
-        System.out.println(Long.toHexString(new Date().getTime()));
-
+        System.out.println(Channel.OSS_ANDROID_APP.ordinal());
+        System.out.println(Channel.OSS_WEB_APP.ordinal());
+        System.out.println(Channel.OSS_HOSPITAL_LOCAL.ordinal());
+        System.out.println(Channel.OSS_OTHER.ordinal());
+        System.out.println(Channel.OSS_IOS_APP.ordinal());
     }
 
 }

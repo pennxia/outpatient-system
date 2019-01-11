@@ -2,11 +2,14 @@ package cn.nobitastudio.oss.controller;
 
 import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.ServiceResult;
+import cn.nobitastudio.oss.entity.Test;
 import cn.nobitastudio.oss.repo.DepartmentRepo;
 import cn.nobitastudio.oss.repo.DoctorRepo;
+import cn.nobitastudio.oss.repo.TestRepo;
 import cn.nobitastudio.oss.scheduler.job.CheckRemindJob;
 import cn.nobitastudio.oss.scheduler.job.EatDrugRemindJob;
 import cn.nobitastudio.oss.scheduler.job.RemindJob;
+import cn.nobitastudio.oss.service.inter.TestService;
 import cn.nobitastudio.oss.service.inter.VisitService;
 import cn.nobitastudio.oss.util.CommonUtil;
 import cn.nobitastudio.oss.util.DateUtil;
@@ -14,14 +17,13 @@ import cn.nobitastudio.oss.model.test.InitSchedulerJobVO;
 import cn.nobitastudio.oss.model.test.JobDetailVO;
 import cn.nobitastudio.oss.model.test.SimpleDepartmentVO;
 import cn.nobitastudio.oss.model.test.TriggerVO;
+import cn.nobitastudio.oss.util.SnowFlake;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.quartz.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -29,8 +31,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static cn.nobitastudio.oss.scheduler.job.RemindJob.*;
-import static cn.nobitastudio.oss.util.SmsSendUtil.ENROLL_SUCCESS;
+import static cn.nobitastudio.oss.util.SmsUtil.*;
 
 /**
  * @author chenxiong
@@ -50,8 +51,10 @@ public class TestController {
     private VisitService visitService;
     @Inject
     private DepartmentRepo departmentRepo;
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Inject
+    private TestRepo testRepo;
+    @Inject
+    private TestService testService;
 
     @ApiModelProperty("测试方法")
     @GetMapping
@@ -132,17 +135,17 @@ public class TestController {
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()) // 使用SimpleScheduleBuilder创建simpleSchedule) // 最多执行100次,此处需要注意，不包括第一次执行的
                 .build();
         JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put(MESSAGE_TYPE, ENROLL_SUCCESS);
+        jobDataMap.put(MESSAGE_TYPE, REGISTER_SUCCESS);
         jobDataMap.put(MOBILE, "15709932234");
         jobDataMap.put(HOSPITAL_NAME, "石河子大学医学院第一附属医院");
-        jobDataMap.put(DIAGNOSIS_NAME, UUID.randomUUID().toString().substring(10, 15));
+        jobDataMap.put(MEDICAL_CARD_OWNER, UUID.randomUUID().toString().substring(10, 15));
         jobDataMap.put(MEDICAL_CARD_ID, "325669");
         jobDataMap.put(DOCTOR_NAME, "谢萍");
-        jobDataMap.put(DEPARTMENT, "泌尿科");
-        jobDataMap.put(ENROLL_COST, "65.00元");
+        jobDataMap.put(DEPARTMENT_NAME, "泌尿科");
+        jobDataMap.put(REGISTER_COST, "65.00元");
         jobDataMap.put(DIAGNOSIS_TIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        jobDataMap.put(DEPARTMENT_ADDRESS, "A区301(3楼)");
-        jobDataMap.put(DIAGNOSIS_ORDER, "15");
+        jobDataMap.put(DIAGNOSIS_ROOM, "A区301(3楼)");
+        jobDataMap.put(DIAGNOSIS_NO, "15");
         JobDetail jobDetail = JobBuilder.newJob(RemindJob.class)
                 .usingJobData(jobDataMap)
                 .build();
@@ -173,17 +176,17 @@ public class TestController {
      */
     public JobDetail newJobDetailInstance(JobDetailVO jobDetailVO) {
         JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put(MESSAGE_TYPE, ENROLL_SUCCESS);
+        jobDataMap.put(MESSAGE_TYPE, REGISTER_SUCCESS);
         jobDataMap.put(MOBILE, jobDetailVO.getMobile());
         jobDataMap.put(HOSPITAL_NAME, jobDetailVO.getHospitalName());
-        jobDataMap.put(DIAGNOSIS_NAME, jobDetailVO.getDiagnosisName());
+        jobDataMap.put(MEDICAL_CARD_OWNER, jobDetailVO.getDiagnosisName());
         jobDataMap.put(MEDICAL_CARD_ID, jobDetailVO.getMedicalCardId());
         jobDataMap.put(DOCTOR_NAME, jobDetailVO.getDoctorName());
-        jobDataMap.put(DEPARTMENT, jobDetailVO.getDepartment());
-        jobDataMap.put(ENROLL_COST, jobDetailVO.getEnrollCost());
+        jobDataMap.put(DEPARTMENT_NAME, jobDetailVO.getDepartment());
+        jobDataMap.put(REGISTER_COST, jobDetailVO.getEnrollCost());
         jobDataMap.put(DIAGNOSIS_TIME, jobDetailVO.getDiagnosisTime());
-        jobDataMap.put(DEPARTMENT_ADDRESS, jobDetailVO.getDepartmentAddress());
-        jobDataMap.put(DIAGNOSIS_ORDER, jobDetailVO.getDiagnosisOrder());
+        jobDataMap.put(DIAGNOSIS_ROOM, jobDetailVO.getDepartmentAddress());
+        jobDataMap.put(DIAGNOSIS_NO, jobDetailVO.getDiagnosisOrder());
         JobDetail detail = JobBuilder.newJob(RemindJob.class)
                 .usingJobData(jobDataMap)
                 .build();
@@ -210,20 +213,37 @@ public class TestController {
     public ServiceResult<List<SimpleDepartmentVO>> get(@PathVariable(name = "id") Integer id) throws Exception {
         List<Object[]> objects = departmentRepo.findSimpleDepartments(id);
         try {
-            List<SimpleDepartmentVO> simpleDepartmentVOS = CommonUtil.castEntity(objects, SimpleDepartmentVO.class,String.class);
+            List<SimpleDepartmentVO> simpleDepartmentVOS = CommonUtil.castEntity(objects, SimpleDepartmentVO.class, String.class);
             return ServiceResult.success(simpleDepartmentVOS);
         } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());
         }
     }
 
-    @ApiModelProperty("测试并发")
-    @GetMapping("/concurrent")
-    public ServiceResult testConcurrent() {
-
-        return null;
+    @ApiOperation("测试并发获取id")
+    @GetMapping("/concurrent-id")
+    public void testConcurrent() throws InterruptedException {
+        for (int i = 0; i < 10000; i++) {
+            new Thread(() -> {
+                Long id = SnowFlake.getUniqueId();
+                testRepo.save(new Test(id.toString()));
+            }).start();
+        }
+        while (true) {
+            System.out.println("总数是：" + testRepo.countAll());
+            Thread.sleep(2000);
+        }
     }
 
+    @ApiOperation("测试并发调度接口")
+    @GetMapping("/concurrent-inter")
+    public void testConcurrentInter() throws InterruptedException {
+        for (int i = 0; i < 10000; i++) {
+            new Thread(() -> {
+                testService.test();
+            }).start();
+        }
+    }
 
 
 }

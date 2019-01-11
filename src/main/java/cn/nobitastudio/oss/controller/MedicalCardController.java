@@ -56,9 +56,20 @@ public class MedicalCardController {
         }
     }
 
-    @ApiOperation("保存或更新诊疗卡信息")
+    @ApiOperation("保存诊疗卡信息")
     @PostMapping
     public ServiceResult<MedicalCard> save(@RequestBody MedicalCard medicalCard) {
         return ServiceResult.success(medicalCardService.save(medicalCard));
     }
+
+    @ApiOperation("更新诊疗卡信息")
+    @PutMapping
+    public ServiceResult<MedicalCard> modify(@RequestBody MedicalCard medicalCard) {
+        try {
+            return ServiceResult.success(medicalCardService.modify(medicalCard));
+        } catch (AppException e) {
+            return ServiceResult.failure(e.getMessage());
+        }
+    }
+
 }

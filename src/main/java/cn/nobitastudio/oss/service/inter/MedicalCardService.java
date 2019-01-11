@@ -40,5 +40,10 @@ public interface MedicalCardService {
      */
     MedicalCard save(MedicalCard medicalCard);
 
-
+    /**
+     * 更改诊疗卡信息
+     * @param medicalCard
+     * @return
+     */
+    MedicalCard modify(MedicalCard medicalCard);
 }

@@ -15,9 +15,9 @@ import java.util.Optional;
  */
 public interface BindRepo extends CrudRepository<Bind, Integer>, JpaSpecificationExecutor {
 
-    Integer countAllByMobile(String mobile);
+    Integer countAllByUserId(Integer userId);
 
     Integer countAllByMedicalCardId(String medicalCardId);
 
-    Optional<Bind> findByMobileAndMedicalCardId(String mobile, String medicalCardId);
+    Optional<Bind> findByUserIdAndMedicalCardId(Integer userId, String medicalCardId);
 }

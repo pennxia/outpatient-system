@@ -3,6 +3,7 @@ package cn.nobitastudio.oss.service.inter;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.RegistrationRecord;
 import cn.nobitastudio.oss.model.dto.RegisterDTO;
+import org.quartz.SchedulerException;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,5 +54,5 @@ public interface RegistrationRecordService {
      * @return
      */
     @Transactional
-    RegistrationRecord register(RegisterDTO registerDTO);
+    RegistrationRecord register(RegisterDTO registerDTO) throws SchedulerException;
 }

@@ -15,5 +15,7 @@ public enum OrderState {
     @ApiModelProperty("等待支付")
     WAITING_PAY,
     @ApiModelProperty("取消支付")
-    CANCEL_PAY
+    CANCEL_PAY,
+    @ApiModelProperty("自动取消")
+    AUTO_CANCEL_PAY
 }

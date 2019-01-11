@@ -59,4 +59,9 @@ public class Visit implements Serializable {
     @Column(name = "left_amount")
     @Equal
     private Integer leftAmount;
+
+    @ApiModelProperty("对应的诊室id")
+    @Column(name = "diagnosis_room_id")
+    @Equal
+    private Integer diagnosisRoomId;
 }

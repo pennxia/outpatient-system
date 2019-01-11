@@ -1,4 +1,4 @@
-package cn.nobitastudio.oss.model;
+package cn.nobitastudio.oss.model.vo;
 
 import cn.nobitastudio.common.criteria.Equal;
 import cn.nobitastudio.common.criteria.Like;

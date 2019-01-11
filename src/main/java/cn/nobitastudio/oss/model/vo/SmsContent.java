@@ -1,4 +1,4 @@
-package cn.nobitastudio.oss.model;
+package cn.nobitastudio.oss.model.vo;
 
 /**
  * @author chenxiong

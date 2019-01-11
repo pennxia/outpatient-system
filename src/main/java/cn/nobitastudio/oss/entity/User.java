@@ -2,7 +2,7 @@ package cn.nobitastudio.oss.entity;
 
 import cn.nobitastudio.common.criteria.Equal;
 import cn.nobitastudio.common.criteria.Like;
-import cn.nobitastudio.oss.model.UserCreateVO;
+import cn.nobitastudio.oss.model.vo.UserCreateVO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

@@ -4,8 +4,11 @@ import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.criteria.SpecificationBuilder;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.MedicalCard;
+import cn.nobitastudio.oss.model.enumeration.Channel;
+import cn.nobitastudio.oss.model.enumeration.ItemType;
 import cn.nobitastudio.oss.repo.MedicalCardRepo;
 import cn.nobitastudio.oss.service.inter.MedicalCardService;
+import cn.nobitastudio.oss.util.SnowFlake;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
@@ -72,14 +75,15 @@ public class MedicalCardServiceImpl implements MedicalCardService {
      */
     @Override
     public MedicalCard save(MedicalCard medicalCard) {
-        Optional<MedicalCard> optionalMedicalCard = medicalCardRepo.findById(medicalCard.getId());
-        if (optionalMedicalCard.isPresent()) {
-            // 更新
-            return medicalCardRepo.save(optionalMedicalCard.get().update(medicalCard));
-        } else {
-            // 新增
-            return medicalCardRepo.save(medicalCard);
-        }
+        medicalCard.init();
+        return medicalCardRepo.save(medicalCard);
+    }
+
+    @Override
+    public MedicalCard modify(MedicalCard medicalCard) {
+        MedicalCard oldMedicalCard = medicalCardRepo.findById(medicalCard.getId()).orElseThrow(() -> new AppException("未查询到指定诊疗卡"));
+        oldMedicalCard.update(medicalCard);
+        return medicalCardRepo.save(oldMedicalCard);
     }
 
 }

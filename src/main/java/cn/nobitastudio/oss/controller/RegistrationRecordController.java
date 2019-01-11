@@ -8,6 +8,7 @@ import cn.nobitastudio.oss.entity.RegistrationRecord;
 import cn.nobitastudio.oss.model.dto.RegisterDTO;
 import cn.nobitastudio.oss.service.inter.RegistrationRecordService;
 import io.swagger.annotations.ApiOperation;
+import org.quartz.SchedulerException;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,6 +71,10 @@ public class RegistrationRecordController {
             return ServiceResult.success(registrationRecordService.register(registerDTO));
         } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());
+        } catch (SchedulerException e){
+            return ServiceResult.failure("调度异常:" + e.getMessage());
+        } catch (Exception e) {
+            return ServiceResult.failure("未知异常:" + e.getMessage());
         }
     }
 

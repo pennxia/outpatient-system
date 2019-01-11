@@ -76,6 +76,7 @@ public class BindServiceImpl implements BindService {
      */
     @Override
     public Bind save(Bind bind) {
+        bind.init();
         return bindRepo.save(bind);
     }
 
@@ -88,7 +89,7 @@ public class BindServiceImpl implements BindService {
     @Transactional
     @Override
     public Bind bind(Bind bind) {
-        if (bindRepo.findByMobileAndMedicalCardId(bind.getMobile(),bind.getMedicalCardId()).isPresent()){
+        if (bindRepo.findByUserIdAndMedicalCardId(bind.getUserId(),bind.getMedicalCardId()).isPresent()){
             throw new AppException("您已绑定该诊疗卡");
         }
         Integer medicalCardBindCount = bindRepo.countAllByMedicalCardId(bind.getMedicalCardId());
@@ -96,7 +97,7 @@ public class BindServiceImpl implements BindService {
             // 诊疗卡绑定数已上限
             throw new AppException("绑定失败,该诊疗卡绑定数已上限");
         }
-        Integer mobileBindCount = bindRepo.countAllByMobile(bind.getMobile());
+        Integer mobileBindCount = bindRepo.countAllByUserId(bind.getUserId());
         if (medicalCardBindCount.equals(maxBindCount)) {
             // 号码绑定数已上限
             throw new AppException("绑定失败,该号码绑定数已上限");
@@ -112,7 +113,7 @@ public class BindServiceImpl implements BindService {
      */
     @Override
     public String unbind(Bind bind) {
-        bindRepo.delete(bindRepo.findByMobileAndMedicalCardId(bind.getMobile(),bind.getMedicalCardId()).orElseThrow(() -> new AppException("未查找到指定绑定关系")));
+        bindRepo.delete(bindRepo.findByUserIdAndMedicalCardId(bind.getUserId(),bind.getMedicalCardId()).orElseThrow(() -> new AppException("未查找到指定绑定关系")));
         return UNBIND_SUCCESS;
     }
 }

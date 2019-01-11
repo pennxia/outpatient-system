@@ -1,11 +1,13 @@
 package cn.nobitastudio.oss.entity;
 
 import cn.nobitastudio.common.criteria.Equal;
+import cn.nobitastudio.oss.model.enumeration.Channel;
+import cn.nobitastudio.oss.util.CommonUtil;
+import cn.nobitastudio.oss.util.DateUtil;
+import cn.nobitastudio.oss.util.SnowFlake;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,17 +20,27 @@ import java.time.LocalDateTime;
  * @author chenxiong
  * @email nobita0522@qq.com
  * @date 2019/01/06 15:07
- * @description
- * 生成策略：下单渠道1位 + 业务类型1位 + 时间信息4位 + 下单时间的Unix时间戳后8位（加上随机码随机后的数字）+ 用户user id后4位
+ * @description id 生成策略,通过雪花算法生成唯一id,配合挂号渠道作为 数据中心
  */
 @Data
 @Entity
 @Table(name = "registration_record")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegistrationRecord implements Serializable {
 
     private static final long serialVersionUID = -7653921447104816273L;
+
+    public RegistrationRecord(Channel channel, Integer userId, Integer visitId, String medicalCardId, Integer diagnosisNo) {
+        this.id = SnowFlake.getUniqueId(channel.ordinal() + 1).toString(); // 生成挂号单号时,dataCenterId默认从id开始
+        this.userId = userId;
+        this.visitId = visitId;
+        this.medicalCardId = medicalCardId;
+        this.diagnosisNo = diagnosisNo;
+        createTime = LocalDateTime.now();
+    }
 
     @ApiModelProperty("挂号记录id,挂号单号")
     @Column(name = "id")

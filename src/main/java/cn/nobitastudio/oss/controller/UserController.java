@@ -6,8 +6,8 @@ import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.property.SecurityProperties;
 import cn.nobitastudio.oss.service.inter.UserService;
-import cn.nobitastudio.oss.model.UserCreateVO;
-import cn.nobitastudio.oss.model.UserQueryVO;
+import cn.nobitastudio.oss.model.vo.UserCreateVO;
+import cn.nobitastudio.oss.model.vo.UserQueryVO;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageImpl;
@@ -104,7 +104,7 @@ public class UserController {
     }
 
     @ApiOperation("用户注册,或者新增用户")
-    @PostMapping("/register")
+    @PostMapping("/enroll")
     public ServiceResult<User> register(@RequestBody UserCreateVO userCreateVO) {
         try {
             return ServiceResult.success(userService.add(userCreateVO));

@@ -19,8 +19,6 @@ public class DiagnosisRemindJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobDetail jobDetail = jobExecutionContext.getJobDetail();
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
-        LOGGER.info(this.getClass().getName() + "---" + LocalDateTime.now());
-        LOGGER.info(jobDataMap.getString("mobile"));
         sendSms(jobDataMap.getString("mobile"));
     }
 

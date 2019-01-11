@@ -2,12 +2,13 @@ package cn.nobitastudio.oss.entity;
 
 import cn.nobitastudio.common.criteria.Equal;
 import cn.nobitastudio.common.criteria.Like;
+import cn.nobitastudio.oss.model.enumeration.Channel;
+import cn.nobitastudio.oss.model.enumeration.ItemType;
 import cn.nobitastudio.oss.model.enumeration.Sex;
+import cn.nobitastudio.oss.util.SnowFlake;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,6 +25,8 @@ import java.time.LocalDateTime;
 @Table(name = "medical_card")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class MedicalCard implements Serializable {
 
     private static final long serialVersionUID = -914979755295639051L;
@@ -87,6 +90,14 @@ public class MedicalCard implements Serializable {
             this.ownerMobile = medicalCard.getOwnerMobile();
         }
         return this;
+    }
+
+    /**
+     * 创建诊疗卡时,对这诊疗卡进行初始化
+     */
+    public void init() {
+        this.setId(SnowFlake.getUniqueId(ItemType.MEDICAL_CARD.ordinal() + 1 + Channel.values().length).toString());
+        this.createTime = LocalDateTime.now();
     }
 
 }

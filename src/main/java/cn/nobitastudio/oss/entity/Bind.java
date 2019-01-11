@@ -34,9 +34,9 @@ public class Bind implements Serializable {
     private Integer id;
 
     @ApiModelProperty("绑定用户的手机号")
-    @Column(name = "mobile")
+    @Column(name = "user_id")
     @Equal
-    private String mobile;
+    private Integer userId;
 
     @ApiModelProperty("绑定的诊疗卡卡号")
     @Column(name = "medical_card_id")
@@ -48,4 +48,11 @@ public class Bind implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Equal
     private LocalDateTime createTime;
+
+    /**
+     * 创建时进行初始化
+     */
+    public void init(){
+        this.createTime = LocalDateTime.now();
+    }
 }
