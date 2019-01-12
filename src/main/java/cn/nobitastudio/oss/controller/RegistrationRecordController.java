@@ -5,10 +5,11 @@ import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.common.criteria.CriteriaException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.RegistrationRecord;
+import cn.nobitastudio.oss.model.dto.ConfirmRegisterDTO;
 import cn.nobitastudio.oss.model.dto.RegisterDTO;
+import cn.nobitastudio.oss.model.vo.ConfirmOrCancelRegisterVO;
 import cn.nobitastudio.oss.service.inter.RegistrationRecordService;
 import io.swagger.annotations.ApiOperation;
-import org.quartz.SchedulerException;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,17 +65,37 @@ public class RegistrationRecordController {
         return ServiceResult.success(registrationRecordService.save(registrationRecord));
     }
 
-    @ApiOperation("用户进行挂号操作")
+    @ApiOperation("用户进行挂号操作,进入等待支付状态")
     @PostMapping("/register")
     public ServiceResult<RegistrationRecord> register(@RequestBody RegisterDTO registerDTO) {
         try {
             return ServiceResult.success(registrationRecordService.register(registerDTO));
         } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());
-        } catch (SchedulerException e){
-            return ServiceResult.failure("调度异常:" + e.getMessage());
         } catch (Exception e) {
             return ServiceResult.failure("未知异常:" + e.getMessage());
+        }
+    }
+
+    @ApiOperation("用户支付完成")
+    @PutMapping("/confirm")
+    public ServiceResult<ConfirmOrCancelRegisterVO> confirmRegister(@RequestBody ConfirmRegisterDTO confirmRegisterDTO) {
+        try {
+            return ServiceResult.success(registrationRecordService.confirmRegister(confirmRegisterDTO));
+        } catch (AppException e) {
+            return ServiceResult.failure(e.getMessage());
+        } catch (Exception e) {
+            return ServiceResult.failure("未知异常:" + e.getMessage());
+        }
+    }
+
+    @ApiOperation("用户取消预约挂号")
+    @GetMapping("/{id}/cancel")
+    public ServiceResult<ConfirmOrCancelRegisterVO> cancelRegister(@PathVariable(name = "id") String id) {
+        try {
+            return ServiceResult.success(registrationRecordService.cancelRegister(id));
+        } catch (AppException e) {
+            return ServiceResult.failure(e.getMessage());
         }
     }
 

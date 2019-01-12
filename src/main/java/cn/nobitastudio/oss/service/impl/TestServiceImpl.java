@@ -1,10 +1,13 @@
 package cn.nobitastudio.oss.service.impl;
 
+import cn.nobitastudio.oss.model.enumeration.SmsMessageType;
 import cn.nobitastudio.oss.service.inter.TestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.inject.Inject;
 
 /**
  * @author chenxiong
@@ -25,4 +28,11 @@ public class TestServiceImpl implements TestService {
         logger.info(count + "");
         count++;
     }
+
+    @Override
+    public String testConf() {
+        return null;
+    }
+
+
 }

@@ -9,11 +9,14 @@ import io.swagger.annotations.ApiModelProperty;
  * @description
  */
 public enum PaymentChannel {
-
-    @ApiModelProperty("支付宝支付")
-    ALI_PAY,
     @ApiModelProperty("微信支付")
     WECHAT_PAY,
+    @ApiModelProperty("阿里支付")
+    ALI_PAY,
     @ApiModelProperty("银联支付")
-    UNIONPAY_PAY
+    UNION_PAY,
+    @ApiModelProperty("医院现金支付")
+    HOSPITAL_MONEY,
+    @ApiModelProperty("医院诊疗卡支付")
+    HOSPITAL_MEDICAL_CAR
 }

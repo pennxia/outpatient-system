@@ -78,9 +78,7 @@ public class SchedulerConfig implements ApplicationListener<ContextRefreshedEven
      */
     @Bean
     public Scheduler scheduler() throws IOException {
-        if (scheduler == null) {
-            scheduler = schedulerFactoryBean().getScheduler();
-        }
+        scheduler = schedulerFactoryBean().getScheduler();
         return scheduler;
     }
 

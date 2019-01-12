@@ -2,9 +2,7 @@ package cn.nobitastudio.oss.entity;
 
 import cn.nobitastudio.common.criteria.Equal;
 import cn.nobitastudio.oss.model.enumeration.Channel;
-import cn.nobitastudio.oss.util.CommonUtil;
-import cn.nobitastudio.oss.util.DateUtil;
-import cn.nobitastudio.oss.util.SnowFlake;
+import cn.nobitastudio.oss.util.SnowFlakeUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -34,7 +32,7 @@ public class RegistrationRecord implements Serializable {
     private static final long serialVersionUID = -7653921447104816273L;
 
     public RegistrationRecord(Channel channel, Integer userId, Integer visitId, String medicalCardId, Integer diagnosisNo) {
-        this.id = SnowFlake.getUniqueId(channel.ordinal() + 1).toString(); // 生成挂号单号时,dataCenterId默认从id开始
+        this.id = SnowFlakeUtil.getUniqueId(channel.ordinal() + 1).toString(); // 生成挂号单号时,dataCenterId默认从id开始
         this.userId = userId;
         this.visitId = visitId;
         this.medicalCardId = medicalCardId;

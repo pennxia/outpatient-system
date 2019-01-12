@@ -1,14 +1,11 @@
 package cn.nobitastudio.oss.entity;
 
 import cn.nobitastudio.common.criteria.Equal;
-import cn.nobitastudio.common.criteria.Like;
 import cn.nobitastudio.oss.model.enumeration.Channel;
 import cn.nobitastudio.oss.model.enumeration.ItemType;
 import cn.nobitastudio.oss.model.enumeration.OrderState;
 import cn.nobitastudio.oss.model.enumeration.PaymentChannel;
-import cn.nobitastudio.oss.util.CommonUtil;
-import cn.nobitastudio.oss.util.DateUtil;
-import cn.nobitastudio.oss.util.SnowFlake;
+import cn.nobitastudio.oss.util.SnowFlakeUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -37,7 +34,7 @@ public class OSSOrder implements Serializable {
     private static final long serialVersionUID = -8428754043223464384L;
 
     public OSSOrder(ItemType itemType, Integer userId, String medicalCardId) {
-        this.id =  SnowFlake.getUniqueId(itemType.ordinal() + 1 + Channel.values().length).toString(); // 生成挂号单号时,dataCenterId默认从id开始;
+        this.id =  SnowFlakeUtil.getUniqueId(itemType.ordinal() + 1 + Channel.values().length).toString(); // 生成挂号单号时,dataCenterId默认从id开始;
         this.userId = userId;
         this.medicalCardId = medicalCardId;
         this.name = itemType;

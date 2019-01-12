@@ -20,14 +20,14 @@ import java.util.Map;
 @Component
 public class SmsUtil {
     static Logger logger = LoggerFactory.getLogger(SmsUtil.class);
-    private static final int appid = 1400107331;
+    private static final int APP_ID = 1400107331;
 
-    private static final String appkey = "0e0b67106450077ff4a8cb3b0cf8a876";
+    private static final String APP_KEY = "0e0b67106450077ff4a8cb3b0cf8a876";
 
-    private static final String smsSign = "大雄咩咩";
+    private static final String SMS_SIGN = "大雄咩咩";
 
-    //0.注册账号 1.找回密码 2.修改密码 3.办理诊疗卡 4.绑定诊疗卡 5.挂号成功 6.取消预约挂号 7.就诊提醒 8.检查提醒 9.吃药提醒
-    private static final int[] templateId = {147950, 147954, 147957, 156224, 156422, 260272, 260277, 260291, 264717, 260316};
+    //0.注册账号 1.找回密码 2.修改密码 3.办理诊疗卡 4.绑定诊疗卡 5.挂号支付成功 6.取消预约挂号 7.就诊提醒 8.检查提醒 9.吃药提醒 10.挂号成功等待支付
+    private static final int[] TEMPLATE_ID = {147950, 147954, 147957, 156224, 156422, 265364, 265454, 260291, 264717, 260316, 265368};
 
     public static final String MESSAGE_TYPE = "messageType";
     public static final int ENROLL = 0;// 注册账号
@@ -35,17 +35,19 @@ public class SmsUtil {
     public static final int UPDATE_PASSWORD = 2;//修改密码
     public static final int CREATE_MEDICAL_CARD = 3;//办理诊疗卡
     public static final int BIND_MEDICAL_CARD = 4;//绑定诊疗卡
-    public static final int REGISTER_SUCCESS = 5;//挂号成功
+    public static final int REGISTER_SUCCESS_HAVE_PAY = 5;//挂号支付成功
     public static final int CANCEL_REGISTER = 6;//取消预约挂号
     public static final int DIAGNOSIS_REMIND = 7;//就诊提醒
     public static final int CHECK_REMIND = 8;//检查提醒
     public static final int EAT_DRUG_REMIND = 9;//吃药提醒
+    public static final int REGISTER_SUCCESS_WAITING_PAY = 10; // 挂号成功等待支付
 
     public static final String MOBILE = "mobile";
     public static final String HOSPITAL_NAME = "hospitalName";
     public static final String MEDICAL_CARD_ID = "medicalCardId";
     public static final String DOCTOR_NAME = "doctor";
     public static final String DEPARTMENT_NAME = "medicalCardName";
+    public static final String REGISTRATON_RECORD_ID = "registrationRecordId";
     public static final String REGISTER_COST = "registerCost";
     public static final String DIAGNOSIS_TIME = "diagnosisTime";
     public static final String DIAGNOSIS_ROOM = "departmentAddress";
@@ -59,7 +61,7 @@ public class SmsUtil {
 
     public static final String DEFAULT_HOSPITAL_NAME = "石河子大学医学院第一附属医院";
 
-    private static SmsSingleSender smsSender = new SmsSingleSender(appid, appkey);
+    private static SmsSingleSender smsSender = new SmsSingleSender(APP_ID, APP_KEY);
 
     /**
      * 发送短信给指定用户
@@ -72,7 +74,7 @@ public class SmsUtil {
         SmsSingleSenderResult result;  // 签名参数未提供或者为空时，会使用默认签名发送短信
         SmsSendResult smsSendResult = new SmsSendResult();
         try {
-            result = smsSender.sendWithParam("86", mobile, templateId[messageType], params, smsSign, "", "");
+            result = smsSender.sendWithParam("86", mobile, TEMPLATE_ID[messageType], params, SMS_SIGN, "", "");
             if (result.result == 0) {
                 //send success
                 smsSendResult.setResult(true);
@@ -106,9 +108,12 @@ public class SmsUtil {
                 params.add(paramsMap.get(MEDICAL_CARD_OWNER));
                 break;
             case CANCEL_REGISTER:
-                params.add(paramsMap.get(ORDER_ID));
+                params.add(paramsMap.get(REGISTRATON_RECORD_ID));
+                params.add(ORDER_ID);
+                params.add(paramsMap.getOrDefault(HOSPITAL_NAME, DEFAULT_HOSPITAL_NAME));
                 break;
-            case REGISTER_SUCCESS:
+            case REGISTER_SUCCESS_WAITING_PAY:
+            case REGISTER_SUCCESS_HAVE_PAY:
             case DIAGNOSIS_REMIND:
                 params.add(paramsMap.getOrDefault(HOSPITAL_NAME, DEFAULT_HOSPITAL_NAME));
                 params.add(paramsMap.get(MEDICAL_CARD_OWNER));
@@ -139,7 +144,7 @@ public class SmsUtil {
     }
 
     /**
-     * 初始化挂号成功短信参数
+     * 初始化挂号成功以及就诊未来提醒的短信参数
      *
      * @param user
      * @param medicalCard
@@ -149,10 +154,16 @@ public class SmsUtil {
      * @param diagnosisNo
      * @return
      */
-    public static Map<String, String> initRegisterSuccessOrDiagnosisRemindSms(User user, MedicalCard medicalCard, Doctor doctor, Department department, Visit visit, DiagnosisRoom diagnosisRoom, Integer diagnosisNo) {
+    public static Map<String, String> initRegisterSuccessOrDiagnosisRemindSms(User user, MedicalCard medicalCard, Doctor doctor, Department department, Visit visit, DiagnosisRoom diagnosisRoom, Integer diagnosisNo, Integer messageType) {
         Map<String, String> params = new HashMap<>();
-        params.put(MOBILE,user.getMobile());
-        params.put(MESSAGE_TYPE,String.valueOf(REGISTER_SUCCESS));
+        if (messageType.equals(REGISTER_SUCCESS_HAVE_PAY) || messageType.equals(REGISTER_SUCCESS_WAITING_PAY)) {
+            params.put(MOBILE, user.getMobile());  //  给挂号者发送挂号成功短信
+        } else if (messageType.equals(DIAGNOSIS_REMIND)) {
+            params.put(MOBILE, medicalCard.getOwnerMobile());   // 给就诊者发送及时就诊短信
+        } else {
+            throw new AppException("不支持此类短信参数的初始化");
+        }
+        params.put(MESSAGE_TYPE, String.valueOf(messageType));
         params.put(MEDICAL_CARD_OWNER, medicalCard.getOwnerName());
         params.put(MEDICAL_CARD_ID, medicalCard.getId());
         params.put(DOCTOR_NAME, doctor.getName());
@@ -165,11 +176,19 @@ public class SmsUtil {
         return params;
     }
 
-    public static Map<String,String> castJobDataMapToMap(JobDataMap jobDataMap) {
-        Map<String,String> params = new HashMap<>();
-        jobDataMap.forEach((key,value) -> {
-            params.put(key, (String) value);
-        });
+    public static Map<String, String> initCancelRegisterSms(User user, RegistrationRecord registrationRecord, OSSOrder ossOrder) {
+        Map<String, String> params = new HashMap<>();
+        params.put(MOBILE, user.getMobile());
+        params.put(MESSAGE_TYPE, String.valueOf(CANCEL_REGISTER));
+        params.put(REGISTRATON_RECORD_ID, registrationRecord.getId());
+        params.put(ORDER_ID, ossOrder.getId());
+        return params;
+    }
+
+
+    public static Map<String, String> castJobDataMapToMap(JobDataMap jobDataMap) {
+        Map<String, String> params = new HashMap<>();
+        jobDataMap.forEach((key, value) -> params.put(key, (String) value));
         return params;
     }
 

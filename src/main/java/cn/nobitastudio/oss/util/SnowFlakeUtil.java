@@ -3,14 +3,8 @@ package cn.nobitastudio.oss.util;
 import cn.nobitastudio.common.AppException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author chenxiong
@@ -18,7 +12,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @date 2019/01/10 21:37
  * @description 雪花算法实现, 采用单例模式, 高并发下, 多个该实例对象, 可能产生相同的id, 保证全局只有一个对象即可
  */
-public class SnowFlake {
+public class SnowFlakeUtil {
 
     /**
      * 起始的时间戳
@@ -54,13 +48,13 @@ public class SnowFlake {
     private static final long DEFAULT_MACHINE_ID = 5;  // 分布式中,默认该台服务器服务的机器id是5
     private static final long DEFAULT_DATA_CENTER_ID = 5;  // 分布式中,默认该台服务器服务的数据中心id（业务id）是 5
 
-    private static SnowFlake snowFlake = new SnowFlake();  //  默认实例
+    private static SnowFlakeUtil snowFlake = new SnowFlakeUtil();  //  默认实例
 
-    private SnowFlake() {
+    private SnowFlakeUtil() {
         this(DEFAULT_DATA_CENTER_ID, DEFAULT_MACHINE_ID);
     }
 
-    private SnowFlake(long dateCenterId, long machineId) {
+    private SnowFlakeUtil(long dateCenterId, long machineId) {
         if (dateCenterId > MAX_DATA_CENTER_NUM || dateCenterId < 0) {
             throw new IllegalArgumentException("dateCenterId can't be greater than MAX_DATA_CENTER_NUM or less than 0");
         }

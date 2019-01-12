@@ -4,16 +4,12 @@ import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.criteria.SpecificationBuilder;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.MedicalCard;
-import cn.nobitastudio.oss.model.enumeration.Channel;
-import cn.nobitastudio.oss.model.enumeration.ItemType;
 import cn.nobitastudio.oss.repo.MedicalCardRepo;
 import cn.nobitastudio.oss.service.inter.MedicalCardService;
-import cn.nobitastudio.oss.util.SnowFlake;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.Optional;
 
 /**
  * @author chenxiong

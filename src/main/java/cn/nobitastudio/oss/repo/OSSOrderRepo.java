@@ -13,7 +13,7 @@ import java.util.Optional;
  * @date 2019/01/02 16:01
  * @description
  */
-public interface OSSOrderRepo extends CrudRepository<OSSOrder,Integer>,JpaSpecificationExecutor {
+public interface OSSOrderRepo extends CrudRepository<OSSOrder,String>,JpaSpecificationExecutor {
 
     @Query(value = "select o.* from registration_record r,contain c,oss_order o" +
             " where r.id = ?1 and r.id = c.item_id and c.item_type = 'REGISTRATION_RECORD' and c.order_id = o.id",nativeQuery = true)

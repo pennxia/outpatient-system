@@ -3,6 +3,7 @@ package cn.nobitastudio.oss.entity;
 import cn.nobitastudio.common.criteria.Equal;
 import cn.nobitastudio.common.criteria.Like;
 import cn.nobitastudio.oss.model.enumeration.HealthArticleType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.Getter;
@@ -52,6 +53,7 @@ public class HealthArticle implements Serializable {
 
     @ApiModelProperty("发布日期")
     @Column(name = "publish_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Equal
     private LocalDateTime publishTime;
 

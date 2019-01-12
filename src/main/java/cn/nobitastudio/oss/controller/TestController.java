@@ -5,6 +5,7 @@ import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.oss.entity.Test;
 import cn.nobitastudio.oss.repo.DepartmentRepo;
 import cn.nobitastudio.oss.repo.DoctorRepo;
+import cn.nobitastudio.oss.repo.OSSOrderRepo;
 import cn.nobitastudio.oss.repo.TestRepo;
 import cn.nobitastudio.oss.scheduler.job.CheckRemindJob;
 import cn.nobitastudio.oss.scheduler.job.EatDrugRemindJob;
@@ -17,7 +18,7 @@ import cn.nobitastudio.oss.model.test.InitSchedulerJobVO;
 import cn.nobitastudio.oss.model.test.JobDetailVO;
 import cn.nobitastudio.oss.model.test.SimpleDepartmentVO;
 import cn.nobitastudio.oss.model.test.TriggerVO;
-import cn.nobitastudio.oss.util.SnowFlake;
+import cn.nobitastudio.oss.util.SnowFlakeUtil;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.quartz.*;
@@ -55,6 +56,8 @@ public class TestController {
     private TestRepo testRepo;
     @Inject
     private TestService testService;
+    @Inject
+    private OSSOrderRepo ossOrderRepo;
 
     @ApiModelProperty("测试方法")
     @GetMapping
@@ -135,7 +138,7 @@ public class TestController {
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()) // 使用SimpleScheduleBuilder创建simpleSchedule) // 最多执行100次,此处需要注意，不包括第一次执行的
                 .build();
         JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put(MESSAGE_TYPE, REGISTER_SUCCESS);
+        jobDataMap.put(MESSAGE_TYPE, REGISTER_SUCCESS_HAVE_PAY);
         jobDataMap.put(MOBILE, "15709932234");
         jobDataMap.put(HOSPITAL_NAME, "石河子大学医学院第一附属医院");
         jobDataMap.put(MEDICAL_CARD_OWNER, UUID.randomUUID().toString().substring(10, 15));
@@ -176,7 +179,7 @@ public class TestController {
      */
     public JobDetail newJobDetailInstance(JobDetailVO jobDetailVO) {
         JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put(MESSAGE_TYPE, REGISTER_SUCCESS);
+        jobDataMap.put(MESSAGE_TYPE, REGISTER_SUCCESS_HAVE_PAY);
         jobDataMap.put(MOBILE, jobDetailVO.getMobile());
         jobDataMap.put(HOSPITAL_NAME, jobDetailVO.getHospitalName());
         jobDataMap.put(MEDICAL_CARD_OWNER, jobDetailVO.getDiagnosisName());
@@ -225,7 +228,7 @@ public class TestController {
     public void testConcurrent() throws InterruptedException {
         for (int i = 0; i < 10000; i++) {
             new Thread(() -> {
-                Long id = SnowFlake.getUniqueId();
+                Long id = SnowFlakeUtil.getUniqueId();
                 testRepo.save(new Test(id.toString()));
             }).start();
         }
@@ -245,5 +248,16 @@ public class TestController {
         }
     }
 
+    @ApiOperation("测试config")
+    @GetMapping("/configuration2")
+    public ServiceResult<String> testConf2() {
+        return ServiceResult.success(testService.testConf());
+    }
+
+    @ApiModelProperty("测试bean 获取")
+    @GetMapping("/bean")
+    public void testBean() {
+        System.out.println(ossOrderRepo);
+    }
 
 }

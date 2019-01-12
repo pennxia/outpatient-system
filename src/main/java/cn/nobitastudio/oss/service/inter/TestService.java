@@ -11,5 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface TestService {
 
     @Transactional
-    public void test() ;
+    void test() ;
+
+    String testConf();
 }

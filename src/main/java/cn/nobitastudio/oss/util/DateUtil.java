@@ -18,8 +18,8 @@ import java.util.List;
 public class DateUtil {
     static Logger logger = LoggerFactory.getLogger(DateUtil.class);
 
-    public static final String STANDARD_DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
-    public static final String DATE_FORMAT = "yyyyMMddhhmmss";
+    public static final String STANDARD_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT = "yyyyMMddHHmmss";
     public static final String SIMPLE_DATE_FORMAT = "yyyyMMdd";
 
     public static String convertDate(String dateStr, String sourceFormat, String targetFormat) {
@@ -27,7 +27,7 @@ public class DateUtil {
             return null;
         }
         if (StringUtils.isBlank(sourceFormat)) {
-            sourceFormat = "yyyy-MM-dd hh:mm:ss";
+            sourceFormat = STANDARD_DATE_FORMAT;
         }
         SimpleDateFormat sdf = new SimpleDateFormat(sourceFormat);
         try {
@@ -47,7 +47,7 @@ public class DateUtil {
 
     public static Date formatDate(String dateStr, String format) {
         if (StringUtils.isBlank(format)) {
-            format = "yyyy-MM-dd hh:mm:ss";
+            format = "yyyy-MM-dd HH:mm:ss";
         }
         try {
 
@@ -94,7 +94,7 @@ public class DateUtil {
     }
 
     /**
-     * 格式化 LocalDateTime 为String类型 "yyyy-MM-dd hh:mm:ss"，未传入时，返回调用时间
+     * 格式化 LocalDateTime 为String类型 "yyyy-MM-dd HH:mm:ss"，未传入时，返回调用时间
      * @param localDateTime
      * @return
      */
@@ -103,7 +103,7 @@ public class DateUtil {
     }
 
     /**
-     * 格式化 LocalDateTime 为String类型 "yyyyMMddhhmmss"，未传入时，返回调用时间
+     * 格式化 LocalDateTime 为String类型 "yyyyMMdd"，未传入时，返回调用时间
      * @param localDateTime
      * @return
      */
@@ -112,7 +112,7 @@ public class DateUtil {
     }
     
     /**
-     * 格式化 LocalDateTime 为String类型 "yyyy-MM-dd hh:mm:ss"，未传入时，返回调用时间
+     * 格式化 LocalDateTime 为String类型 "yyyy-MM-dd HH:mm:ss"，未传入时，返回调用时间
      * @return
      */
     public static String getCurrentDateTime() {

@@ -2,8 +2,10 @@ package cn.nobitastudio.oss.service.inter;
 
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.RegistrationRecord;
+import cn.nobitastudio.oss.model.dto.ConfirmRegisterDTO;
 import cn.nobitastudio.oss.model.dto.RegisterDTO;
-import org.quartz.SchedulerException;
+import cn.nobitastudio.oss.model.vo.ConfirmOrCancelRegisterVO;
+import cn.nobitastudio.oss.model.vo.StandardMessage;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,9 +52,25 @@ public interface RegistrationRecordService {
 
     /**
      * 用户进行挂号操作
+     *
      * @param registerDTO
      * @return
      */
     @Transactional
-    RegistrationRecord register(RegisterDTO registerDTO) throws SchedulerException;
+    RegistrationRecord register(RegisterDTO registerDTO);
+
+    /**
+     * 用户支付完成.确认还挂号单以及对应的订单.
+     *
+     * @param confirmRegisterDTO
+     * @return
+     */
+    ConfirmOrCancelRegisterVO confirmRegister(ConfirmRegisterDTO confirmRegisterDTO);
+
+    /**
+     * 用户取消预约该挂号单.
+     * @param id
+     * @return
+     */
+    ConfirmOrCancelRegisterVO cancelRegister(String id);
 }
