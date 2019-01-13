@@ -2,6 +2,7 @@ package cn.nobitastudio.oss.service.inter;
 
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.MedicalCard;
+import cn.nobitastudio.oss.model.dto.CreateMedicalCardDTO;
 import org.springframework.data.domain.PageImpl;
 
 /**
@@ -34,7 +35,7 @@ public interface MedicalCardService {
     String delete(String id);
 
     /**
-     * 新增或更新诊疗卡信息
+     * 新增或更新诊疗卡信息,不用于用户创建时调用
      * @param medicalCard 待新增或更新的诊疗卡信息
      * @return
      */
@@ -46,4 +47,4 @@ public interface MedicalCardService {
      * @return
      */
     MedicalCard modify(MedicalCard medicalCard);
-}
+ }

@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 @Setter
 public class User implements Serializable {
 
-	private static final long serialVersionUID = -2738521069482377465L;
+    private static final long serialVersionUID = -2738521069482377465L;
 
     public User() {
     }
@@ -43,10 +43,10 @@ public class User implements Serializable {
 
     @ApiModelProperty("用户Id")
     @Column(name = "id")
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Equal
-	private Integer id;
+    private Integer id;
 
     @ApiModelProperty("联系方式")
     @Column(name = "mobile")
@@ -78,4 +78,19 @@ public class User implements Serializable {
     @ApiModelProperty("用户是否启用(0:未启用,1:启用)")
     @Column(name = "id_card")
     private String idCard;
+
+    /**
+     * 用户更新
+     * @param user
+     * @return
+     */
+    public User update(User user) {
+        if (user.getName() != null) {
+            this.setName(user.getName());
+        }
+        if (user.getIdCard() != null) {
+            this.setIdCard(user.getIdCard());
+        }
+        return this;
+    }
 }

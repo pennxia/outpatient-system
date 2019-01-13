@@ -4,6 +4,7 @@ import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.User;
+import cn.nobitastudio.oss.model.dto.ModifyUserPasswordDTO;
 import cn.nobitastudio.oss.property.SecurityProperties;
 import cn.nobitastudio.oss.service.inter.UserService;
 import cn.nobitastudio.oss.model.vo.UserCreateVO;
@@ -67,13 +68,13 @@ public class UserController {
     @ApiOperation("用户登录请求")
     @GetMapping("/login")
     public ServiceResult<String> login(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        SavedRequest savedRequest = requestCache.getRequest(request,response);
+        SavedRequest savedRequest = requestCache.getRequest(request, response);
         if (savedRequest != null) {
             String targetUrl = savedRequest.getRedirectUrl();
             System.out.println("引发跳转的请求是：" + targetUrl);
-            if (StringUtils.endsWith(targetUrl,".html")) {
+            if (StringUtils.endsWith(targetUrl, ".html")) {
                 // 网页跳转
-                redirectStrategy.sendRedirect(request,response,securityProperties.getBrowser().getLoginPage());
+                redirectStrategy.sendRedirect(request, response, securityProperties.getBrowser().getLoginPage());
             }
         }
         return ServiceResult.failure("访问的服务需要身份认证,请引导用户到登录页");
@@ -118,5 +119,26 @@ public class UserController {
     public ServiceResult<Authentication> getAuthInfo() {
         return ServiceResult.success(SecurityContextHolder.getContext().getAuthentication());
     }
+
+    @ApiOperation("更改用户普通信息,不可更改密码,更改密码需要调用单独的接口")
+    @PostMapping("/modify")
+    public ServiceResult<User> modify(@RequestBody User user) {
+        try {
+            return ServiceResult.success(userService.modify(user));
+        } catch (AppException e) {
+            return ServiceResult.failure(e.getMessage());
+        }
+    }
+
+    @ApiOperation("用户更改密码")
+    @PostMapping("/modify-password")
+    public ServiceResult<User> modifyPassword(@RequestBody ModifyUserPasswordDTO modifyUserPasswordDTO) {
+        try {
+            return ServiceResult.success(userService.modifyPassword(modifyUserPasswordDTO));
+        } catch (AppException e) {
+            return ServiceResult.failure(e.getMessage());
+        }
+    }
+
 
 }

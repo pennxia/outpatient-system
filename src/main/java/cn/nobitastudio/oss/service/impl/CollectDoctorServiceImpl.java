@@ -7,6 +7,7 @@ import cn.nobitastudio.oss.entity.CollectDoctor;
 import cn.nobitastudio.oss.repo.CollectDoctorRepo;
 import cn.nobitastudio.oss.service.inter.CollectDoctorService;
 import org.springframework.data.domain.*;
+import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -17,6 +18,7 @@ import java.util.Optional;
  * @date 2019/01/04 17:47
  * @description
  */
+@Service
 public class CollectDoctorServiceImpl implements CollectDoctorService {
 
     private static final String DELETE_SUCCESS = "收藏关系删除成功";
@@ -98,6 +100,10 @@ public class CollectDoctorServiceImpl implements CollectDoctorService {
      */
     @Override
     public String unCollect(CollectDoctor collectDoctor) {
+        Optional<CollectDoctor> optionalCollectDoctor = collectDoctorRepo.findByUserIdAndDoctorId(collectDoctor.getUserId(),collectDoctor.getDoctorId());
+        if (!optionalCollectDoctor.isPresent()) {
+            throw new AppException("取消收藏失败,用户已取消收藏该医生");
+        }
         collectDoctorRepo.delete(collectDoctorRepo.findByUserIdAndDoctorId(collectDoctor.getUserId(),collectDoctor.getDoctorId()).orElseThrow(() -> new AppException("取消收藏失败,暂未收藏该医生")));
         return UN_COLLECT_SUCCESS;
     }

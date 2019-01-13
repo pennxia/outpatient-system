@@ -3,9 +3,7 @@ package cn.nobitastudio.oss.entity;
 import cn.nobitastudio.common.criteria.Equal;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,9 +20,17 @@ import java.time.LocalDateTime;
 @Table(name = "bind")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Bind implements Serializable {
 
     private static final long serialVersionUID = -9124180682454727169L;
+
+    public Bind(Integer userId, String medicalCardId) {
+        this.userId = userId;
+        this.medicalCardId = medicalCardId;
+        createTime = LocalDateTime.now();
+    }
 
     @ApiModelProperty("绑定物理id,无实力逻辑含义")
     @Column(name = "id")

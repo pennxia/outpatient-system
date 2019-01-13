@@ -5,6 +5,7 @@ import cn.nobitastudio.common.criteria.SpecificationBuilder;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.Role;
 import cn.nobitastudio.oss.entity.User;
+import cn.nobitastudio.oss.model.dto.ModifyUserPasswordDTO;
 import cn.nobitastudio.oss.repo.RoleRepo;
 import cn.nobitastudio.oss.repo.UserRepo;
 import cn.nobitastudio.oss.service.inter.UserService;
@@ -47,6 +48,31 @@ public class UserServiceImpl implements UserService{
     private PasswordEncoder passwordEncoder;
 
     @Override
+    public UserDetails loadUserByUsername(String mobile) throws UsernameNotFoundException {
+        Assert.notNull(mobile,"未传入手机号");
+        User user = userRepo.findByMobile(mobile).orElseThrow(() -> new UsernameNotFoundException("未查找到该用户"));
+        // 查询user对应的权限
+        List<GrantedAuthority> simpleGrantedAuthorities = getSimpleGrantedAuthorities(user);
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getMobile(),user.getPassword(),user.getEnable()
+                ,Boolean.TRUE,Boolean.TRUE,user.getUnlocked(),simpleGrantedAuthorities);
+        return userDetails;
+    }
+
+    /**
+     * 得到指定用户的素有角色所对应的权限
+     * @param user
+     * @return
+     */
+    private List<GrantedAuthority> getSimpleGrantedAuthorities(User user) {
+        List<Role> roles = roleRepo.queryRolesByUserId(user.getId());
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>(roles.size());
+        for (Role role : roles) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName().name())); // 添加权限,，对应于SpringSecurity的权限判断是 hasAuthority
+        }
+        return grantedAuthorities;
+    }
+
+    @Override
     public User getById(Integer id) {
         logger.info(passwordEncoder.encode("user"));
         return userRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定id的用户信息"));
@@ -74,40 +100,38 @@ public class UserServiceImpl implements UserService{
             throw new AppException("该手机号已注册");
         }
         // 创建用户 1.加密密码(spring security 将盐值自动放入密码中)
-        userCreateVO.setPassword(new BCryptPasswordEncoder().encode(userCreateVO.getPassword()));
+        userCreateVO.setPassword(passwordEncoder.encode(userCreateVO.getPassword()));
         User user = new User(userCreateVO);
         return userRepo.save(user);
     }
 
-    @Override
-    public List<Role> getRoles(Integer userId) {
-        return roleRepo.queryRolesByUserId(userId);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String mobile) throws UsernameNotFoundException {
-        Assert.notNull(mobile,"未传入手机号");
-        User user = userRepo.findByMobile(mobile).orElseThrow(() -> new UsernameNotFoundException("未查找到该用户"));
-        // 查询user对应的权限
-        List<GrantedAuthority> simpleGrantedAuthorities = getSimpleGrantedAuthorities(user);
-        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getMobile(),user.getPassword(),user.getEnable()
-                ,Boolean.TRUE,Boolean.TRUE,user.getUnlocked(),simpleGrantedAuthorities);
-        return userDetails;
-    }
-
     /**
-     * 得到指定用户的素有角色所对应的权限
+     * 更改用户基本信息
      * @param user
      * @return
      */
-    private List<GrantedAuthority> getSimpleGrantedAuthorities(User user) {
-        List<Role> roles = roleRepo.queryRolesByUserId(user.getId());
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>(roles.size());
-        for (Role role : roles) {
-            // grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName().name())); // 添加角色，对应于SpringSecurity的权限判断是 haeRole,即在权限名前添加"ROLE_即可"
-            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName().name())); // 添加权限,，对应于SpringSecurity的权限判断是 hasAuthority
-            logger.info(role.getName().name());
-        }
-        return grantedAuthorities;
+    @Override
+    public User modify(User user) {
+        User oldUser = userRepo.findById(user.getId()).orElseThrow(() -> new AppException("未查找到该用户"));
+        oldUser.update(user);
+        return userRepo.save(oldUser);
     }
+
+    /**
+     * 用户更新密码
+     *
+     * @param modifyUserPasswordDTO
+     * @return
+     */
+    @Override
+    public User modifyPassword(ModifyUserPasswordDTO modifyUserPasswordDTO) {
+        User oldUser = userRepo.findById(modifyUserPasswordDTO.getUserId()).orElseThrow(() -> new AppException("未查找到该用户"));
+        if (!passwordEncoder.matches(modifyUserPasswordDTO.getOldPassword(),oldUser.getPassword())) {
+            throw new AppException("原密码错误,请重试");
+        }
+        oldUser.setPassword(passwordEncoder.encode(modifyUserPasswordDTO.getNewPassword()));
+        return userRepo.save(oldUser);
+    }
+
+
 }
