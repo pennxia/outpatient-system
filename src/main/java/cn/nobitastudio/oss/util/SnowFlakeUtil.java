@@ -1,6 +1,6 @@
 package cn.nobitastudio.oss.util;
 
-import cn.nobitastudio.common.AppException;
+import cn.nobitastudio.common.exception.AppException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

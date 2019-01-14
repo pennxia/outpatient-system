@@ -1,7 +1,7 @@
 package cn.nobitastudio.oss.service.impl;
 
-import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.criteria.SpecificationBuilder;
+import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.*;
 import cn.nobitastudio.oss.model.dto.ConfirmRegisterDTO;
@@ -10,9 +10,9 @@ import cn.nobitastudio.oss.model.enumeration.*;
 import cn.nobitastudio.oss.model.vo.ConfirmOrCancelRegisterVO;
 import cn.nobitastudio.oss.model.vo.SmsSendResult;
 import cn.nobitastudio.oss.repo.*;
-import cn.nobitastudio.oss.scheduler.util.QuartzUtil;
+import cn.nobitastudio.oss.helper.QuartzHelper;
 import cn.nobitastudio.oss.service.inter.RegistrationRecordService;
-import cn.nobitastudio.oss.util.SmsUtil;
+import cn.nobitastudio.oss.helper.SmsHelper;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +24,6 @@ import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-
-import static cn.nobitastudio.oss.scheduler.util.QuartzUtil.createCheckOrderStateTriggerKey;
-import static cn.nobitastudio.oss.scheduler.util.QuartzUtil.createDiagnosisRemindTriggerKey;
 
 /**
  * @author chenxiong
@@ -44,6 +41,10 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
 
     @Inject
     private Scheduler scheduler;
+    @Inject
+    private SmsHelper smsHelper;
+    @Inject
+    private QuartzHelper quartzHelper;
     @Inject
     private RegistrationRecordRepo registrationRecordRepo;
     @Inject
@@ -152,7 +153,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
         // 挂号成功等待支付,直接发送通知短信.
         executorService.execute(() -> {
             // todo 如果短信发送失败,尝试重新发送. 暂时未实现
-            SmsSendResult smsSendResult = SmsUtil.sendSms(SmsUtil.initRegisterSuccessOrDiagnosisRemindSms(user, medicalCard, doctor, department, visit, diagnosisRoom, diagnosisNo, SmsUtil.REGISTER_SUCCESS_WAITING_PAY));
+            SmsSendResult smsSendResult = smsHelper.sendSms(smsHelper.initRegisterSuccessOrDiagnosisRemindSms(user, medicalCard, doctor, department, visit, diagnosisRoom, diagnosisNo, SmsMessageType.REGISTER_SUCCESS_WAITING_PAY));
         });
         // 生成订单是否支付检测,30分钟后发现未支付则更新订单状态状态为AUTO_CANCEL_PAY,检测若该订单还未支付,则改变支付状态位自动取消. 可能需要将其让如主线程执行
         executorService.execute(() -> createCheckOrderStateQuartzPlan(ossOrder));
@@ -195,11 +196,11 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
         // 发送支付成功
         executorService.execute(() -> {
             // todo 发送失败时尝试重新发送
-            SmsSendResult smsSendResult = SmsUtil.sendSms(SmsUtil.initRegisterSuccessOrDiagnosisRemindSms(user, medicalCard, doctor, department, visit, diagnosisRoom, registrationRecord.getDiagnosisNo(), SmsUtil.REGISTER_SUCCESS_HAVE_PAY));
+            SmsSendResult smsSendResult = smsHelper.sendSms(smsHelper.initRegisterSuccessOrDiagnosisRemindSms(user, medicalCard, doctor, department, visit, diagnosisRoom, registrationRecord.getDiagnosisNo(), SmsMessageType.REGISTER_SUCCESS_HAVE_PAY));
         });
         // 取消 checkOrderStateJob 的quartz检测计划
         executorService.execute(() -> {
-            TriggerKey triggerKey = createCheckOrderStateTriggerKey(ossOrder);
+            TriggerKey triggerKey = quartzHelper.createCheckOrderStateTriggerKey(ossOrder);
             try {
                 scheduler.unscheduleJob(triggerKey);
             } catch (SchedulerException e) {
@@ -228,7 +229,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
                 // 已经支付的情况下
                 // 取消未来就诊提醒quartz计划
                 executorService.execute(() -> {
-                    TriggerKey triggerKey = createDiagnosisRemindTriggerKey(user, medicalCard, RemindType.DIAGNOSIS_REMIND, visit, registrationRecord.getDiagnosisNo());
+                    TriggerKey triggerKey = quartzHelper.createDiagnosisRemindTriggerKey(user, medicalCard, RemindType.DIAGNOSIS_REMIND, visit, registrationRecord.getDiagnosisNo());
                     try {
                         scheduler.unscheduleJob(triggerKey);
                     } catch (SchedulerException e) {
@@ -260,8 +261,8 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
      * @param ossOrder
      */
     private void createCheckOrderStateQuartzPlan(OSSOrder ossOrder) {
-        JobDetail checkOrderStateJob = QuartzUtil.newCheckOrderStateJob(ossOrder);
-        Trigger checkOrderStateTrigger = QuartzUtil.newCheckOrderStateTrigger(ossOrder);
+        JobDetail checkOrderStateJob = quartzHelper.newCheckOrderStateJob(ossOrder);
+        Trigger checkOrderStateTrigger = quartzHelper.newCheckOrderStateTrigger(ossOrder);
         try {
             scheduler.scheduleJob(checkOrderStateJob, checkOrderStateTrigger);
         } catch (SchedulerException e) {
@@ -290,8 +291,8 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
      * @throws SchedulerException
      */
     private void createDiagnosisRemindQuartzPlan(OSSOrder ossOrder, Visit visit, User user, MedicalCard medicalCard, Doctor doctor, Department department, DiagnosisRoom diagnosisRoom, Integer diagnosisNo) {
-        JobDetail registerJobDetail = QuartzUtil.newDiagnosisRemindJobDetailInstance(ossOrder, visit, user, department, medicalCard, doctor, diagnosisRoom, diagnosisNo);
-        Trigger trigger = QuartzUtil.newDiagnosisRemindTriggerInstance(visit, user, medicalCard, diagnosisNo);
+        JobDetail registerJobDetail = quartzHelper.newDiagnosisRemindJobDetailInstance(ossOrder, visit, user, department, medicalCard, doctor, diagnosisRoom, diagnosisNo);
+        Trigger trigger = quartzHelper.newDiagnosisRemindTriggerInstance(visit, user, medicalCard, diagnosisNo);
         try {
             scheduler.scheduleJob(registerJobDetail, trigger);
         } catch (SchedulerException e) {

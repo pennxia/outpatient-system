@@ -1,19 +1,14 @@
 package cn.nobitastudio.oss.scheduler.job;
 
-import cn.nobitastudio.common.AppException;
+import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.oss.entity.OSSOrder;
 import cn.nobitastudio.oss.model.enumeration.OrderState;
 import cn.nobitastudio.oss.repo.OSSOrderRepo;
 import cn.nobitastudio.oss.util.SpringBeanUtil;
 import org.quartz.Job;
-import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 
 /**

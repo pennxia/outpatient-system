@@ -1,8 +1,7 @@
 package cn.nobitastudio.oss.service.impl;
 
-import cn.nobitastudio.common.AppException;
-import cn.nobitastudio.common.criteria.Like;
 import cn.nobitastudio.common.criteria.SpecificationBuilder;
+import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.Doctor;
 import cn.nobitastudio.oss.repo.DoctorRepo;

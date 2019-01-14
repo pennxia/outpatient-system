@@ -1,13 +1,15 @@
 package cn.nobitastudio.oss.controller;
 
-import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.ServiceResult;
+import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.oss.entity.Test;
+import cn.nobitastudio.oss.helper.QuartzHelper;
 import cn.nobitastudio.oss.repo.DepartmentRepo;
 import cn.nobitastudio.oss.repo.DoctorRepo;
 import cn.nobitastudio.oss.repo.OSSOrderRepo;
 import cn.nobitastudio.oss.repo.TestRepo;
 import cn.nobitastudio.oss.scheduler.job.CheckRemindJob;
+import cn.nobitastudio.oss.scheduler.job.CheckValidateCodeContainerJob;
 import cn.nobitastudio.oss.scheduler.job.EatDrugRemindJob;
 import cn.nobitastudio.oss.scheduler.job.RemindJob;
 import cn.nobitastudio.oss.service.inter.TestService;
@@ -22,6 +24,9 @@ import cn.nobitastudio.oss.util.SnowFlakeUtil;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.quartz.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
@@ -32,7 +37,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static cn.nobitastudio.oss.util.SmsUtil.*;
+import static cn.nobitastudio.oss.helper.SmsHelper.*;
 
 /**
  * @author chenxiong
@@ -43,6 +48,8 @@ import static cn.nobitastudio.oss.util.SmsUtil.*;
 @RestController
 @RequestMapping("/test")
 public class TestController {
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Inject
     private Scheduler scheduler;
@@ -58,6 +65,10 @@ public class TestController {
     private TestService testService;
     @Inject
     private OSSOrderRepo ossOrderRepo;
+    @Value(value = "${oss.app.scanInterval:3}")
+    private Integer scanInterval;
+    @Value(value = "${oss.app.scanInterval:5}")
+    private Integer defaultValidateCodeSaveTime;
 
     @ApiModelProperty("测试方法")
     @GetMapping
@@ -258,6 +269,33 @@ public class TestController {
     @GetMapping("/bean")
     public void testBean() {
         System.out.println(ossOrderRepo);
+    }
+
+    @ApiOperation("测试另一种调度器")
+    @GetMapping("/test-quartz")
+    public void testQuartz() throws SchedulerException {
+        TriggerKey checkValidateCodeTriggerKey = new TriggerKey(QuartzHelper.DEFAULT_CHECK_VALIDATE_CODE_CONTAINER_TRIGGER_NAME,
+                QuartzHelper.DEFAULT_CHECK_VALIDATE_CODE_CONTAINER_TRIGGER_GROUP);
+        JobKey checkValidateCodeJobKey = new JobKey(QuartzHelper.DEFAULT_CHECK_VALIDATE_CODE_CONTAINER_JOB_NAME,
+                QuartzHelper.DEFAULT_CHECK_VALIDATE_CODE_CONTAINER_JOB_GROUP);
+        Trigger checkValidateCodeTrigger = TriggerBuilder.newTrigger()
+                .withIdentity(checkValidateCodeTriggerKey)
+                .withSchedule(CalendarIntervalScheduleBuilder
+                        .calendarIntervalSchedule()  // 日期调度类
+                        .withIntervalInMinutes(scanInterval))   // 指定时间内进行查询
+                .build();
+        JobDetail checkValidateCodeJob = JobBuilder.newJob(CheckValidateCodeContainerJob.class)
+                .withIdentity(checkValidateCodeJobKey)
+                .build();
+        logger.info("启动验证码容器检查调度策略,调度频度：" + scanInterval + "分钟,最长保存时间：" + defaultValidateCodeSaveTime + "小时");
+        scheduler.scheduleJob(checkValidateCodeJob, checkValidateCodeTrigger);
+    }
+
+    @ApiOperation("测试另一种调度器")
+    @GetMapping("/unschedule-test-quartz")
+    public void unschedule() throws SchedulerException {
+        scheduler.unscheduleJob(new TriggerKey(QuartzHelper.DEFAULT_CHECK_VALIDATE_CODE_CONTAINER_TRIGGER_NAME,
+                QuartzHelper.DEFAULT_CHECK_VALIDATE_CODE_CONTAINER_TRIGGER_GROUP));
     }
 
 }

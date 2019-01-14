@@ -1,15 +1,14 @@
 package cn.nobitastudio.oss.scheduler.job;
 
-import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.oss.entity.OSSOrder;
 import cn.nobitastudio.oss.model.enumeration.OrderState;
 import cn.nobitastudio.oss.repo.OSSOrderRepo;
-import cn.nobitastudio.oss.util.SmsUtil;
+import cn.nobitastudio.oss.helper.SmsHelper;
 import cn.nobitastudio.oss.model.vo.SmsSendResult;
 import cn.nobitastudio.oss.util.SpringBeanUtil;
 import org.quartz.*;
 
-import static cn.nobitastudio.oss.util.SmsUtil.*;
+import static cn.nobitastudio.oss.helper.SmsHelper.*;
 
 /**
  * @author chenxiong
@@ -26,8 +25,9 @@ public class RemindJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
         OSSOrder ossOrder = SpringBeanUtil.getBean(OSSOrderRepo.class).findById(jobDataMap.getString(ORDER_ID)).orElseThrow(() -> new JobExecutionException("未查找到指定订单"));
+        SmsHelper smsHelper = SpringBeanUtil.getBean(SmsHelper.class);
         if (ossOrder.getState().equals(OrderState.HAVE_PAY)) {
-            SmsSendResult smsSendResult = SmsUtil.sendSms(SmsUtil.castJobDataMapToMap(jobDataMap));
+            SmsSendResult smsSendResult = smsHelper.sendSms(smsHelper.castJobDataMapToMap(jobDataMap));
         }
     }
 

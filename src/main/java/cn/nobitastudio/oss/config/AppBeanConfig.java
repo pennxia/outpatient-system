@@ -1,6 +1,7 @@
 package cn.nobitastudio.oss.config;
 
-import cn.nobitastudio.oss.model.enumeration.SmsMessageType;
+import cn.nobitastudio.oss.helper.SmsHelper;
+import cn.nobitastudio.oss.helper.ValidateCodeContainHelper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -8,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author chenxiong

@@ -1,10 +1,11 @@
 package cn.nobitastudio.oss.service.impl;
 
-import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.criteria.SpecificationBuilder;
+import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.Role;
 import cn.nobitastudio.oss.entity.User;
+import cn.nobitastudio.oss.model.dto.ModifyUserMobileDTO;
 import cn.nobitastudio.oss.model.dto.ModifyUserPasswordDTO;
 import cn.nobitastudio.oss.repo.RoleRepo;
 import cn.nobitastudio.oss.repo.UserRepo;
@@ -20,7 +21,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -131,6 +131,17 @@ public class UserServiceImpl implements UserService{
         }
         oldUser.setPassword(passwordEncoder.encode(modifyUserPasswordDTO.getNewPassword()));
         return userRepo.save(oldUser);
+    }
+
+    /**
+     * 用户
+     *
+     * @param modifyUserMobileDTO
+     * @return
+     */
+    @Override
+    public User modifyMobile(ModifyUserMobileDTO modifyUserMobileDTO) {
+        return null;
     }
 
 

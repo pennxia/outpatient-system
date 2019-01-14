@@ -1,10 +1,9 @@
 package cn.nobitastudio.oss.controller;
 
-import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.ServiceResult;
+import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.oss.entity.CollectDoctor;
 import cn.nobitastudio.oss.service.inter.CollectDoctorService;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

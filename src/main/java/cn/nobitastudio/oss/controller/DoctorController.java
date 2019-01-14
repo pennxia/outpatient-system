@@ -1,8 +1,8 @@
 package cn.nobitastudio.oss.controller;
 
-import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.common.criteria.CriteriaException;
+import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.Doctor;
 import cn.nobitastudio.oss.service.inter.DoctorService;

@@ -13,19 +13,18 @@ import lombok.Setter;
 @Setter
 public class SmsSendResult {
 
-    private Boolean result;
+    public static final String DEFAULT_DESCRIPTION = SmsSendResult.class + "未初始化";
 
-    private Integer verificationCode;
+    private Boolean result;  // 发送是否成功
 
-    private String description;
+    private String description;  // 本条短信描述
 
     public SmsSendResult() {
-        this(false,null,null);
+        this(false, null);
     }
 
-    public SmsSendResult(Boolean result, Integer verificationCode, String description) {
+    public SmsSendResult(Boolean result, String description) {
         this.result = result;
-        this.verificationCode = verificationCode;
         this.description = description;
     }
 }

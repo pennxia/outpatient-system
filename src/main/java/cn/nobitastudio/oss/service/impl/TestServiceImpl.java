@@ -1,6 +1,6 @@
 package cn.nobitastudio.oss.service.impl;
 
-import cn.nobitastudio.oss.model.enumeration.SmsMessageType;
+import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.oss.service.inter.TestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

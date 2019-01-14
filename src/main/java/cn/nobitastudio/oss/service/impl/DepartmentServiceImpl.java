@@ -1,22 +1,15 @@
 package cn.nobitastudio.oss.service.impl;
 
-import cn.nobitastudio.common.AppException;
-import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.common.criteria.SpecificationBuilder;
+import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.Department;
 import cn.nobitastudio.oss.repo.DepartmentRepo;
 import cn.nobitastudio.oss.service.inter.DepartmentService;
 import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.Optional;
 
 /**
  * @author chenxiong

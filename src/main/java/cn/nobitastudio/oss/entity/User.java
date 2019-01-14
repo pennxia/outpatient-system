@@ -28,6 +28,9 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = -2738521069482377465L;
 
+    public interface UserCreateView {};
+
+
     public User() {
     }
 

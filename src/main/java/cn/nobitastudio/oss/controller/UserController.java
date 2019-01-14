@@ -1,7 +1,7 @@
 package cn.nobitastudio.oss.controller;
 
-import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.ServiceResult;
+import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.model.dto.ModifyUserPasswordDTO;
@@ -71,7 +71,6 @@ public class UserController {
         SavedRequest savedRequest = requestCache.getRequest(request, response);
         if (savedRequest != null) {
             String targetUrl = savedRequest.getRedirectUrl();
-            System.out.println("引发跳转的请求是：" + targetUrl);
             if (StringUtils.endsWith(targetUrl, ".html")) {
                 // 网页跳转
                 redirectStrategy.sendRedirect(request, response, securityProperties.getBrowser().getLoginPage());

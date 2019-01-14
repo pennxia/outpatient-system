@@ -1,10 +1,10 @@
 package cn.nobitastudio.oss.util;
 
-import cn.nobitastudio.common.AppException;
+import cn.nobitastudio.common.exception.AppException;
+import cn.nobitastudio.oss.model.enumeration.SmsMessageType;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,6 +90,4 @@ public final class CommonUtil {
         Integer random = begin + (int) (Math.random() * (end - begin));
         return random;
     }
-
-
 }

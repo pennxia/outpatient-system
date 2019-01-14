@@ -1,8 +1,11 @@
-package cn.nobitastudio.oss.util;
+package cn.nobitastudio.oss.helper;
 
-import cn.nobitastudio.common.AppException;
+import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.oss.entity.*;
+import cn.nobitastudio.oss.model.dto.ValidateCode;
+import cn.nobitastudio.oss.model.enumeration.SmsMessageType;
 import cn.nobitastudio.oss.model.vo.SmsSendResult;
+import cn.nobitastudio.oss.util.DateUtil;
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
@@ -18,8 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class SmsUtil {
-    static Logger logger = LoggerFactory.getLogger(SmsUtil.class);
+public class SmsHelper {
+    static Logger logger = LoggerFactory.getLogger(SmsHelper.class);
     private static final int APP_ID = 1400107331;
 
     private static final String APP_KEY = "0e0b67106450077ff4a8cb3b0cf8a876";
@@ -66,23 +69,23 @@ public class SmsUtil {
     /**
      * 发送短信给指定用户
      *
-     * @param mobile      接收短信的用户
-     * @param messageType 短信文本类型
-     * @param params      短信中的参数
+     * @param mobile         接收短信的用户
+     * @param smsMessageType 短信文本类型
+     * @param params         短信中的参数
      */
-    private static SmsSendResult sendSmsRightNow(String mobile, int messageType, ArrayList<String> params) {
+    private SmsSendResult sendSmsRightNow(String mobile, SmsMessageType smsMessageType, ArrayList<String> params) {
         SmsSingleSenderResult result;  // 签名参数未提供或者为空时，会使用默认签名发送短信
         SmsSendResult smsSendResult = new SmsSendResult();
         try {
-            result = smsSender.sendWithParam("86", mobile, TEMPLATE_ID[messageType], params, SMS_SIGN, "", "");
+            result = smsSender.sendWithParam("86", mobile, TEMPLATE_ID[smsMessageType.ordinal()], params, SMS_SIGN, "", "");
             if (result.result == 0) {
                 //send success
                 smsSendResult.setResult(true);
-                logger.info("短信发送成功,接收者:{},短信类型：{},发送时间：{}", mobile, messageType, DateUtil.formatLocalDateTimeToStardardString(LocalDateTime.now()));
+                logger.info("短信发送成功,接收者:{},短信类型：{},发送时间：{}", mobile, smsMessageType.name(), DateUtil.formatLocalDateTimeToStardardString(LocalDateTime.now()));
             } else {
                 //send fail
                 smsSendResult.setResult(false);
-                logger.info("短信发送成功,接收者:{},短信类型：{},发送时间：{}", mobile, messageType, DateUtil.formatLocalDateTimeToStardardString(LocalDateTime.now()));
+                logger.info("短信发送成功,接收者:{},短信类型：{},发送时间：{}", mobile, smsMessageType.name(), DateUtil.formatLocalDateTimeToStardardString(LocalDateTime.now()));
             }
         } catch (HTTPException | IOException e) {
             logger.info("腾讯云SMS SDK出错");
@@ -91,11 +94,11 @@ public class SmsUtil {
         return smsSendResult;
     }
 
-    public static SmsSendResult sendSms(Map<String, String> paramsMap) {
+    public SmsSendResult sendSms(Map<String, String> paramsMap) {
         ArrayList<String> params = new ArrayList<>();  // 发送的实际参数
         String mobile = paramsMap.get(MOBILE);      // 接收者的手机号
-        int messageType = Integer.parseInt(paramsMap.get(MESSAGE_TYPE));  // 发送的短信类型
-        switch (messageType) {
+        SmsMessageType smsMessageType = SmsMessageType.valueOf(paramsMap.get(MESSAGE_TYPE));  // 发送的短信类型
+        switch (smsMessageType.ordinal()) {
             case ENROLL:
             case RETRIEVE_PASSWORD:
             case UPDATE_PASSWORD:
@@ -140,7 +143,7 @@ public class SmsUtil {
             default:
                 throw new AppException("未支持发送该类型的短信模板");
         }
-        return sendSmsRightNow(mobile, messageType, params);
+        return sendSmsRightNow(mobile, smsMessageType, params);
     }
 
     /**
@@ -154,16 +157,16 @@ public class SmsUtil {
      * @param diagnosisNo
      * @return
      */
-    public static Map<String, String> initRegisterSuccessOrDiagnosisRemindSms(User user, MedicalCard medicalCard, Doctor doctor, Department department, Visit visit, DiagnosisRoom diagnosisRoom, Integer diagnosisNo, Integer messageType) {
+    public Map<String, String> initRegisterSuccessOrDiagnosisRemindSms(User user, MedicalCard medicalCard, Doctor doctor, Department department, Visit visit, DiagnosisRoom diagnosisRoom, Integer diagnosisNo, SmsMessageType smsMessageType) {
         Map<String, String> params = new HashMap<>();
-        if (messageType.equals(REGISTER_SUCCESS_HAVE_PAY) || messageType.equals(REGISTER_SUCCESS_WAITING_PAY)) {
+        if (smsMessageType.equals(SmsMessageType.REGISTER_SUCCESS_HAVE_PAY) || smsMessageType.equals(SmsMessageType.REGISTER_SUCCESS_WAITING_PAY)) {
             params.put(MOBILE, user.getMobile());  //  给挂号者发送挂号成功短信
-        } else if (messageType.equals(DIAGNOSIS_REMIND)) {
+        } else if (smsMessageType.equals(SmsMessageType.DIAGNOSIS_REMIND)) {
             params.put(MOBILE, medicalCard.getOwnerMobile());   // 给就诊者发送及时就诊短信
         } else {
             throw new AppException("不支持此类短信参数的初始化");
         }
-        params.put(MESSAGE_TYPE, String.valueOf(messageType));
+        params.put(MESSAGE_TYPE, smsMessageType.name());
         params.put(MEDICAL_CARD_OWNER, medicalCard.getOwnerName());
         params.put(MEDICAL_CARD_ID, medicalCard.getId());
         params.put(DOCTOR_NAME, doctor.getName());
@@ -176,7 +179,7 @@ public class SmsUtil {
         return params;
     }
 
-    public static Map<String, String> initCancelRegisterSms(User user, RegistrationRecord registrationRecord, OSSOrder ossOrder) {
+    public Map<String, String> initCancelRegisterSms(User user, RegistrationRecord registrationRecord, OSSOrder ossOrder) {
         Map<String, String> params = new HashMap<>();
         params.put(MOBILE, user.getMobile());
         params.put(MESSAGE_TYPE, String.valueOf(CANCEL_REGISTER));
@@ -185,8 +188,16 @@ public class SmsUtil {
         return params;
     }
 
+    public Map<String, String> initRequestValidateCodeSms(String mobile, SmsMessageType smsMessageType, ValidateCode validateCode) {
+        Map<String, String> params = new HashMap<>();
+        params.put(MOBILE, mobile);
+        params.put(MESSAGE_TYPE, smsMessageType.name());
+        params.put(VALIDATE_CODE, validateCode.getCode());
+        return params;
+    }
 
-    public static Map<String, String> castJobDataMapToMap(JobDataMap jobDataMap) {
+
+    public Map<String, String> castJobDataMapToMap(JobDataMap jobDataMap) {
         Map<String, String> params = new HashMap<>();
         jobDataMap.forEach((key, value) -> params.put(key, (String) value));
         return params;

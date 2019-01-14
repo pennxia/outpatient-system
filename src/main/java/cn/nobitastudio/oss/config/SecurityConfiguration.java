@@ -59,13 +59,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
-//        http
-////                .loginPage("/html/login.html") // 网页登录地址
-////                .loginProcessingUrl("/user/login") // 发起验证的请求
-////                .usernameParameter("myusername").passwordParameter("mypassword")  // 验证请求的用户名和密码参数的username 和 password的参数名
-//                .authorizeRequests()
-//                .anyRequest().permitAll();
         http.
 
                 formLogin()
@@ -81,8 +74,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/**").hasAuthority(RoleName.USER.name()) // 控制所有接口调用都必须是普通用户才能调用
                 .and()
                 .csrf().disable();
-
-
-
     }
+
 }

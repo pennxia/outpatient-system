@@ -26,7 +26,7 @@ spring:
       max-request-size: 100MB
       enabled: true
   jpa:
-    show-sql: true
+    show-sql: false
 
 #spring.jpa.generate-ddl: true
 
@@ -36,9 +36,8 @@ logging:
   path: /web/logs/oss/
   file: biz.log
 
-oss:
-  app:
-    maxBindCount: 5
-    auto-start: true
-    browser:
-      loginPage: /html/login.html
+# oss config
+oss.app.scanInterval: 5
+oss.app.maxBindCount: 5
+oss.app.autoLaunchScan: true
+oss.app.browser.loginPage: /html/login.html

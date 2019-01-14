@@ -1,7 +1,7 @@
 package cn.nobitastudio.oss.service.impl;
 
-import cn.nobitastudio.common.AppException;
 import cn.nobitastudio.common.criteria.SpecificationBuilder;
+import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.Drug;
 import cn.nobitastudio.oss.repo.DrugRepo;
