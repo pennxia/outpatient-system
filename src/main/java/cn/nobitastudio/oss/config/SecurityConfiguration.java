@@ -70,6 +70,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
 //                .antMatchers("/swagger-ui.html").hasRole(RoleName.ADMIN.name()) // 控制权限，角色应该拥有ROLE_XXX 这样的角色才能调用该接口 默认使用hasAuthority
                 .antMatchers("/user/login",securityProperties.getBrowser().getLoginPage()).permitAll()
+                .antMatchers("/test/**").permitAll() // 测试的一律通过
+                .antMatchers("/validate/**").permitAll() // 验证码请求均通过
                 .antMatchers("/swagger-ui.html").hasAuthority(RoleName.USER.name()) // 控制权限,下面的接口若需要权限,有可能无法扫描
                 .antMatchers("/**").hasAuthority(RoleName.USER.name()) // 控制所有接口调用都必须是普通用户才能调用
                 .and()

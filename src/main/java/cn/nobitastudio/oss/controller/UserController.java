@@ -7,8 +7,8 @@ import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.model.dto.ModifyUserPasswordDTO;
 import cn.nobitastudio.oss.property.SecurityProperties;
 import cn.nobitastudio.oss.service.inter.UserService;
-import cn.nobitastudio.oss.model.vo.UserCreateVO;
 import cn.nobitastudio.oss.model.vo.UserQueryVO;
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageImpl;
@@ -36,14 +36,13 @@ import java.io.IOException;
 @RequestMapping("/user")
 public class UserController {
 
+    private RequestCache requestCache = new HttpSessionRequestCache();
+    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+
     @Inject
     private UserService userService;
     @Inject
     private SecurityProperties securityProperties;
-
-    private RequestCache requestCache = new HttpSessionRequestCache();
-    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-
 
     @ApiOperation("通过用户id获取用户信息")
     @GetMapping("/{id}")
@@ -105,9 +104,9 @@ public class UserController {
 
     @ApiOperation("用户注册,或者新增用户")
     @PostMapping("/enroll")
-    public ServiceResult<User> register(@RequestBody UserCreateVO userCreateVO) {
+    public ServiceResult<User> register(@RequestBody @JsonView(User.UserCreateView.class) User user) {
         try {
-            return ServiceResult.success(userService.add(userCreateVO));
+            return ServiceResult.success(userService.add(user));
         } catch (Exception e) {
             return ServiceResult.failure(e.getMessage());
         }

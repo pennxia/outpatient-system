@@ -11,8 +11,8 @@ import cn.nobitastudio.oss.repo.RoleRepo;
 import cn.nobitastudio.oss.repo.UserRepo;
 import cn.nobitastudio.oss.service.inter.UserService;
 import cn.nobitastudio.oss.util.CommonUtil;
-import cn.nobitastudio.oss.model.vo.UserCreateVO;
 import cn.nobitastudio.oss.model.vo.UserQueryVO;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.*;
@@ -92,16 +92,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User add(UserCreateVO userCreateVO) throws IllegalAccessException {
-        //检查传递参数
-        CommonUtil.checkObjectFieldIsNull(userCreateVO);
+    public User add(@JsonView(User.UserCreateView.class) User user) throws IllegalAccessException {
         // 检查该手机号是否已被注册
-        if (userRepo.findByMobile(userCreateVO.getMobile()).isPresent()) {
+        if (userRepo.findByMobile(user.getMobile()).isPresent()) {
             throw new AppException("该手机号已注册");
         }
-        // 创建用户 1.加密密码(spring security 将盐值自动放入密码中)
-        userCreateVO.setPassword(passwordEncoder.encode(userCreateVO.getPassword()));
-        User user = new User(userCreateVO);
+        // 创建用户 初始化
+        user.init(passwordEncoder);
         return userRepo.save(user);
     }
 
@@ -111,7 +108,7 @@ public class UserServiceImpl implements UserService{
      * @return
      */
     @Override
-    public User modify(User user) {
+    public User modify(@JsonView(User.UserModifyView.class) User user) {
         User oldUser = userRepo.findById(user.getId()).orElseThrow(() -> new AppException("未查找到该用户"));
         oldUser.update(user);
         return userRepo.save(oldUser);

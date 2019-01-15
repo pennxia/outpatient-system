@@ -1,22 +1,20 @@
 package cn.nobitastudio.oss.service.inter;
 
 import cn.nobitastudio.common.util.Pager;
-import cn.nobitastudio.oss.entity.Role;
 import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.model.dto.ModifyUserMobileDTO;
 import cn.nobitastudio.oss.model.dto.ModifyUserPasswordDTO;
-import cn.nobitastudio.oss.model.vo.UserCreateVO;
 import cn.nobitastudio.oss.model.vo.UserQueryVO;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import java.util.List;
 
 public interface UserService extends UserDetailsService {
 
 
     /**
      * 查询指定userId的用户
+     *
      * @param id
      * @return
      */
@@ -24,6 +22,7 @@ public interface UserService extends UserDetailsService {
 
     /**
      * 查询指定手机号的用户
+     *
      * @param phone
      * @return
      */
@@ -31,6 +30,7 @@ public interface UserService extends UserDetailsService {
 
     /**
      * 基础分页查询用户
+     *
      * @param userQueryVO
      * @param pager
      * @return
@@ -39,11 +39,12 @@ public interface UserService extends UserDetailsService {
 
     /**
      * 用户注册
-     * @param userCreateVO
+     *
+     * @param user
      * @return
      * @throws IllegalAccessException
      */
-    User add(UserCreateVO userCreateVO) throws IllegalAccessException;
+    User add(@JsonView(User.UserCreateView.class) User user) throws IllegalAccessException;
 
     /**
      * 用户修改基础信息
@@ -55,6 +56,7 @@ public interface UserService extends UserDetailsService {
 
     /**
      * 用户更新密码
+     *
      * @param modifyUserPasswordDTO
      * @return
      */
@@ -62,6 +64,7 @@ public interface UserService extends UserDetailsService {
 
     /**
      * 用户
+     *
      * @param modifyUserMobileDTO
      * @return
      */

@@ -4,6 +4,10 @@ import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.oss.entity.Test;
 import cn.nobitastudio.oss.helper.QuartzHelper;
+import cn.nobitastudio.oss.helper.ValidateCodeContainHelper;
+import cn.nobitastudio.oss.model.dto.RequestValidateCodeDTO;
+import cn.nobitastudio.oss.model.enumeration.SmsMessageType;
+import cn.nobitastudio.oss.model.vo.StandardMessage;
 import cn.nobitastudio.oss.repo.DepartmentRepo;
 import cn.nobitastudio.oss.repo.DoctorRepo;
 import cn.nobitastudio.oss.repo.OSSOrderRepo;
@@ -13,6 +17,7 @@ import cn.nobitastudio.oss.scheduler.job.CheckValidateCodeContainerJob;
 import cn.nobitastudio.oss.scheduler.job.EatDrugRemindJob;
 import cn.nobitastudio.oss.scheduler.job.RemindJob;
 import cn.nobitastudio.oss.service.inter.TestService;
+import cn.nobitastudio.oss.service.inter.ValidateService;
 import cn.nobitastudio.oss.service.inter.VisitService;
 import cn.nobitastudio.oss.util.CommonUtil;
 import cn.nobitastudio.oss.util.DateUtil;
@@ -51,6 +56,11 @@ public class TestController {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Value(value = "${oss.app.scanInterval:3}")
+    private Integer scanInterval;
+    @Value(value = "${oss.app.scanInterval:5}")
+    private Integer defaultValidateCodeSaveTime;
+
     @Inject
     private Scheduler scheduler;
     @Inject
@@ -65,15 +75,16 @@ public class TestController {
     private TestService testService;
     @Inject
     private OSSOrderRepo ossOrderRepo;
-    @Value(value = "${oss.app.scanInterval:3}")
-    private Integer scanInterval;
-    @Value(value = "${oss.app.scanInterval:5}")
-    private Integer defaultValidateCodeSaveTime;
+    @Inject
+    private ValidateService validateService;
+    @Inject
+    private ValidateCodeContainHelper validateCodeContainHelper;
+
 
     @ApiModelProperty("测试方法")
     @GetMapping
     public void test() {
-        System.out.println(scheduler);
+        System.out.println(validateCodeContainHelper);
     }
 
     @ApiModelProperty("测试方法")
@@ -296,6 +307,17 @@ public class TestController {
     public void unschedule() throws SchedulerException {
         scheduler.unscheduleJob(new TriggerKey(QuartzHelper.DEFAULT_CHECK_VALIDATE_CODE_CONTAINER_TRIGGER_NAME,
                 QuartzHelper.DEFAULT_CHECK_VALIDATE_CODE_CONTAINER_TRIGGER_GROUP));
+    }
+
+    @ApiOperation("用户请求短息验证码")
+    @GetMapping("/test-validate")
+    public ServiceResult testValidate() {
+        try {
+            return ServiceResult.success(validateService.requestValidateCode(new RequestValidateCodeDTO(9, SmsMessageType.ENROLL)));
+        } catch (AppException e) {
+            return ServiceResult.failure(e.getMessage());
+        }
+
     }
 
 }
