@@ -16,4 +16,6 @@ import java.util.Optional;
 public interface RegistrationRecordRepo extends CrudRepository<RegistrationRecord, String>, JpaSpecificationExecutor {
 
     List<RegistrationRecord> findByMedicalCardIdAndVisitId(String medicalCardId, Integer visitId);
+
+    List<RegistrationRecord> findByUserIdOrderByCreateTimeDesc(Integer userId);
 }

@@ -8,6 +8,8 @@ import cn.nobitastudio.oss.model.dto.ConfirmRegisterDTO;
 import cn.nobitastudio.oss.model.dto.RegisterDTO;
 import cn.nobitastudio.oss.model.enumeration.*;
 import cn.nobitastudio.oss.model.vo.ConfirmOrCancelRegisterVO;
+import cn.nobitastudio.oss.model.vo.RegistrationBasicInfoCollection;
+import cn.nobitastudio.oss.model.vo.RegistrationRecordAndOrder;
 import cn.nobitastudio.oss.model.vo.SmsSendResult;
 import cn.nobitastudio.oss.repo.*;
 import cn.nobitastudio.oss.helper.QuartzHelper;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
@@ -254,6 +257,42 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
             throw new AppException("该挂号单已处于取消预约状态,请勿重复取消");
         }
         return new ConfirmOrCancelRegisterVO(ossOrder, registrationRecord);
+    }
+
+    /**
+     * 得到挂号单以及对应的订单
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<RegistrationRecordAndOrder> getRegistrationAndOrder(Integer userId) {
+        List<RegistrationRecord> registrationRecords = registrationRecordRepo.findByUserIdOrderByCreateTimeDesc(userId);
+        List<RegistrationRecordAndOrder> registrationRecordAndOrders = new ArrayList<>(registrationRecords.size());
+        registrationRecords.forEach(child -> {
+            OSSOrder ossOrder = ossOrderRepo.findByRegistrationId(child.getId()).orElseThrow(() -> new AppException("未查找到挂号单对应的订单信息"));
+            registrationRecordAndOrders.add(new RegistrationRecordAndOrder(child, ossOrder));
+        });
+        return registrationRecordAndOrders;
+    }
+
+    /**
+     * 查询指定挂号单基础信息集合详情
+     *
+     * @param registrationRecordId
+     * @return
+     */
+    @Override
+    public RegistrationBasicInfoCollection getRegistrationBasicInfoCollection(String registrationRecordId) {
+        RegistrationRecord registrationRecord = registrationRecordRepo.findById(registrationRecordId).orElseThrow(() -> new AppException("未查找到指定的挂号"));
+        OSSOrder ossOrder = ossOrderRepo.findByRegistrationId(registrationRecordId).orElseThrow(() -> new AppException("未查找到该挂号单对应的订单"));
+        Visit visit = visitRepo.findById(registrationRecord.getVisitId()).orElseThrow(() -> new AppException("未查询到指定号源信息"));
+        MedicalCard medicalCard = medicalCardRepo.findById(registrationRecord.getMedicalCardId()).orElseThrow(() -> new AppException("未查找到指定诊疗卡"));
+        Doctor doctor = doctorRepo.findById(visit.getDoctorId()).orElseThrow(() -> new AppException("未查找到指定医生信息"));
+        Department department = departmentRepo.findById(doctor.getDepartmentId()).orElseThrow(() -> new AppException("未查找到指定科室信息"));
+        DiagnosisRoom diagnosisRoom = diagnosisRoomRepo.findById(visit.getDiagnosisRoomId()).orElseThrow(() -> new AppException("未查询到指定诊疗室"));
+        return new RegistrationBasicInfoCollection(registrationRecord, department, doctor, medicalCard,
+                visit, diagnosisRoom, ossOrder);
     }
 
     /**

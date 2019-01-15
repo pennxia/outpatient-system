@@ -5,9 +5,13 @@ import cn.nobitastudio.oss.entity.RegistrationRecord;
 import cn.nobitastudio.oss.model.dto.ConfirmRegisterDTO;
 import cn.nobitastudio.oss.model.dto.RegisterDTO;
 import cn.nobitastudio.oss.model.vo.ConfirmOrCancelRegisterVO;
+import cn.nobitastudio.oss.model.vo.RegistrationBasicInfoCollection;
+import cn.nobitastudio.oss.model.vo.RegistrationRecordAndOrder;
 import cn.nobitastudio.oss.model.vo.StandardMessage;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author chenxiong
@@ -73,4 +77,18 @@ public interface RegistrationRecordService {
      * @return
      */
     ConfirmOrCancelRegisterVO cancelRegister(String id);
+
+    /**
+     * 得到挂号单以及对应的订单
+     * @param userId
+     * @return
+     */
+    List<RegistrationRecordAndOrder> getRegistrationAndOrder(Integer userId);
+
+    /**
+     * 查询指定挂号单基础信息集合详情
+     * @param registrationRecordId
+     * @return
+     */
+    RegistrationBasicInfoCollection getRegistrationBasicInfoCollection(String registrationRecordId);
 }

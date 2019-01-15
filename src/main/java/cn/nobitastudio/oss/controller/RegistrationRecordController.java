@@ -8,12 +8,15 @@ import cn.nobitastudio.oss.entity.RegistrationRecord;
 import cn.nobitastudio.oss.model.dto.ConfirmRegisterDTO;
 import cn.nobitastudio.oss.model.dto.RegisterDTO;
 import cn.nobitastudio.oss.model.vo.ConfirmOrCancelRegisterVO;
+import cn.nobitastudio.oss.model.vo.RegistrationBasicInfoCollection;
+import cn.nobitastudio.oss.model.vo.RegistrationRecordAndOrder;
 import cn.nobitastudio.oss.service.inter.RegistrationRecordService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * @author chenxiong
@@ -94,6 +97,26 @@ public class RegistrationRecordController {
     public ServiceResult<ConfirmOrCancelRegisterVO> cancelRegister(@PathVariable(name = "id") String id) {
         try {
             return ServiceResult.success(registrationRecordService.cancelRegister(id));
+        } catch (AppException e) {
+            return ServiceResult.failure(e.getMessage());
+        }
+    }
+
+    @ApiOperation("得到挂号单以及对应的订单")
+    @GetMapping("{userId}/rgt-and-ord")
+    public ServiceResult<List<RegistrationRecordAndOrder>> getRegistrationAndOrder(@PathVariable(name = "userId") Integer userId) {
+        try {
+            return ServiceResult.success(registrationRecordService.getRegistrationAndOrder(userId));
+        } catch (AppException e) {
+            return ServiceResult.failure(e.getMessage());
+        }
+    }
+
+    @ApiOperation("查询指定挂号的基础信息集合详情")
+    @GetMapping("/{registrationId}/basic-info-collection")
+    public ServiceResult<RegistrationBasicInfoCollection> getRegistrationBasicInfoCollection(@PathVariable(name = "registrationId") String registrationRecordId) {
+        try {
+            return ServiceResult.success(registrationRecordService.getRegistrationBasicInfoCollection(registrationRecordId));
         } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());
         }
