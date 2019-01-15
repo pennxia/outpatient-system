@@ -36,7 +36,7 @@ import java.util.List;
  * @description
  */
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -49,17 +49,18 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDetails loadUserByUsername(String mobile) throws UsernameNotFoundException {
-        Assert.notNull(mobile,"未传入手机号");
+        Assert.notNull(mobile, "未传入手机号");
         User user = userRepo.findByMobile(mobile).orElseThrow(() -> new UsernameNotFoundException("未查找到该用户"));
         // 查询user对应的权限
         List<GrantedAuthority> simpleGrantedAuthorities = getSimpleGrantedAuthorities(user);
-        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getMobile(),user.getPassword(),user.getEnable()
-                ,Boolean.TRUE,Boolean.TRUE,user.getUnlocked(),simpleGrantedAuthorities);
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getMobile(), user.getPassword(), user.getEnable()
+                , Boolean.TRUE, Boolean.TRUE, user.getUnlocked(), simpleGrantedAuthorities);
         return userDetails;
     }
 
     /**
      * 得到指定用户的素有角色所对应的权限
+     *
      * @param user
      * @return
      */
@@ -104,11 +105,12 @@ public class UserServiceImpl implements UserService{
 
     /**
      * 更改用户基本信息
+     *
      * @param user
      * @return
      */
     @Override
-    public User modify(@JsonView(User.UserModifyView.class) User user) {
+    public User modify(User user) {
         User oldUser = userRepo.findById(user.getId()).orElseThrow(() -> new AppException("未查找到该用户"));
         oldUser.update(user);
         return userRepo.save(oldUser);
@@ -121,9 +123,9 @@ public class UserServiceImpl implements UserService{
      * @return
      */
     @Override
-    public User modifyPassword(ModifyUserPasswordDTO modifyUserPasswordDTO) {
+    public User modifyPasswordByOldPassword(ModifyUserPasswordDTO modifyUserPasswordDTO) {
         User oldUser = userRepo.findById(modifyUserPasswordDTO.getUserId()).orElseThrow(() -> new AppException("未查找到该用户"));
-        if (!passwordEncoder.matches(modifyUserPasswordDTO.getOldPassword(),oldUser.getPassword())) {
+        if (!passwordEncoder.matches(modifyUserPasswordDTO.getOldPassword(), oldUser.getPassword())) {
             throw new AppException("原密码错误,请重试");
         }
         oldUser.setPassword(passwordEncoder.encode(modifyUserPasswordDTO.getNewPassword()));
@@ -139,6 +141,34 @@ public class UserServiceImpl implements UserService{
     @Override
     public User modifyMobile(ModifyUserMobileDTO modifyUserMobileDTO) {
         return null;
+    }
+
+    /**
+     * 用户(更改)找回密码
+     * user中的新密码已是新密码,通过短信验证码进行验证，无需校验原密码
+     *
+     * @param user
+     * @return
+     */
+    @Override
+    public User modifyPasswordBySms(User user) {
+        User oldUser = userRepo.findById(user.getId()).orElseThrow(() -> new AppException("未查找到指定用户"));
+        oldUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepo.save(oldUser);
+    }
+
+    /**
+     * 用户更改绑定的手机号
+     * 已经经过校验,直接更新为新绑定的手机号
+     *
+     * @param user
+     * @return
+     */
+    @Override
+    public User modifyMobile(User user) {
+        User oldUser = userRepo.findById(user.getId()).orElseThrow(() -> new AppException("未查找到指定用户"));
+        oldUser.setMobile(user.getMobile());
+        return userRepo.save(oldUser);
     }
 
 

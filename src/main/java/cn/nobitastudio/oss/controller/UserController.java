@@ -118,9 +118,9 @@ public class UserController {
         return ServiceResult.success(SecurityContextHolder.getContext().getAuthentication());
     }
 
-    @ApiOperation("更改用户普通信息,不可更改密码,更改密码需要调用单独的接口")
-    @PostMapping("/modify")
-    public ServiceResult<User> modify(@RequestBody User user) {
+    @ApiOperation("更改用户普通信息,不可更改密码")
+    @PutMapping("/modify")
+    public ServiceResult<User> modify(@RequestBody @JsonView(User.UserModifyView.class) User user) {
         try {
             return ServiceResult.success(userService.modify(user));
         } catch (AppException e) {
@@ -128,11 +128,21 @@ public class UserController {
         }
     }
 
-    @ApiOperation("用户更改密码")
-    @PostMapping("/modify-password")
-    public ServiceResult<User> modifyPassword(@RequestBody ModifyUserPasswordDTO modifyUserPasswordDTO) {
+    @ApiOperation("普通地通过原密码校验来更新密码")
+    @PutMapping("/pw-by-opw")
+    public ServiceResult<User> modifyPasswordByOldPassword(@RequestBody ModifyUserPasswordDTO modifyUserPasswordDTO) {
         try {
-            return ServiceResult.success(userService.modifyPassword(modifyUserPasswordDTO));
+            return ServiceResult.success(userService.modifyPasswordByOldPassword(modifyUserPasswordDTO));
+        } catch (AppException e) {
+            return ServiceResult.failure(e.getMessage());
+        }
+    }
+
+    @ApiOperation("用户通过手机号校验更新密码,无需知晓原密码,用于更新以及找回密码")
+    @PutMapping("/pw-by-sms")
+    public ServiceResult<User> modifyPasswordBySms(@RequestBody @JsonView(User.UserFindPasswordView.class) User user) {
+        try {
+            return ServiceResult.success(userService.modifyPasswordBySms(user));
         } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());
         }

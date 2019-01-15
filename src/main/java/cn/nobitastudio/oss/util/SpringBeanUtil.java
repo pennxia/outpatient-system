@@ -1,5 +1,7 @@
 package cn.nobitastudio.oss.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
@@ -13,6 +15,7 @@ public class SpringBeanUtil {
 
     private static ApplicationContext applicationContext;
     static final private Object lock = new Object();
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpringBeanUtil.class);
 
     /**
      * 设置上下文

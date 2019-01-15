@@ -47,7 +47,7 @@ public interface UserService extends UserDetailsService {
     User add(@JsonView(User.UserCreateView.class) User user) throws IllegalAccessException;
 
     /**
-     * 用户修改基础信息
+     * 用户修改基础信息,不可更改密码
      *
      * @param user
      * @return
@@ -60,14 +60,28 @@ public interface UserService extends UserDetailsService {
      * @param modifyUserPasswordDTO
      * @return
      */
-    User modifyPassword(ModifyUserPasswordDTO modifyUserPasswordDTO);
+    User modifyPasswordByOldPassword(ModifyUserPasswordDTO modifyUserPasswordDTO);
 
     /**
-     * 用户
+     * 用户更换绑定的手机号
      *
      * @param modifyUserMobileDTO
      * @return
      */
     User modifyMobile(ModifyUserMobileDTO modifyUserMobileDTO);
+
+    /**
+     * 用户(更改)找回密码
+     * @param user
+     * @return
+     */
+    User modifyPasswordBySms(@JsonView(User.UserFindPasswordView.class) User user);
+
+    /**
+     * 用户更改绑定的手机号
+     * @param user
+     * @return
+     */
+    User modifyMobile(@JsonView(User.UserModifyMobileView.class) User user);
 
 }

@@ -237,6 +237,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
                         logger.info("取消未来就诊提醒quartz计划失败,triggerKey:" + triggerKey);
                     }
                 });
+                // todo 取消Jpush Quartz计划推送
                 // todo 如果是在线支付方式,进行退款操作
                 if (!ossOrder.getPaymentChannel().equals(PaymentChannel.HOSPITAL_MEDICAL_CAR) && !ossOrder.getPaymentChannel().equals(PaymentChannel.HOSPITAL_MONEY)) {
                     // 退款

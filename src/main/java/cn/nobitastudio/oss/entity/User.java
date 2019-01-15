@@ -29,39 +29,54 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = -2738521069482377465L;
 
-    public interface UserCreateView {
-    }  // 用户注册
+    public interface UserIdView {
+    } // 用户id
 
-    public interface UserModifyView extends UserCreateView {
-    }  // 用户更改基础信息
+    public interface UserPasswordView {
+    } // 用户密码
 
-    public interface UserModifyPasswordView {} //用户更改密码
+    public interface UserMobileView {
+    } // 用户联系方式
 
-    public interface UserModifyMobileView {} // 用户修改mobile
+    public interface UserNameView {
+    } // 用户姓名
+
+    public interface UserIdCardView {
+    } // 用户身份证
+
+    public interface UserCreateView extends UserMobileView, UserPasswordView, UserNameView, UserIdCardView {
+    }  // 用户注册  mobile.password,name,idcard
+
+    public interface UserModifyView extends UserIdView, UserNameView, UserIdCardView {
+    }  // 用户更改基本信息  id name idCard
+
+    public interface UserFindPasswordView extends UserIdView,UserPasswordView {} // 用户找回密码视图
+
+    public interface UserModifyMobileView extends UserIdView,UserMobileView {} // 用户更改绑定的手机号
 
     @ApiModelProperty("用户Id")
     @Column(name = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Equal
-    @JsonView(UserModifyView.class)
+    @JsonView(UserIdView.class)
     private Integer id;
 
     @ApiModelProperty("联系方式")
     @Column(name = "mobile")
     @Equal
-    @JsonView(UserCreateView.class)
+    @JsonView(UserMobileView.class)
     private String mobile;
 
     @ApiModelProperty("用户密码")
     @Column(name = "password")
-    @JsonView(UserCreateView.class)
+    @JsonView(UserPasswordView.class)
     private String password;
 
     @ApiModelProperty("用户名")
     @Column(name = "name")
     @Like
-    @JsonView(UserCreateView.class)
+    @JsonView(UserNameView.class)
     private String name;
 
     @ApiModelProperty("上一次更改用户密码的时间")
@@ -79,7 +94,7 @@ public class User implements Serializable {
 
     @ApiModelProperty("用户是否启用(0:未启用,1:启用)")
     @Column(name = "id_card")
-    @JsonView(UserCreateView.class)
+    @JsonView(UserIdCardView.class)
     private String idCard;
 
     /**

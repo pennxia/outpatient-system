@@ -28,7 +28,7 @@ public class ValidateController {
     private ValidateService validateService;
 
     @ApiOperation("用户请求短息验证码")
-    @PutMapping("/requst-validate-code")
+    @PutMapping("/requst-code")
     public ServiceResult<StandardMessage> requestValidateCode(@RequestBody RequestValidateCodeDTO requestValidateCodeDTO) {
         try {
             return ServiceResult.success(validateService.requestValidateCode(requestValidateCodeDTO));
@@ -39,7 +39,7 @@ public class ValidateController {
     }
 
     @ApiOperation("用户验证验证码")
-    @PutMapping("/confirm-validate-code")
+    @PutMapping("/confirm-code")
     public ServiceResult<StandardMessage> confirmValidateCode(@RequestBody ConfirmValidateCodeDTO confirmValidateCodeDTO) {
         try {
             return ServiceResult.success(validateService.confirmValidateCode(confirmValidateCodeDTO));
