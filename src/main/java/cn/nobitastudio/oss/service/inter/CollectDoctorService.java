@@ -2,8 +2,11 @@ package cn.nobitastudio.oss.service.inter;
 
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.CollectDoctor;
+import cn.nobitastudio.oss.model.vo.DoctorAndDepartment;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author chenxiong
@@ -57,4 +60,10 @@ public interface CollectDoctorService {
      * @return
      */
     String unCollect(CollectDoctor collectDoctor);
+
+    /**
+     * 查询指定用户的收藏医生及其医生所对应的科室信息
+     * @return
+     */
+    List<DoctorAndDepartment> getDoctorAndDepartments(Integer userId);
 }

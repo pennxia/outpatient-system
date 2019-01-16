@@ -4,9 +4,7 @@ import cn.nobitastudio.common.criteria.Equal;
 import cn.nobitastudio.common.criteria.Like;
 import cn.nobitastudio.oss.model.enumeration.DoctorLevel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,6 +20,8 @@ import java.io.Serializable;
 @Table(name = "doctor")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Doctor implements Serializable {
 
     private static final long serialVersionUID = -1767052683247139655L;

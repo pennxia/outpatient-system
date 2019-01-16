@@ -3,18 +3,24 @@ package cn.nobitastudio.oss.service.impl;
 import cn.nobitastudio.common.criteria.SpecificationBuilder;
 import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
+import cn.nobitastudio.oss.entity.HealthArticle;
+import cn.nobitastudio.oss.entity.MedicalCard;
 import cn.nobitastudio.oss.entity.Role;
 import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.model.dto.ModifyUserMobileDTO;
 import cn.nobitastudio.oss.model.dto.ModifyUserPasswordDTO;
-import cn.nobitastudio.oss.repo.RoleRepo;
-import cn.nobitastudio.oss.repo.UserRepo;
+import cn.nobitastudio.oss.model.enumeration.HealthArticleType;
+import cn.nobitastudio.oss.model.vo.DoctorAndDepartment;
+import cn.nobitastudio.oss.model.vo.UserLoginResult;
+import cn.nobitastudio.oss.repo.*;
+import cn.nobitastudio.oss.service.inter.DoctorService;
 import cn.nobitastudio.oss.service.inter.UserService;
 import cn.nobitastudio.oss.util.CommonUtil;
 import cn.nobitastudio.oss.model.vo.UserQueryVO;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,6 +33,8 @@ import org.springframework.util.Assert;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,12 +48,21 @@ public class UserServiceImpl implements UserService {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Value(value = "${oss.app.healthArticle:6}")
+    private Integer defaultHealthArticle;
+
     @Inject
     private UserRepo userRepo;
     @Inject
     private RoleRepo roleRepo;
     @Inject
     private PasswordEncoder passwordEncoder;
+    @Inject
+    private CollectDoctorRepo collectDoctorRepo;
+    @Inject
+    private HealthArticleRepo healthArticleRepo;
+    @Inject
+    private MedicalCardRepo medicalCardRepo;
 
     @Override
     public UserDetails loadUserByUsername(String mobile) throws UsernameNotFoundException {
@@ -169,6 +186,28 @@ public class UserServiceImpl implements UserService {
         User oldUser = userRepo.findById(user.getId()).orElseThrow(() -> new AppException("未查找到指定用户"));
         oldUser.setMobile(user.getMobile());
         return userRepo.save(oldUser);
+    }
+
+    /**
+     * 用户登录成功后调用
+     *
+     * @return
+     */
+    @Override
+    public UserLoginResult loginSuccess(Integer userId) {
+        User user = userRepo.findById(userId).orElseThrow(() -> new AppException("未查找到指定用户"));
+        user.wipeOffPassword(); // 擦除敏感数据
+        List<MedicalCard> medicalCards = medicalCardRepo.findBindMedicalCards(userId);  // 查询绑定的诊疗卡
+        List<Object[]> objects = collectDoctorRepo.findDoctorAndDepartmentByUserId(userId);
+        List<DoctorAndDepartment> doctorAndDepartments = CommonUtil.castEntity(objects, DoctorAndDepartment.class,
+                Arrays.asList(new CommonUtil.DefaultClass(2, String.class), new CommonUtil.DefaultClass(3, String.class),
+                        new CommonUtil.DefaultClass(4, String.class), new CommonUtil.DefaultClass(13, String.class))); // 查询用户收藏的医生机器医生对应的科室封装信息
+        Pageable pageable = PageRequest.of(0, defaultHealthArticle, Sort.by(Sort.Direction.DESC, "publishTime"));
+        List<HealthArticle> healthArticles = new ArrayList<>();
+        healthArticles.addAll(healthArticleRepo.findByType(HealthArticleType.HOSPITAL_ACTIVITY, pageable));// 医院活动,用于显示轮播图
+        healthArticles.addAll(healthArticleRepo.findByType(HealthArticleType.HEALTH_HEADLINE, pageable));// 健康头条
+        healthArticles.addAll(healthArticleRepo.findByType(HealthArticleType.PHYSICIAN_LECTURE, pageable)); // 专家讲座
+        return new UserLoginResult(user, medicalCards, doctorAndDepartments, healthArticles);
     }
 
 

@@ -7,7 +7,6 @@ import cn.nobitastudio.oss.helper.QuartzHelper;
 import cn.nobitastudio.oss.helper.ValidateCodeContainHelper;
 import cn.nobitastudio.oss.model.dto.RequestValidateCodeDTO;
 import cn.nobitastudio.oss.model.enumeration.SmsMessageType;
-import cn.nobitastudio.oss.model.vo.StandardMessage;
 import cn.nobitastudio.oss.repo.DepartmentRepo;
 import cn.nobitastudio.oss.repo.DoctorRepo;
 import cn.nobitastudio.oss.repo.OSSOrderRepo;
@@ -21,10 +20,10 @@ import cn.nobitastudio.oss.service.inter.ValidateService;
 import cn.nobitastudio.oss.service.inter.VisitService;
 import cn.nobitastudio.oss.util.CommonUtil;
 import cn.nobitastudio.oss.util.DateUtil;
-import cn.nobitastudio.oss.model.test.InitSchedulerJobVO;
-import cn.nobitastudio.oss.model.test.JobDetailVO;
-import cn.nobitastudio.oss.model.test.SimpleDepartmentVO;
-import cn.nobitastudio.oss.model.test.TriggerVO;
+import cn.nobitastudio.oss.model.normal.InitSchedulerJobVO;
+import cn.nobitastudio.oss.model.normal.JobDetailVO;
+import cn.nobitastudio.oss.model.normal.SimpleDepartmentVO;
+import cn.nobitastudio.oss.model.normal.TriggerVO;
 import cn.nobitastudio.oss.util.SnowFlakeUtil;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
@@ -38,9 +37,7 @@ import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static cn.nobitastudio.oss.helper.SmsHelper.*;
 
@@ -238,7 +235,7 @@ public class TestController {
     public ServiceResult<List<SimpleDepartmentVO>> get(@PathVariable(name = "id") Integer id) throws Exception {
         List<Object[]> objects = departmentRepo.findSimpleDepartments(id);
         try {
-            List<SimpleDepartmentVO> simpleDepartmentVOS = CommonUtil.castEntity(objects, SimpleDepartmentVO.class, String.class);
+            List<SimpleDepartmentVO> simpleDepartmentVOS = CommonUtil.castEntity(objects, SimpleDepartmentVO.class, Collections.singletonList(new CommonUtil.DefaultClass(2, String.class)));
             return ServiceResult.success(simpleDepartmentVOS);
         } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());

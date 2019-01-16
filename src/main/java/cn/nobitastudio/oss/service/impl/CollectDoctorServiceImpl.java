@@ -4,12 +4,16 @@ import cn.nobitastudio.common.criteria.SpecificationBuilder;
 import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.CollectDoctor;
+import cn.nobitastudio.oss.model.vo.DoctorAndDepartment;
 import cn.nobitastudio.oss.repo.CollectDoctorRepo;
 import cn.nobitastudio.oss.service.inter.CollectDoctorService;
+import cn.nobitastudio.oss.util.CommonUtil;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -85,7 +89,7 @@ public class CollectDoctorServiceImpl implements CollectDoctorService {
      */
     @Override
     public CollectDoctor collect(CollectDoctor collectDoctor) {
-        Optional<CollectDoctor> optionalCollectDoctor = collectDoctorRepo.findByUserIdAndDoctorId(collectDoctor.getUserId(),collectDoctor.getDoctorId());
+        Optional<CollectDoctor> optionalCollectDoctor = collectDoctorRepo.findByUserIdAndDoctorId(collectDoctor.getUserId(), collectDoctor.getDoctorId());
         if (optionalCollectDoctor.isPresent()) {
             throw new AppException("收藏失败,用户已收藏该医生");
         }
@@ -100,11 +104,25 @@ public class CollectDoctorServiceImpl implements CollectDoctorService {
      */
     @Override
     public String unCollect(CollectDoctor collectDoctor) {
-        Optional<CollectDoctor> optionalCollectDoctor = collectDoctorRepo.findByUserIdAndDoctorId(collectDoctor.getUserId(),collectDoctor.getDoctorId());
+        Optional<CollectDoctor> optionalCollectDoctor = collectDoctorRepo.findByUserIdAndDoctorId(collectDoctor.getUserId(), collectDoctor.getDoctorId());
         if (!optionalCollectDoctor.isPresent()) {
             throw new AppException("取消收藏失败,用户已取消收藏该医生");
         }
-        collectDoctorRepo.delete(collectDoctorRepo.findByUserIdAndDoctorId(collectDoctor.getUserId(),collectDoctor.getDoctorId()).orElseThrow(() -> new AppException("取消收藏失败,暂未收藏该医生")));
+        collectDoctorRepo.delete(collectDoctorRepo.findByUserIdAndDoctorId(collectDoctor.getUserId(), collectDoctor.getDoctorId()).orElseThrow(() -> new AppException("取消收藏失败,暂未收藏该医生")));
         return UN_COLLECT_SUCCESS;
+    }
+
+    /**
+     * 查询指定用户的收藏医生及其医生所对应的科室信息
+     *
+     * @return
+     */
+    @Override
+    public List<DoctorAndDepartment> getDoctorAndDepartments(Integer userId) {
+        List<Object[]> objects = collectDoctorRepo.findDoctorAndDepartmentByUserId(userId);
+        List<DoctorAndDepartment> doctorAndDepartments = CommonUtil.castEntity(objects, DoctorAndDepartment.class,
+                Arrays.asList(new CommonUtil.DefaultClass(2, String.class), new CommonUtil.DefaultClass(3, String.class),
+                        new CommonUtil.DefaultClass(4, String.class), new CommonUtil.DefaultClass(13, String.class)));
+        return doctorAndDepartments;
     }
 }

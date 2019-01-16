@@ -1,4 +1,4 @@
-package cn.nobitastudio.oss.model.test;
+package cn.nobitastudio.oss.model.normal;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

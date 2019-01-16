@@ -4,6 +4,7 @@ import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.model.dto.ModifyUserMobileDTO;
 import cn.nobitastudio.oss.model.dto.ModifyUserPasswordDTO;
+import cn.nobitastudio.oss.model.vo.UserLoginResult;
 import cn.nobitastudio.oss.model.vo.UserQueryVO;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.domain.PageImpl;
@@ -72,6 +73,7 @@ public interface UserService extends UserDetailsService {
 
     /**
      * 用户(更改)找回密码
+     *
      * @param user
      * @return
      */
@@ -79,9 +81,16 @@ public interface UserService extends UserDetailsService {
 
     /**
      * 用户更改绑定的手机号
+     *
      * @param user
      * @return
      */
     User modifyMobile(@JsonView(User.UserModifyMobileView.class) User user);
+
+    /**
+     * 用户登录成功后调用
+     * @return
+     */
+    UserLoginResult loginSuccess(Integer userId);
 
 }

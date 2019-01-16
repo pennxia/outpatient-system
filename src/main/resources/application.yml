@@ -41,3 +41,4 @@ oss.app.scanInterval: 5
 oss.app.maxBindCount: 5
 oss.app.autoLaunchScan: true
 oss.app.browser.loginPage: /html/login.html
+oss.app.healthArticle: 6           # 初始化时每种类型的健康资讯数量

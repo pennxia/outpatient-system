@@ -5,9 +5,7 @@ import cn.nobitastudio.common.criteria.Like;
 import cn.nobitastudio.oss.model.enumeration.Area;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -23,6 +21,8 @@ import java.io.Serializable;
 @Table(name = "department")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Department implements Serializable {
 
     private static final long serialVersionUID = -3712970229472760165L;

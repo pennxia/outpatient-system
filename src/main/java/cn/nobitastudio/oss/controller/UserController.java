@@ -5,6 +5,7 @@ import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.model.dto.ModifyUserPasswordDTO;
+import cn.nobitastudio.oss.model.vo.UserLoginResult;
 import cn.nobitastudio.oss.property.SecurityProperties;
 import cn.nobitastudio.oss.service.inter.UserService;
 import cn.nobitastudio.oss.model.vo.UserQueryVO;
@@ -76,6 +77,16 @@ public class UserController {
             }
         }
         return ServiceResult.failure("访问的服务需要身份认证,请引导用户到登录页");
+    }
+
+    @ApiOperation("用户登陆成功")
+    @GetMapping("/{userId}/login-success")
+    public ServiceResult<UserLoginResult> loginSuccess(@PathVariable(name = "userId") Integer userId) {
+        try {
+            return ServiceResult.success(userService.loginSuccess(userId));
+        } catch (AppException e) {
+            return ServiceResult.failure(e.getMessage());
+        }
     }
 
     @ApiOperation("用户验证")

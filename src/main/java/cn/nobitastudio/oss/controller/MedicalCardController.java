@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * @author chenxiong
@@ -81,11 +82,17 @@ public class MedicalCardController {
     public ServiceResult<MedicalCard> userCreateMedicalCard(@RequestBody CreateMedicalCardDTO createMedicalCardDTO) {
         try {
             MedicalCard medicalCard = medicalCardService.save(createMedicalCardDTO.getMedicalCard());
-            bindService.bind(new Bind(createMedicalCardDTO.getUserId(),medicalCard.getId()));
+            bindService.bind(new Bind(createMedicalCardDTO.getUserId(), medicalCard.getId()));
             return ServiceResult.success(medicalCard);
         } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());
         }
+    }
+
+    @ApiOperation("查询用户绑定的诊疗卡")
+    @GetMapping("/{userId}/medical-cards")
+    public ServiceResult<List<MedicalCard>> findBindMedicalCards(@PathVariable(name = "userId") Integer userId) {
+        return ServiceResult.success(medicalCardService.findBindMedicalCard(userId));
     }
 
 }

@@ -5,6 +5,8 @@ import cn.nobitastudio.oss.entity.MedicalCard;
 import cn.nobitastudio.oss.model.dto.CreateMedicalCardDTO;
 import org.springframework.data.domain.PageImpl;
 
+import java.util.List;
+
 /**
  * @author chenxiong
  * @email nobita0522@qq.com
@@ -47,4 +49,11 @@ public interface MedicalCardService {
      * @return
      */
     MedicalCard modify(MedicalCard medicalCard);
+
+    /**
+     * 查询指定用户绑定的诊疗卡
+     * @param userId
+     * @return
+     */
+    List<MedicalCard> findBindMedicalCard(Integer userId);
  }

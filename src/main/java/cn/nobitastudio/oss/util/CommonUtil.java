@@ -1,7 +1,6 @@
 package cn.nobitastudio.oss.util;
 
 import cn.nobitastudio.common.exception.AppException;
-import cn.nobitastudio.oss.model.enumeration.SmsMessageType;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -40,12 +39,12 @@ public final class CommonUtil {
      *
      * @param contents     从数据查询出来的结果,带转换
      * @param clazz        转换成指定的类型
-     * @param defaultClass 当查询结果为空时,默认使用的Class,将决定选择构造器,注意sql书写的顺序,决定第几个参数可能是null,调用时应该提前创建好构造函数,知道哪些字段可能是null
+     * @param defaultClasses 当查询结果为空时,默认使用的Class,将决定选择构造器,注意sql书写的顺序,决定第几个参数可能是null,调用时应该提前创建好构造函数,知道哪些字段可能是null
      * @param <T>
      * @return
      * @throws Exception
      */
-    public static <T> List<T> castEntity(List<Object[]> contents, Class<T> clazz, Class... defaultClass) {
+    public static <T> List<T> castEntity(List<Object[]> contents, Class<T> clazz, List<DefaultClass> defaultClasses) {
         List<T> ts = new ArrayList<T>();
         if (contents.size() == 0) {
             // 没有数据
@@ -54,13 +53,19 @@ public final class CommonUtil {
         Object[] columns = contents.get(0);
         Class[] paramsType = new Class[columns.length]; // 记录每个列的类型
         //确定构造方法
-        int k = 0;
         for (int i = 0; i < columns.length; i++) {
             if (columns[i] != null) {
                 paramsType[i] = columns[i].getClass();
             } else {
-                paramsType[i] = defaultClass[k];
-                k++;
+                for (DefaultClass defaultClass : defaultClasses) {
+                    if (defaultClass.column.equals(i)) {
+                        paramsType[i] = defaultClass.defaultClass;
+                        break;
+                    }
+                }
+                if (paramsType[i] == null) {
+                    throw new AppException("column ：" + i + "为Null的默认class未传入");
+                }
             }
         }
         Constructor<T> constructor = null; // 得到相关的构造函数
@@ -79,6 +84,19 @@ public final class CommonUtil {
             }
         }
         return ts;
+    }
+
+    /**
+     * 使用castEntity强转时结果可能是Null是传入的默认class对象,用于初始化构造函数
+     */
+    public static class DefaultClass {
+        public DefaultClass(Integer column, Class defaultClass) {
+            this.column = column;
+            this.defaultClass = defaultClass;
+        }
+
+        public Integer column;  // 从0开始
+        public Class defaultClass;
     }
 
     /**

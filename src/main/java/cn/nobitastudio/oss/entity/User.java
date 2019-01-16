@@ -54,6 +54,8 @@ public class User implements Serializable {
 
     public interface UserModifyMobileView extends UserIdView,UserMobileView {} // 用户更改绑定的手机号
 
+    public interface UserLoginView extends UserMobileView,UserPasswordView {} // 用户登录时的调用
+
     @ApiModelProperty("用户Id")
     @Column(name = "id")
     @Id
@@ -124,5 +126,9 @@ public class User implements Serializable {
         this.lastChangePassword = LocalDateTime.now();
         this.enable = Boolean.TRUE;
         this.unlocked = Boolean.TRUE;
+    }
+
+    public void wipeOffPassword() {
+        this.password = null;
     }
 }

@@ -3,14 +3,13 @@ package cn.nobitastudio.oss.controller;
 import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.oss.entity.CollectDoctor;
+import cn.nobitastudio.oss.model.vo.DoctorAndDepartment;
 import cn.nobitastudio.oss.service.inter.CollectDoctorService;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * @author chenxiong
@@ -40,6 +39,16 @@ public class CollectController {
     public ServiceResult<String> cancelCollect(@RequestBody CollectDoctor collectDoctor) {
         try {
             return ServiceResult.success(collectDoctorService.unCollect(collectDoctor));
+        } catch (AppException e) {
+            return ServiceResult.failure(e.getMessage());
+        }
+    }
+
+    @ApiOperation("查询指定用户收藏的医生以及对应科室封装信息")
+    @GetMapping("/{userId}/dt-and-dp")
+    public ServiceResult<List<DoctorAndDepartment>> getDoctorAndDepartments(@PathVariable(name = "userId") Integer userId) {
+        try {
+            return ServiceResult.success(collectDoctorService.getDoctorAndDepartments(userId));
         } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());
         }

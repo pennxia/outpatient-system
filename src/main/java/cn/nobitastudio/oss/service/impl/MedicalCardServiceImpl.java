@@ -10,6 +10,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * @author chenxiong
@@ -41,14 +42,14 @@ public class MedicalCardServiceImpl implements MedicalCardService {
      * 查询所有诊疗卡,结果进行分页
      *
      * @param medicalCard
-     * @param pager 分页参数
+     * @param pager       分页参数
      * @return
      */
     @Override
     public PageImpl<MedicalCard> getAll(MedicalCard medicalCard, Pager pager) {
-        Pageable pageable = PageRequest.of(pager.getPage(),pager.getLimit(),Sort.by(Sort.Direction.DESC,"createTime"));
-        Page<MedicalCard> drugs = medicalCardRepo.findAll(SpecificationBuilder.toSpecification(medicalCard),pageable);
-        return new PageImpl<>(drugs.getContent(),pageable,drugs.getTotalElements());
+        Pageable pageable = PageRequest.of(pager.getPage(), pager.getLimit(), Sort.by(Sort.Direction.DESC, "createTime"));
+        Page<MedicalCard> drugs = medicalCardRepo.findAll(SpecificationBuilder.toSpecification(medicalCard), pageable);
+        return new PageImpl<>(drugs.getContent(), pageable, drugs.getTotalElements());
     }
 
     /**
@@ -80,6 +81,17 @@ public class MedicalCardServiceImpl implements MedicalCardService {
         MedicalCard oldMedicalCard = medicalCardRepo.findById(medicalCard.getId()).orElseThrow(() -> new AppException("未查询到指定诊疗卡"));
         oldMedicalCard.update(medicalCard);
         return medicalCardRepo.save(oldMedicalCard);
+    }
+
+    /**
+     * 查询指定用户绑定的诊疗卡
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<MedicalCard> findBindMedicalCard(Integer userId) {
+        return medicalCardRepo.findBindMedicalCards(userId);
     }
 
 }
