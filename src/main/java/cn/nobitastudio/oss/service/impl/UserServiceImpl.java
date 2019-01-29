@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User add(@JsonView(User.UserCreateView.class) User user) throws IllegalAccessException {
+    public User add(User user) throws IllegalAccessException {
         // 检查该手机号是否已被注册
         if (userRepo.findByMobile(user.getMobile()).isPresent()) {
             throw new AppException("该手机号已注册");
@@ -196,7 +196,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserLoginResult loginSuccess(Integer userId) {
         User user = userRepo.findById(userId).orElseThrow(() -> new AppException("未查找到指定用户"));
-        user.wipeOffPassword(); // 擦除敏感数据
+        user.wipeOffPassword(); // 擦除密码等敏感数据
         List<MedicalCard> medicalCards = medicalCardRepo.findBindMedicalCards(userId);  // 查询绑定的诊疗卡
         List<Object[]> objects = collectDoctorRepo.findDoctorAndDepartmentByUserId(userId);
         List<DoctorAndDepartment> doctorAndDepartments = CommonUtil.castEntity(objects, DoctorAndDepartment.class,
