@@ -38,16 +38,9 @@ import static cn.nobitastudio.oss.scheduler.job.CheckValidateCodeContainerJob.DE
 @ComponentScan
 @EnableJpaRepositories("cn.nobitastudio.oss.repo")
 @EntityScan("cn.nobitastudio.oss.entity")
-public class SchedulerConfig implements ApplicationListener<ContextRefreshedEvent> {
+public class SchedulerConfig{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SchedulerConfig.class);
-
-    private Scheduler scheduler;
-
-    @Value(value = "${oss.app.autoLaunchScan:true}")
-    private Boolean autoLaunchScan;
-    @Value(value = "${oss.app.scanInterval:3}")
-    private Integer scanInterval;
 
     /*
      * 实例化SchedulerFactoryBean对象
@@ -84,55 +77,6 @@ public class SchedulerConfig implements ApplicationListener<ContextRefreshedEven
      */
     @Bean
     public Scheduler scheduler() throws IOException {
-        scheduler = schedulerFactoryBean().getScheduler();
-        return scheduler;
-    }
-
-    /**
-     * Handle an application event.
-     *
-     * @param event the event to respond to
-     */
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
-        try {
-            if (autoLaunchScan) {
-                Boolean scheduleLaunched = scheduler.isStarted();
-                LOGGER.info("schedule是否开启：" + scheduleLaunched);
-                if (!scheduleLaunched) {
-                    scheduler.startDelayed(5);
-                    LOGGER.info("启动schedule");
-                }
-                createCheckValidateCodeQuartzPlan();
-            }
-        } catch (SchedulerException e) {
-            LOGGER.error("启动 Scheduler 失败: " + e.getMessage(), e);
-        }
-    }
-
-    /**
-     * 创建检查验证码容器的调度策略
-     *
-     * @throws SchedulerException
-     */
-    private void createCheckValidateCodeQuartzPlan() throws SchedulerException {
-        TriggerKey checkValidateCodeTriggerKey = new TriggerKey(QuartzHelper.DEFAULT_CHECK_VALIDATE_CODE_CONTAINER_TRIGGER_NAME,
-                QuartzHelper.DEFAULT_CHECK_VALIDATE_CODE_CONTAINER_TRIGGER_GROUP);
-        JobKey checkValidateCodeJobKey = new JobKey(QuartzHelper.DEFAULT_CHECK_VALIDATE_CODE_CONTAINER_JOB_NAME,
-                QuartzHelper.DEFAULT_CHECK_VALIDATE_CODE_CONTAINER_JOB_GROUP);
-        Trigger checkValidateCodeTrigger = TriggerBuilder.newTrigger()
-                .withIdentity(checkValidateCodeTriggerKey)
-                .withSchedule(CalendarIntervalScheduleBuilder
-                        .calendarIntervalSchedule()  // 日期调度类
-                        .withIntervalInMinutes(scanInterval))   // 指定时间内进行查询
-                .build();
-        JobDetail checkValidateCodeJob = JobBuilder.newJob(CheckValidateCodeContainerJob.class)
-                .withIdentity(checkValidateCodeJobKey)
-                .build();
-        if (scheduler.checkExists(checkValidateCodeJobKey) && scheduler.checkExists(checkValidateCodeTriggerKey)) {
-            scheduler.unscheduleJob(checkValidateCodeTriggerKey);
-        }
-        scheduler.scheduleJob(checkValidateCodeJob, checkValidateCodeTrigger);
-        LOGGER.info("启动验证码容器检查调度策略,调度频度：" + scanInterval + "分钟,最长保存时间：" + DEFAULT_VALIDATE_CODE_SAVE_TIME + "小时");
+         return schedulerFactoryBean().getScheduler();
     }
 }

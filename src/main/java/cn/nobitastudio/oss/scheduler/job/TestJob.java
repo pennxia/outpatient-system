@@ -17,5 +17,6 @@ public class TestJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         logger.info("测试执行");
+
     }
 }

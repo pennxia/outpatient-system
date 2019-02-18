@@ -10,7 +10,6 @@ public class OSSApplication {
 
     public static void main(String[] args) {
         ApplicationContext applicationContext = SpringApplication.run(OSSApplication.class, args);
-        SpringBeanUtil.setApplicationContext(applicationContext);
     }
 
 }

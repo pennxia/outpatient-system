@@ -121,7 +121,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
      * 用户进行挂号操作
      * 产生一个挂号单 以及 一个待支付的订单
      * 强制串行执行
-     *
+     * 待优化，不同科室不需要串行，使用多个锁来实现。
      * @param registerDTO
      * @return
      */
