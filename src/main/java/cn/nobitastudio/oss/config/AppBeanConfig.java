@@ -44,6 +44,9 @@ public class AppBeanConfig implements ApplicationListener<ApplicationReadyEvent>
     @Value(value = "${oss.app.scanInterval:3}")
     private Integer scanInterval;
 
+    @Inject
+    Scheduler scheduler;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -80,9 +83,6 @@ public class AppBeanConfig implements ApplicationListener<ApplicationReadyEvent>
         LOGGER.info("启动验证码容器检查调度策略,调度频度：" + scanInterval + "分钟,最长保存时间：" + DEFAULT_VALIDATE_CODE_SAVE_TIME + "小时");
     }
 
-    @Inject
-    Scheduler scheduler;
-
     /**
      * Handle an application event.
      * <p>
@@ -102,25 +102,41 @@ public class AppBeanConfig implements ApplicationListener<ApplicationReadyEvent>
      */
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
+        startSchedule();
+        LOGGER.info("OSS 启动完成");
+    }
+
+    /**
+     * 将context 注入到普通的util中
+     */
+    private void injectContext(ApplicationContext applicationContext) {
+        SpringBeanUtil.setApplicationContext(applicationContext);
+        LOGGER.info("注入 context 成功");
+    }
+
+    /**
+     * 启动调度
+     */
+    private void startSchedule() {
         try {
             if (autoLaunchScan) {
                 Boolean scheduleLaunched = scheduler.isStarted();
                 LOGGER.info("schedule是否开启：" + scheduleLaunched);
                 if (!scheduleLaunched) {
                     scheduler.startDelayed(5);
-                    LOGGER.info("启动schedule");
+                    LOGGER.info("启动 schedule");
                 }
                 createCheckValidateCodeQuartzPlan();
+                LOGGER.info("启动 Scheduler Job计划成功");
             }
         } catch (SchedulerException e) {
             LOGGER.error("启动 Scheduler 失败: " + e.getMessage(), e);
         }
-        System.out.println("oss 启动完成");
     }
 
+    // 启动时调用
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        LOGGER.error("context 注入: " + applicationContext);
-        SpringBeanUtil.setApplicationContext(applicationContext);  // 将context 保存
+        injectContext(applicationContext);
     }
 }
