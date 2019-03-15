@@ -68,6 +68,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .failureHandler(ossAuthenticationFailureHandler)  // 登陆失败后的处理器
                 .and()
                 .authorizeRequests()
+                .anyRequest().permitAll()
 //                .antMatchers("/swagger-ui.html").hasRole(RoleName.ADMIN.name()) // 控制权限，角色应该拥有ROLE_XXX 这样的角色才能调用该接口 默认使用hasAuthority
                 .antMatchers("/user/login",securityProperties.getBrowser().getLoginPage()).permitAll()
                 .antMatchers("/test/**").permitAll() // 测试的一律通过

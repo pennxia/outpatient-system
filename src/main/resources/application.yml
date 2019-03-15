@@ -8,12 +8,18 @@ server:
 
 # spring
 spring:
-  # profiles:
-  #   active: dev
+  application:
+    name: oss
   datasource:
-    type: com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver
-    druid:
+    oss:
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      driverClassName: com.mysql.jdbc.Driver
+      filters: stat,wall,log4j
+      initialSize: 5
+      maxActive: 20
+      maxWait: 60000
+      minIdle: 5
+      type: com.alibaba.druid.pool.DruidDataSource
       url: jdbc:mysql://localhost:3306/oss?characterEncoding=utf8
       username: root
       password: cx19970522
@@ -28,7 +34,11 @@ spring:
   jpa:
     show-sql: false
 
-#spring.jpa.generate-ddl: true
+#  redis:
+#    host: redis.nobitastudio.cn
+#    port: 6379
+#    password: ""
+
 
 logging:
   level: info
