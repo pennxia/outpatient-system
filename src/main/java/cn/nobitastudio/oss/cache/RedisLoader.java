@@ -26,18 +26,13 @@ public class RedisLoader<T> {
     private RedisTemplate redisTemplate;
 
     public T load(String cacheKey, Callable<T> loader) {
-        return doLoad(cacheKey, loader, (ValueOperations valueOperations, T v) -> {
-            valueOperations.set(cacheKey, v);
-        });
+        return doLoad(cacheKey, loader, (valueOperations, t) -> valueOperations.set(cacheKey, t));
     }
 
     // 带时效性
     public T load(String cacheKey, Callable<T> loader, long time, TimeUnit unit) {
-        return doLoad(cacheKey, loader, (ValueOperations valueOperations, T v) -> {
-            valueOperations.set(cacheKey, v, time, unit);
-        });
+        return doLoad(cacheKey, loader, (valueOperations, t) -> valueOperations.set(cacheKey, t, time, unit));
     }
-
 
     private T doLoad(String cacheKey, Callable<T> loader, BiConsumer<ValueOperations, T> setter) {
         boolean exists = redisTemplate.hasKey(cacheKey);

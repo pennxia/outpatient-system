@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 public final class RedisUtil {
+
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -130,7 +132,6 @@ public final class RedisUtil {
         } catch (Exception e) {
             return false;
         }
-
     }
 
 }

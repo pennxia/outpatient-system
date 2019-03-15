@@ -78,6 +78,7 @@
         </pluginManagement>
     </build>
 
+    <!-- 对jar的版本进行管理,如果存在则按照这里面的版本 -->
     <dependencyManagement>
         <dependencies>
             <!-- 验证码 -->
@@ -217,7 +218,8 @@
         <dependency>
             <groupId>com.github.qcloudsms</groupId>
             <artifactId>qcloudsms</artifactId>
-            <version>1.0.2</version>
+            <!--<version>1.0.2</version>-->
+            <version>1.0.6</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->

@@ -68,7 +68,7 @@ public final class CommonUtil {
                 }
             }
         }
-        Constructor<T> constructor = null; // 得到相关的构造函数
+        Constructor<T> constructor; // 得到相关的构造函数
         try {
             constructor = clazz.getConstructor(paramsType);
         } catch (NoSuchMethodException e) {

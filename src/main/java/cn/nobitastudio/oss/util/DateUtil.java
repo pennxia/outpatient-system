@@ -22,6 +22,7 @@ public class DateUtil {
     public static final String DATE_FORMAT = "yyyyMMddHHmmss";
     public static final String SIMPLE_DATE_FORMAT = "yyyyMMdd";
 
+    // 由string  类型时间 格式化为指定格式
     public static String convertDate(String dateStr, String sourceFormat, String targetFormat) {
         if (StringUtils.isBlank(targetFormat)) {
             return null;
@@ -29,15 +30,15 @@ public class DateUtil {
         if (StringUtils.isBlank(sourceFormat)) {
             sourceFormat = STANDARD_DATE_FORMAT;
         }
-        SimpleDateFormat sdf = new SimpleDateFormat(sourceFormat);
+        SimpleDateFormat sourceSdf = new SimpleDateFormat(sourceFormat);
         try {
-            Date date = sdf.parse(dateStr);
-            if (date == null) {
+            Date sourceDate = sourceSdf.parse(dateStr);
+            if (sourceDate == null) {
                 return null;
             }
             SimpleDateFormat targetSdf = new SimpleDateFormat(targetFormat);
 
-            return targetSdf.format(date);
+            return targetSdf.format(sourceDate);
         } catch (ParseException ex) {
             logger.error("parse error", ex);
             return null;
