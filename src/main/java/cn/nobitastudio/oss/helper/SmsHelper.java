@@ -6,8 +6,7 @@ import cn.nobitastudio.oss.model.dto.ValidateCode;
 import cn.nobitastudio.oss.model.enumeration.SmsMessageType;
 import cn.nobitastudio.oss.model.vo.SmsSendResult;
 import cn.nobitastudio.oss.util.DateUtil;
-import com.github.qcloudsms.SmsSingleSender;
-import com.github.qcloudsms.SmsSingleSenderResult;
+import com.github.qcloudsms.*;
 import com.github.qcloudsms.httpclient.HTTPException;
 import org.quartz.JobDataMap;
 import org.slf4j.Logger;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -209,10 +209,15 @@ public class SmsHelper {
      *
      * @param args
      */
-    public static void main(String[] args) {
-        ArrayList<String> params = new ArrayList<>();
-        params.add("11111");
-        //new SmsUtil().sendSms("15709932234", 1, params);
+    public static void main(String[] args) throws HTTPException, IOException {
+//        SmsVoiceVerifyCodeSender vvcsender = new SmsVoiceVerifyCodeSender(APP_ID, APP_KEY);
+//        SmsVoiceVerifyCodeSenderResult result = vvcsender.send("86", "15709932234",
+//                "5678", 2, "");
+
+//        SmsVoicePromptSender vpsender = new SmsVoicePromptSender(APP_ID, APP_KEY);
+//        SmsVoicePromptSenderResult result2 = vpsender.send("86", "15709932234",
+//                2, 2, "5678", "");
+//        System.out.println(result2);
     }
 
 }
