@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="oss@localhost" read-only="true" uuid="a0a55075-642a-40f2-9b70-159ca6a59b4d">
+    <data-source source="LOCAL" name="@localhost" read-only="true" uuid="a0a55075-642a-40f2-9b70-159ca6a59b4d">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:3306/oss?characterEncoding=utf8</jdbc-url>
+      <jdbc-url>jdbc:mysql://localhost:3306/?characterEncoding=utf8</jdbc-url>
       <driver-properties>
         <property name="autoReconnect" value="true" />
         <property name="zeroDateTimeBehavior" value="convertToNull" />
@@ -15,13 +15,18 @@
         <property name="yearIsDateType" value="false" />
       </driver-properties>
     </data-source>
-    <data-source source="LOCAL" name="@localhost" read-only="true" uuid="7dca1436-57e9-46a8-beee-26db3e4b05a4">
-      <driver-ref>oracle</driver-ref>
+    <data-source source="LOCAL" name="@www.nobitastudio.cn" read-only="true" uuid="a29d2978-c0a2-479c-a3a1-fc85cb54ee9d">
+      <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
-      <jdbc-driver>oracle.jdbc.OracleDriver</jdbc-driver>
-      <jdbc-url>jdbc:oracle:thin:@localhost:1521:orcl</jdbc-url>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://www.nobitastudio.cn:3306</jdbc-url>
       <driver-properties>
-        <property name="v$session.program" value="DataGrip" />
+        <property name="autoReconnect" value="true" />
+        <property name="zeroDateTimeBehavior" value="convertToNull" />
+        <property name="tinyInt1isBit" value="false" />
+        <property name="characterEncoding" value="utf8" />
+        <property name="characterSetResults" value="utf8" />
+        <property name="yearIsDateType" value="false" />
       </driver-properties>
     </data-source>
   </component>

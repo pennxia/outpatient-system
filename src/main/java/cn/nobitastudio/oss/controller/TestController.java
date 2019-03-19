@@ -3,8 +3,10 @@ package cn.nobitastudio.oss.controller;
 import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.oss.entity.Test;
+import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.helper.QuartzHelper;
 import cn.nobitastudio.oss.helper.ValidateCodeContainHelper;
+import cn.nobitastudio.oss.model.Constant;
 import cn.nobitastudio.oss.model.dto.RequestValidateCodeDTO;
 import cn.nobitastudio.oss.model.enumeration.SmsMessageType;
 import cn.nobitastudio.oss.repo.DepartmentRepo;
@@ -16,6 +18,7 @@ import cn.nobitastudio.oss.scheduler.job.CheckValidateCodeContainerJob;
 import cn.nobitastudio.oss.scheduler.job.EatDrugRemindJob;
 import cn.nobitastudio.oss.scheduler.job.RemindJob;
 import cn.nobitastudio.oss.service.inter.TestService;
+import cn.nobitastudio.oss.service.inter.UserService;
 import cn.nobitastudio.oss.service.inter.ValidateService;
 import cn.nobitastudio.oss.service.inter.VisitService;
 import cn.nobitastudio.oss.util.CommonUtil;
@@ -76,6 +79,8 @@ public class TestController {
     private ValidateService validateService;
     @Inject
     private ValidateCodeContainHelper validateCodeContainHelper;
+    @Inject
+    private UserService userService;
 
 
     @ApiModelProperty("测试方法")
@@ -314,7 +319,16 @@ public class TestController {
         } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());
         }
+    }
 
+    @ApiOperation("测试登录")
+    @PostMapping("/test-login")
+    public ServiceResult<User> testLogin(@RequestBody User user) {
+        try {
+            return ServiceResult.success(userService.getByMobile("15709932234"));
+        } catch (AppException e) {
+            return ServiceResult.failure(e.getMessage(), Constant.NOT_FIND_USER_BY_MOBILE);
+        }
     }
 
 }
