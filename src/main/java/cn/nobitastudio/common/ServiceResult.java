@@ -3,7 +3,7 @@ package cn.nobitastudio.common;
 import cn.nobitastudio.common.view.EditableView;
 import cn.nobitastudio.common.view.ListView;
 import cn.nobitastudio.common.view.ReadableView;
-import cn.nobitastudio.oss.model.Constant;
+import cn.nobitastudio.oss.model.error.ErrorCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -92,7 +92,7 @@ public class ServiceResult<T> {
 
     public static <T> ServiceResult<T> failure(Object result) {
         ServiceResult<T> f = new ServiceResult<>(null, STATE_APP_EXCEPTION);
-        f.setError(result).setErrorCode(Constant.NORMAL_ERROR);
+        f.setError(result).setErrorCode(ErrorCode.UNKNOWN_ERROR);
         return f;
     }
 

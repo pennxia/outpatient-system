@@ -6,9 +6,9 @@ import cn.nobitastudio.oss.entity.Test;
 import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.helper.QuartzHelper;
 import cn.nobitastudio.oss.helper.ValidateCodeContainHelper;
-import cn.nobitastudio.oss.model.Constant;
 import cn.nobitastudio.oss.model.dto.RequestValidateCodeDTO;
 import cn.nobitastudio.oss.model.enumeration.SmsMessageType;
+import cn.nobitastudio.oss.model.error.ErrorCode;
 import cn.nobitastudio.oss.repo.DepartmentRepo;
 import cn.nobitastudio.oss.repo.DoctorRepo;
 import cn.nobitastudio.oss.repo.OSSOrderRepo;
@@ -325,9 +325,9 @@ public class TestController {
     @PostMapping("/test-login")
     public ServiceResult<User> testLogin(@RequestBody User user) {
         try {
-            return ServiceResult.success(userService.getByMobile("15709932234"));
+            return ServiceResult.success(userService.getByMobile(user.getMobile()));
         } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage(), Constant.NOT_FIND_USER_BY_MOBILE);
+            return ServiceResult.failure(e.getMessage(), ErrorCode.NOT_FIND_USER_BY_MOBILE);
         }
     }
 
