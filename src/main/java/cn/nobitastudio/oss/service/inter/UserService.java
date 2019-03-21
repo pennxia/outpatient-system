@@ -43,9 +43,8 @@ public interface UserService extends UserDetailsService {
      *
      * @param user
      * @return
-     * @throws IllegalAccessException
      */
-    User add(@JsonView(User.UserCreateView.class) User user) throws IllegalAccessException;
+    User add(@JsonView(User.UserCreateView.class) User user);
 
     /**
      * 用户修改基础信息,不可更改密码

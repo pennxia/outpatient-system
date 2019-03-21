@@ -118,7 +118,7 @@ public class UserController {
     public ServiceResult<User> register(@RequestBody @JsonView(User.UserCreateView.class) User user) {
         try {
             return ServiceResult.success(userService.add(user));
-        } catch (Exception e) {
+        } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());
         }
     }

@@ -94,7 +94,7 @@ public class User implements Serializable {
     @Column(name = "enable")
     private Boolean enable;
 
-    @ApiModelProperty("用户是否启用(0:未启用,1:启用)")
+    @ApiModelProperty("用户身份证号码")
     @Column(name = "id_card")
     @JsonView(UserIdCardView.class)
     private String idCard;

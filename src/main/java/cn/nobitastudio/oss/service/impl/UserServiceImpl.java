@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User add(User user) throws IllegalAccessException {
+    public User add(User user) {
         // 检查该手机号是否已被注册
         if (userRepo.findByMobile(user.getMobile()).isPresent()) {
             throw new AppException("该手机号已注册");
