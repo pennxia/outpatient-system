@@ -35,10 +35,10 @@ public class HealthArticle implements Serializable {
     @Equal
     private Integer id;
 
-    @ApiModelProperty("健康咨询图标id")
-    @Column(name = "icon_id")
+    @ApiModelProperty("图标的url")
+    @Column(name = "icon_url")
     @Equal
-    private String iconId;
+    private String iconUrl;
 
     @ApiModelProperty("健康咨询标题")
     @Column(name = "title")
@@ -71,6 +71,11 @@ public class HealthArticle implements Serializable {
     @Column(name = "url")
     @Equal
     private String url;
+
+    @ApiModelProperty("冗余字段,目前仅用于在名师讲堂的情况下.记录为视频的时间长度(单位:秒)")
+    @Column(name = "other_data")
+    @Equal
+    private String otherData;
 
 
 }

@@ -324,11 +324,7 @@ public class TestController {
     @ApiOperation("测试登录")
     @PostMapping("/test-login")
     public ServiceResult<User> testLogin(@RequestBody User user) {
-        try {
-            return ServiceResult.success(userService.getByMobile(user.getMobile()));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage(), ErrorCode.NOT_FIND_USER_BY_MOBILE);
-        }
+        return testService.login(user);
     }
 
 }

@@ -1,5 +1,7 @@
 package cn.nobitastudio.oss.service.inter;
 
+import cn.nobitastudio.common.ServiceResult;
+import cn.nobitastudio.oss.entity.User;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -14,4 +16,7 @@ public interface TestService {
     void test() ;
 
     String testConf();
+
+    // 登录
+    ServiceResult<User> login(User user);
 }
