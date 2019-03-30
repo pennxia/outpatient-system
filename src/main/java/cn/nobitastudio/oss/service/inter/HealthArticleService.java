@@ -4,6 +4,8 @@ import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.HealthArticle;
 import org.springframework.data.domain.PageImpl;
 
+import java.util.List;
+
 /**
  * @author chenxiong
  * @email nobita0522@qq.com
@@ -39,4 +41,10 @@ public interface HealthArticleService {
      * @return
      */
     HealthArticle save(HealthArticle healthArticle);
+
+    /**
+     * 用户第一次进入以及刷新时获取的最新资讯
+     * @return
+     */
+    List<HealthArticle> queryLatestArticles();
 }

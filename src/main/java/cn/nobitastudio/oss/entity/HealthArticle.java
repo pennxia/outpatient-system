@@ -35,7 +35,7 @@ public class HealthArticle implements Serializable {
     @Equal
     private Integer id;
 
-    @ApiModelProperty("图标的url")
+    @ApiModelProperty("图标的url,除去主机名的前部url：/pic/activity/activity1.png ")
     @Column(name = "icon_url")
     @Equal
     private String iconUrl;
@@ -67,7 +67,7 @@ public class HealthArticle implements Serializable {
     @Like
     private String label;
 
-    @ApiModelProperty("详细的url")
+    @ApiModelProperty("详细的url,不带有主机名: /activity/1")
     @Column(name = "url")
     @Equal
     private String url;

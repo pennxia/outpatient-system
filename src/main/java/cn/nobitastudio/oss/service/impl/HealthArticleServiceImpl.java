@@ -4,12 +4,16 @@ import cn.nobitastudio.common.criteria.SpecificationBuilder;
 import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.HealthArticle;
+import cn.nobitastudio.oss.model.enumeration.HealthArticleType;
 import cn.nobitastudio.oss.repo.HealthArticleRepo;
 import cn.nobitastudio.oss.service.inter.HealthArticleService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author chenxiong
@@ -26,6 +30,9 @@ public class HealthArticleServiceImpl implements HealthArticleService {
     @Inject
     private HealthArticleRepo healthArticleRepo;
 
+    @Value(value = "${oss.app.healthArticle:6}")
+    private Integer defaultHealthArticle;
+
     /**
      * 查询指定id健康资讯信息
      *
@@ -41,7 +48,7 @@ public class HealthArticleServiceImpl implements HealthArticleService {
      * 查询所有健康资讯,结果进行分页
      *
      * @param healthArticle
-     * @param pager         分页参数
+     * @param pager 分页参数
      * @return
      */
     @Override
@@ -72,5 +79,20 @@ public class HealthArticleServiceImpl implements HealthArticleService {
     @Override
     public HealthArticle save(HealthArticle healthArticle) {
         return healthArticleRepo.save(healthArticle);
+    }
+
+    /**
+     * 用户第一次进入以及刷新时获取的最新资讯
+     *
+     * @return
+     */
+    @Override
+    public List<HealthArticle> queryLatestArticles() {
+        Pageable pageable = PageRequest.of(0, defaultHealthArticle, Sort.by(Sort.Direction.DESC, "publishTime"));
+        List<HealthArticle> healthArticles = new ArrayList<>();
+        healthArticles.addAll(healthArticleRepo.findByType(HealthArticleType.HOSPITAL_ACTIVITY, pageable));// 医院活动,用于显示轮播图
+        healthArticles.addAll(healthArticleRepo.findByType(HealthArticleType.HEADLINE, pageable));// 健康头条
+        healthArticles.addAll(healthArticleRepo.findByType(HealthArticleType.DOCTOR_LECTURE, pageable)); // 专家讲座
+        return healthArticles;
     }
 }

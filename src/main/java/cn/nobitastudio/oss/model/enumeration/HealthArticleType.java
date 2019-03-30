@@ -11,9 +11,9 @@ import io.swagger.annotations.ApiModelProperty;
 public enum HealthArticleType {
 
     @ApiModelProperty("健康头条")
-    HEALTH_HEADLINE,
+    HEADLINE,
     @ApiModelProperty("名医讲堂")
-    PHYSICIAN_LECTURE,
+    DOCTOR_LECTURE,
     @ApiModelProperty("医院活动")
     HOSPITAL_ACTIVITY
 }

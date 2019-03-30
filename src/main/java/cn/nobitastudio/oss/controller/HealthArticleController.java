@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * @author chenxiong
@@ -59,6 +60,12 @@ public class HealthArticleController {
     @PostMapping
     public ServiceResult<HealthArticle> save(@RequestBody HealthArticle healthArticle) {
         return ServiceResult.success(healthArticleService.save(healthArticle));
+    }
+
+    @ApiOperation("查询最新的健康资讯消息，默认最新显示6条各类新闻")
+    @GetMapping("/queryLatestArticles")
+    public ServiceResult<List<HealthArticle>> queryLatestArticles() {
+        return ServiceResult.success(healthArticleService.queryLatestArticles());
     }
 
 

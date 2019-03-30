@@ -13,11 +13,9 @@ import cn.nobitastudio.oss.model.enumeration.HealthArticleType;
 import cn.nobitastudio.oss.model.vo.DoctorAndDepartment;
 import cn.nobitastudio.oss.model.vo.UserLoginResult;
 import cn.nobitastudio.oss.repo.*;
-import cn.nobitastudio.oss.service.inter.DoctorService;
 import cn.nobitastudio.oss.service.inter.UserService;
 import cn.nobitastudio.oss.util.CommonUtil;
 import cn.nobitastudio.oss.model.vo.UserQueryVO;
-import com.fasterxml.jackson.annotation.JsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +32,6 @@ import org.springframework.util.Assert;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -205,8 +202,8 @@ public class UserServiceImpl implements UserService {
         Pageable pageable = PageRequest.of(0, defaultHealthArticle, Sort.by(Sort.Direction.DESC, "publishTime"));
         List<HealthArticle> healthArticles = new ArrayList<>();
         healthArticles.addAll(healthArticleRepo.findByType(HealthArticleType.HOSPITAL_ACTIVITY, pageable));// 医院活动,用于显示轮播图
-        healthArticles.addAll(healthArticleRepo.findByType(HealthArticleType.HEALTH_HEADLINE, pageable));// 健康头条
-        healthArticles.addAll(healthArticleRepo.findByType(HealthArticleType.PHYSICIAN_LECTURE, pageable)); // 专家讲座
+        healthArticles.addAll(healthArticleRepo.findByType(HealthArticleType.HEADLINE, pageable));// 健康头条
+        healthArticles.addAll(healthArticleRepo.findByType(HealthArticleType.DOCTOR_LECTURE, pageable)); // 专家讲座
         return new UserLoginResult(user, medicalCards, doctorAndDepartments, healthArticles);
     }
 
