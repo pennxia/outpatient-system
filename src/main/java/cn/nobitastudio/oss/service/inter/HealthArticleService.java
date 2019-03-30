@@ -47,4 +47,11 @@ public interface HealthArticleService {
      * @return
      */
     List<HealthArticle> queryLatestArticles();
+
+    /**
+     * 进入健康资讯后查看健康资讯.不需查询医院活动,其中顶部轮播图默认显示前5条
+     * @return
+     * @param pager
+     */
+    List<HealthArticle> queryMore(Pager pager);
 }

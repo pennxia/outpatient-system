@@ -37,7 +37,7 @@ public class HealthArticleController {
     }
 
     @ApiOperation("查询分页后的健康资讯信息")
-    @PutMapping("/query")
+    @PostMapping("/query")
     public ServiceResult<PageImpl<HealthArticle>> query(@RequestBody HealthArticle healthArticle, Pager pager) {
         try {
             return ServiceResult.success(healthArticleService.getAll(healthArticle, pager));
@@ -68,5 +68,10 @@ public class HealthArticleController {
         return ServiceResult.success(healthArticleService.queryLatestArticles());
     }
 
+    @ApiOperation("进入健康资讯后查看健康资讯.不需查询医院活动,其中顶部轮播图默认显示前5条")
+    @GetMapping("/queryMore")
+    public ServiceResult<List<HealthArticle>> queryMore(Pager pager) {
+        return ServiceResult.success(healthArticleService.queryMore(pager));
+    }
 
 }

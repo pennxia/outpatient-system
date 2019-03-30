@@ -95,4 +95,20 @@ public class HealthArticleServiceImpl implements HealthArticleService {
         healthArticles.addAll(healthArticleRepo.findByType(HealthArticleType.DOCTOR_LECTURE, pageable)); // 专家讲座
         return healthArticles;
     }
+
+    /**
+     * 进入健康资讯后查看健康资讯.不需查询医院活动,其中顶部轮播图默认显示前5条
+     *
+     * @return
+     * @param pager
+     */
+    @Override
+    public List<HealthArticle> queryMore(Pager pager) {
+        Pageable pageable = PageRequest.of(pager.getPage(), pager.getLimit() + 5, Sort.by(Sort.Direction.DESC, "publishTime"));
+        Pageable pageable2 = PageRequest.of(pager.getPage(), pager.getLimit(), Sort.by(Sort.Direction.DESC, "publishTime"));
+        List<HealthArticle> healthArticles = new ArrayList<>();
+        healthArticles.addAll(healthArticleRepo.findByType(HealthArticleType.HEADLINE, pageable));// 健康头条  多5条
+        healthArticles.addAll(healthArticleRepo.findByType(HealthArticleType.DOCTOR_LECTURE, pageable2)); // 专家讲座
+        return healthArticles;
+    }
 }
