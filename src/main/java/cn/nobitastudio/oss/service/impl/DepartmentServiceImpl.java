@@ -10,6 +10,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * @author chenxiong
@@ -48,6 +49,16 @@ public class DepartmentServiceImpl implements DepartmentService {
         Pageable pageable = PageRequest.of(pager.getPage(), pager.getLimit(), Sort.by(Sort.Direction.ASC, "id"));
         Page<Department> departments = departmentRepo.findAll(SpecificationBuilder.toSpecification(department), pageable);
         return new PageImpl<>(departments.getContent(), pageable, departments.getTotalElements());
+    }
+
+    /**
+     * 查询全部科室信息
+     *
+     * @return
+     */
+    @Override
+    public List<Department> getAll() {
+        return departmentRepo.findAll(null, Sort.by(Sort.Direction.ASC, "id"));
     }
 
     /**

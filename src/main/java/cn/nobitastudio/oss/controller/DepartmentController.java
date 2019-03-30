@@ -5,12 +5,14 @@ import cn.nobitastudio.common.criteria.CriteriaException;
 import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.Department;
+import cn.nobitastudio.oss.model.error.ErrorCode;
 import cn.nobitastudio.oss.service.inter.DepartmentService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * @author chenxiong
@@ -35,14 +37,20 @@ public class DepartmentController {
         }
     }
 
-    @ApiOperation("查询分页后的基础信息")
-    @PutMapping("/query")
+    @ApiOperation("查询科室信息，分页查询.默认不调用该接口")
+    @PostMapping("/query")
     public ServiceResult<PageImpl<Department>> query(@RequestBody Department department, Pager pager) {
         try {
             return ServiceResult.success(departmentService.getAll(department, pager));
         } catch (CriteriaException e) {
             return ServiceResult.failure(e.getMessage());
         }
+    }
+
+    @ApiOperation("查询全部科室信息")
+    @GetMapping
+    public ServiceResult<List<Department>> query() {
+        return ServiceResult.success(departmentService.getAll());
     }
 
     @ApiOperation("删除指定科室")

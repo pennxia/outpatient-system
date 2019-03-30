@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 /**
  * @author chenxiong
  * @email nobita0522@qq.com
@@ -30,6 +32,12 @@ public interface DepartmentService {
      * @return
      */
     PageImpl<Department> getAll(Department department, Pager pager);
+
+    /**
+     * 查询全部科室信息
+     * @return
+     */
+    List<Department> getAll();
 
     /**
      * 删除指定id科室
