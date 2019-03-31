@@ -4,6 +4,8 @@ import cn.nobitastudio.oss.entity.Visit;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -14,5 +16,7 @@ import java.util.Optional;
  */
 public interface VisitRepo extends CrudRepository<Visit, Integer>, JpaSpecificationExecutor {
 
-    Optional<Visit> findByDoctorId(Integer doctorId);
+    List<Visit> findByDoctorId(Integer doctorId);
+
+    List<Visit> findByDoctorIdAndAndDiagnosisTimeBetween(Integer doctorId, LocalDateTime startTime, LocalDateTime endTime);
 }

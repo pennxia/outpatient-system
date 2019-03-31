@@ -33,7 +33,7 @@ public class DoctorAndDepartment implements Serializable {
                                String doctorLevel, Integer doctorDepartmentId,
                                Integer departmentId, String departmentName, String departmentAddress, Integer departmentLocation,  // department
                                Integer departmentFloor, String area, String departmentIntroduction) {
-        this.doctor = new Doctor(doctorId, doctorName, doctorSpecialty, doctorSubMajor, doctorIntroduction, DoctorLevel.valueOf(doctorLevel), doctorDepartmentId);
+//        this.doctor = new Doctor(doctorId, doctorName, doctorSpecialty, doctorSubMajor, doctorIntroduction, DoctorLevel.valueOf(doctorLevel), doctorDepartmentId);
         this.department = new Department(departmentId, departmentName, departmentAddress, departmentLocation, departmentFloor, Area.valueOf(area), departmentIntroduction);
     }
 

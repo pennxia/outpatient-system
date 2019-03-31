@@ -4,6 +4,7 @@ import cn.nobitastudio.common.criteria.SpecificationBuilder;
 import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.CollectDoctor;
+import cn.nobitastudio.oss.model.error.ErrorCode;
 import cn.nobitastudio.oss.model.vo.DoctorAndDepartment;
 import cn.nobitastudio.oss.repo.CollectDoctorRepo;
 import cn.nobitastudio.oss.service.inter.CollectDoctorService;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -91,8 +93,9 @@ public class CollectDoctorServiceImpl implements CollectDoctorService {
     public CollectDoctor collect(CollectDoctor collectDoctor) {
         Optional<CollectDoctor> optionalCollectDoctor = collectDoctorRepo.findByUserIdAndDoctorId(collectDoctor.getUserId(), collectDoctor.getDoctorId());
         if (optionalCollectDoctor.isPresent()) {
-            throw new AppException("收藏失败,用户已收藏该医生");
+            throw new AppException("收藏失败,用户已收藏该医生",ErrorCode.HAS_COLLECT_DOCTOR);
         }
+        collectDoctor.setCreateTime(LocalDateTime.now());
         return collectDoctorRepo.save(collectDoctor);
     }
 

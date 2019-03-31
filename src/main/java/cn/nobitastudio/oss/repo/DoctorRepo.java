@@ -19,4 +19,6 @@ public interface DoctorRepo extends CrudRepository<Doctor,Integer>,JpaSpecificat
 
     @Query(value = "select d.* from doctor d,collect_doctor c where c.user_id = ?1 and c.doctor_id = d.id order by c.create_time desc",nativeQuery = true)
     List<Doctor> findCollectDoctor(Integer id);
+
+    List<Doctor> findByDepartmentId(Integer departmentId);
 }

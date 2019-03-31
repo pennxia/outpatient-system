@@ -58,6 +58,10 @@ public class Doctor implements Serializable {
     @Enumerated(EnumType.STRING)
     private DoctorLevel level;
 
+    @ApiModelProperty("医生头像url:/pic/doctor/doctor1.png")
+    @Column(name = "icon_url")
+    private String iconUrl;
+
     @ApiModelProperty("所属科室")
     @Column(name = "department_id")
     @Equal

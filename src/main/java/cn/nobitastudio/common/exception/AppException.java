@@ -39,6 +39,11 @@ public class AppException extends RuntimeException {
         super(message);
     }
 
+    public AppException(String message, String errorCode) {
+        super(message);
+        this.errorCode = errorCode;
+    }
+
     public AppException(Throwable cause) {
         super(cause);
     }
@@ -89,7 +94,6 @@ public class AppException extends RuntimeException {
 
         return builder.toString();
     }
-
 
 
 }

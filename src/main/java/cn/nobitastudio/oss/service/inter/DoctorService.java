@@ -2,6 +2,7 @@ package cn.nobitastudio.oss.service.inter;
 
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.Doctor;
+import cn.nobitastudio.oss.model.dto.DoctorAndVisit;
 import org.springframework.data.domain.PageImpl;
 
 import java.util.List;
@@ -48,8 +49,16 @@ public interface DoctorService {
 
     /**
      * 查询指定用户的收藏医生
+     *
      * @param userId
      * @return
      */
     List<Doctor> getCollectDoctor(Integer userId);
+
+    /**
+     * 根据科室id 获取指定科室下的全部医生以及其对应最近一周的挂号信息
+     * @param departmentId
+     * @return
+     */
+    List<DoctorAndVisit> getDoctorsByDepartmentId(Integer departmentId);
 }

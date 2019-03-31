@@ -3,9 +3,7 @@ package cn.nobitastudio.oss.entity;
 import cn.nobitastudio.common.criteria.Equal;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,6 +20,8 @@ import java.time.LocalDateTime;
 @Table(name = "collect_doctor")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CollectDoctor  implements Serializable {
 
     private static final long serialVersionUID = 2521556559394088770L;
@@ -48,4 +48,9 @@ public class CollectDoctor  implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Equal
     private LocalDateTime createTime;
+
+    public CollectDoctor(Integer userId, Integer doctorId) {
+        this.userId = userId;
+        this.doctorId = doctorId;
+    }
 }
