@@ -1,4 +1,4 @@
-package cn.nobitastudio.oss.util;
+package cn.nobitastudio.oss.helper;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -15,10 +15,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * @Auther: zhangt
  * @Date: 2018-12-7 14:51
- * @Description: redis工具类
+ * @Description: redis助手
  */
 @Component
-public final class RedisUtil {
+public final class RedisHelper {
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
@@ -40,13 +40,34 @@ public final class RedisUtil {
     }
 
     /**
+     * 存入缓存 带有时效性
+     *
+     * @param key
+     * @param value
+     * @return 最长的保存时间
+     */
+    public boolean set(String key, Object value, long time, TimeUnit unit) {
+        try {
+            redisTemplate.opsForValue().set(key, value, time, unit);
+            return true;
+        } catch (Exception e) {
+
+            return false;
+        }
+    }
+
+    /**
      * 根据Key获取数据
      *
      * @param key
      * @return
      */
-    public Object get(String key) {
-        return key == null ? null : redisTemplate.opsForValue().get(key);
+    public <T> T get(String key) {
+        return key == null ? null : (T)redisTemplate.opsForValue().get(key);
+    }
+
+    public <T> T get(String key,Class<T> tClass) {
+        return key == null ? null : (T)redisTemplate.opsForValue().get(key);
     }
 
     public Map<String, Object> get(List<String> keys) {

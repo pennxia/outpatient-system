@@ -21,8 +21,8 @@ import javax.inject.Inject;
  * @description
  */
 @RestController
-@RequestMapping("/validate")
-public class ValidateController {
+@RequestMapping("/sms-validate")
+public class SmsValidateController {
 
     @Inject
     private ValidateService validateService;
