@@ -180,7 +180,9 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
     }
 
     /**
-     * 用户支付完成.确认还挂号单以及对应的订单.
+     * 用户支付完成.确认还挂号单以及对应的订单. 调用该接口前需要检查订单状态.该接口调用会保证一定会支付成功.
+     * 该接口不由用户进行调用。还是支付成功后的回调.用户支付后一直检查订单状态.
+     * 测试的情况下.让用户调用该接口.
      *
      * @param confirmRegisterDTO
      * @return
