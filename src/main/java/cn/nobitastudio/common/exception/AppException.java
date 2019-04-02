@@ -95,5 +95,7 @@ public class AppException extends RuntimeException {
         return builder.toString();
     }
 
-
+    public String getErrorCode() {
+        return errorCode;
+    }
 }

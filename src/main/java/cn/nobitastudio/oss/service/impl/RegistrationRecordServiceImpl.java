@@ -4,9 +4,12 @@ import cn.nobitastudio.common.criteria.SpecificationBuilder;
 import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.*;
+import cn.nobitastudio.oss.helper.RedisHelper;
 import cn.nobitastudio.oss.model.dto.ConfirmRegisterDTO;
+import cn.nobitastudio.oss.model.dto.ImageValidateCode;
 import cn.nobitastudio.oss.model.dto.RegisterDTO;
 import cn.nobitastudio.oss.model.enumeration.*;
+import cn.nobitastudio.oss.model.error.ErrorCode;
 import cn.nobitastudio.oss.model.vo.ConfirmOrCancelRegisterVO;
 import cn.nobitastudio.oss.model.vo.RegistrationBasicInfoCollection;
 import cn.nobitastudio.oss.model.vo.RegistrationRecordAndOrder;
@@ -68,6 +71,8 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
     private ContainRepo containRepo;
     @Inject
     private ExecutorService executorService;  //  cacheThreadPool
+    @Inject
+    private RedisHelper redisHelper;
 
     /**
      * 查询指定id挂号记录信息
@@ -128,10 +133,21 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
     @Transactional
     @Override
     public synchronized RegistrationRecord register(RegisterDTO registerDTO) {
+        // 检查图片验证码
+        ImageValidateCode imageValidateCode = redisHelper.get(registerDTO.getUserId().toString(),ImageValidateCode.class);
+        redisHelper.del(registerDTO.getUserId().toString());  // 验证过的验证码一定清除不管是否正确
+        if (imageValidateCode == null || !imageValidateCode.getCaptcha().equals(registerDTO.getCaptcha())) {
+            // 验证码错误 ：因为请求验证码或者验证码保存时间超时:3600秒 输入错误
+            throw new AppException("验证码错误",ErrorCode.CAPTCHA_ERROR);
+        } else if (imageValidateCode.getExpireTime().isBefore(LocalDateTime.now())) {
+            // 验证码已过有效期
+            throw new AppException("验证码已过时",ErrorCode.CAPTCHA_EXPIRE);
+        }
+
         // 待实现
         Visit visit = visitRepo.findById(registerDTO.getVisitId()).orElseThrow(() -> new AppException("未查询到指定号源信息"));
         if (visit.getLeftAmount().equals(0)) {
-            throw new AppException("挂号失败,该号源已全部挂完");
+            throw new AppException("挂号失败,该号源已全部挂完",ErrorCode.VISIT_NO_LEFT);
         }
         User user = userRepo.findById(registerDTO.getUserId()).orElseThrow(() -> new AppException("未查找到指定用户"));
         MedicalCard medicalCard = medicalCardRepo.findById(registerDTO.getMedicalCardId()).orElseThrow(() -> new AppException("未查找到指定诊疗卡"));

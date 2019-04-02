@@ -7,6 +7,7 @@ import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.RegistrationRecord;
 import cn.nobitastudio.oss.model.dto.ConfirmRegisterDTO;
 import cn.nobitastudio.oss.model.dto.RegisterDTO;
+import cn.nobitastudio.oss.model.error.ErrorCode;
 import cn.nobitastudio.oss.model.vo.ConfirmOrCancelRegisterVO;
 import cn.nobitastudio.oss.model.vo.RegistrationBasicInfoCollection;
 import cn.nobitastudio.oss.model.vo.RegistrationRecordAndOrder;
@@ -74,9 +75,9 @@ public class RegistrationRecordController {
         try {
             return ServiceResult.success(registrationRecordService.register(registerDTO));
         } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
+            return ServiceResult.failure(ErrorCode.get(e.getErrorCode()),e.getErrorCode());
         } catch (Exception e) {
-            return ServiceResult.failure("未知异常:" + e.getMessage());
+            return ServiceResult.failure(ErrorCode.get(ErrorCode.UNKNOWN_ERROR),ErrorCode.UNKNOWN_ERROR);
         }
     }
 

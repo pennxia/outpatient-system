@@ -49,10 +49,8 @@ public class ImageValidateController {
         ImageValidateCode imageValidateCode = new ImageValidateCode(userId, captcha);
         //保存到redis
         redisHelper.set(userId, imageValidateCode, captchaExpireTime, TimeUnit.SECONDS);
-//
-//
-////        ServletOutputStream out = response.getOutputStream();
-////        ImageIO.write(bufferedImage, "jpg", out);
+        ServletOutputStream out = response.getOutputStream();
+        ImageIO.write(bufferedImage, "jpg", out);
     }
 
     @ApiOperation("用户请求图片验证码")

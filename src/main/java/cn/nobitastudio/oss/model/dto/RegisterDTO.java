@@ -1,7 +1,9 @@
 package cn.nobitastudio.oss.model.dto;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -14,6 +16,8 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegisterDTO implements Serializable {
 
     private static final long serialVersionUID = -4329830827839495650L;
@@ -24,4 +28,6 @@ public class RegisterDTO implements Serializable {
     private String medicalCardId;
     @ApiModelProperty("号源id")
     private Integer visitId;
+    @ApiModelProperty("用户输入的图片验证码")
+    private String captcha;
 }
