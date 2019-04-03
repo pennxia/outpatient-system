@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -21,6 +22,6 @@ public interface OSSOrderRepo extends CrudRepository<OSSOrder, String>, JpaSpeci
 
     @Query(value = "select o.* from oss_order o,contain c,registration_record r" +
             "  where o.id = c.order_id and c.item_type = 'REGISTRATION_RECORD' and c.item_id = r.id and" +
-            "        r.medical_card_id = ?1 and r.visit_id = ?2;", nativeQuery = true)
-    Optional<OSSOrder> findByMedicalCardIdAndVisitId(String medicalCardId, Integer visitId);
+            "        r.medical_card_id = ?1 and r.visit_id = ?2", nativeQuery = true)
+    List<OSSOrder> findByMedicalCardIdAndVisitId(String medicalCardId, Integer visitId);
 }

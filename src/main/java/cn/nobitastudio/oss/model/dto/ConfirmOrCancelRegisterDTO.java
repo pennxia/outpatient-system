@@ -1,4 +1,4 @@
-package cn.nobitastudio.oss.model.vo;
+package cn.nobitastudio.oss.model.dto;
 
 import cn.nobitastudio.oss.entity.OSSOrder;
 import cn.nobitastudio.oss.entity.RegistrationRecord;
@@ -20,7 +20,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConfirmOrCancelRegisterVO implements Serializable {
+public class ConfirmOrCancelRegisterDTO implements Serializable {
 
     private static final long serialVersionUID = 1046437035255760058L;
 

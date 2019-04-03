@@ -22,6 +22,7 @@ public class ErrorCode {
     public static final String CAPTCHA_ERROR = "CAPTCHA_ERROR"; // 验证码错误
     public static final String CAPTCHA_EXPIRE = "CAPTCHA_EXPIRE"; // 验证码已过时
     public static final String VISIT_NO_LEFT = "VISIT_NO_LEFT"; // 挂号失败,该号源已全部挂完
+    public static final String NOT_FIND_ORDER = "NOT_FIND_ORDER"; // 未找到指定订单
 
     public static String get(String errorCode) {
         if (errorCodeContainer == null) {
@@ -40,6 +41,7 @@ public class ErrorCode {
         errorCodeContainer.put(CAPTCHA_ERROR, "验证码错误");
         errorCodeContainer.put(CAPTCHA_EXPIRE,"验证码已过时");
         errorCodeContainer.put(VISIT_NO_LEFT,"挂号失败,该号源已全部挂完");
+        errorCodeContainer.put(NOT_FIND_ORDER,"未找到指定订单");
     }
 
 }

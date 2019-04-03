@@ -5,6 +5,8 @@ import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.OSSOrder;
 import cn.nobitastudio.oss.entity.OSSOrder;
+import cn.nobitastudio.oss.model.enumeration.OrderState;
+import cn.nobitastudio.oss.model.error.ErrorCode;
 import cn.nobitastudio.oss.repo.OSSOrderRepo;
 import cn.nobitastudio.oss.service.inter.OrderService;
 import org.springframework.data.domain.*;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author chenxiong
@@ -36,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public OSSOrder getById(String id) {
-        return ossOrderRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定订单信息"));
+        return ossOrderRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定订单信息", ErrorCode.NOT_FIND_ORDER));
     }
 
     /**
@@ -94,6 +97,22 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public OSSOrder getByMedicalCardIdAndVisitId(String medicalCardId, Integer visitId) {
-        return ossOrderRepo.findByMedicalCardIdAndVisitId(medicalCardId,visitId).orElseThrow(() -> new AppException("未查找到指定订单详情"));
+        return ossOrderRepo.findByMedicalCardIdAndVisitId(medicalCardId, visitId).get(0);
+    }
+
+    @Override
+    public OSSOrder getByIdForPayResult(String id) throws InterruptedException {
+        for (int i = 0; i < 10; i++) {
+            OSSOrder ossOrder = ossOrderRepo.findById(id).orElseThrow(
+                    () -> new AppException(ErrorCode.get(ErrorCode.NOT_FIND_ORDER), ErrorCode.NOT_FIND_ORDER));
+            if (ossOrder.getState().equals(OrderState.HAVE_PAY)) {
+                return ossOrder;
+            } else {
+                System.out.println(ossOrder.getState().name());
+                Thread.sleep(1000);
+            }
+        }
+        return ossOrderRepo.findById(id).orElseThrow(
+                () -> new AppException(ErrorCode.get(ErrorCode.NOT_FIND_ORDER), ErrorCode.NOT_FIND_ORDER));
     }
 }

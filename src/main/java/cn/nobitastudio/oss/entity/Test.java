@@ -20,9 +20,20 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Test {
+
+    public Test(String trContent) {
+        this.trContent = trContent;
+    }
+
     @ApiModelProperty("Id")
     @Column(name = "id")
     @Id
     @Equal
     private String id;
+
+    @Column(name = "ccc")
+    private Double ccc;
+
+    @Column(name = "tr_content")
+    private String trContent;
 }

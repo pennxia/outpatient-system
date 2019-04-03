@@ -2,7 +2,9 @@ package cn.nobitastudio.oss.model.dto;
 
 import cn.nobitastudio.oss.model.enumeration.PaymentChannel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.EnumType;
@@ -17,6 +19,8 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ConfirmRegisterDTO implements Serializable {
 
     private static final long serialVersionUID = -6966923386468771663L;

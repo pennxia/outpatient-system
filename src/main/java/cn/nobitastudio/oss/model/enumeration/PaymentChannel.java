@@ -15,8 +15,12 @@ public enum PaymentChannel {
     ALI_PAY,
     @ApiModelProperty("银联支付")
     UNION_PAY,
+    @ApiModelProperty("QQ钱包")
+    QQ_WALLET,
     @ApiModelProperty("医院现金支付")
     HOSPITAL_MONEY,
     @ApiModelProperty("医院诊疗卡支付")
-    HOSPITAL_MEDICAL_CAR
+    HOSPITAL_MEDICAL_CAR,
+    @ApiModelProperty("未定义支付方式")
+    UNDEFINED;
 }

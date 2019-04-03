@@ -1,5 +1,6 @@
 package oss;
 
+import com.iwellmass.core.util.MD5;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,6 +175,17 @@ public class NormalTest {
         List<Integer> lines = Arrays.asList(3, 5, 4);
         lines = lines.stream().sorted((o1, o2) -> o1 > o2 ? -1 : 1).collect(Collectors.toList());
         System.out.println(lines);
+    }
+
+    @Test
+    public void test8() {
+        Double a = 100.0121314;
+        a = a * 100;
+        System.out.println(a.longValue());
+
+        System.out.println(MD5.calc("1=2&c=3").toUpperCase());
+
+        System.out.println(System.currentTimeMillis());
     }
 
 

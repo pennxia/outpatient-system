@@ -1,5 +1,7 @@
 package cn.nobitastudio.common.exception;
 
+import cn.nobitastudio.oss.model.error.ErrorCode;
+
 /**
  * 系统业务异常基础类
  */
@@ -97,5 +99,9 @@ public class AppException extends RuntimeException {
 
     public String getErrorCode() {
         return errorCode;
+    }
+
+    public String getErrorInfo() {
+        return ErrorCode.get(errorCode);
     }
 }

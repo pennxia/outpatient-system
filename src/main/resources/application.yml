@@ -61,3 +61,5 @@ oss.app.browser.loginPage: /html/login.html
 oss.app.healthArticle: 7           # 初始化时每种类型的健康资讯数量
 oss.app.visit.interval: 30         # 用户能挂到未来号的间隔天数.
 oss.app.captcha.expireTime: 3600         # 验证码在redis中保存的时间长短  以秒未单位
+oss.app.trPay.appKey: be6c44e655104d3d90e0d42432eb3c4d # 默认是测试账户
+oss.app.trPay.appSecret: ba16f60bbb634a7aa406e883ae92e4a4 # 默认是测试账户

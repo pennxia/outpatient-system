@@ -10,7 +10,7 @@ import cn.nobitastudio.oss.model.dto.ImageValidateCode;
 import cn.nobitastudio.oss.model.dto.RegisterDTO;
 import cn.nobitastudio.oss.model.enumeration.*;
 import cn.nobitastudio.oss.model.error.ErrorCode;
-import cn.nobitastudio.oss.model.vo.ConfirmOrCancelRegisterVO;
+import cn.nobitastudio.oss.model.dto.ConfirmOrCancelRegisterDTO;
 import cn.nobitastudio.oss.model.vo.RegistrationBasicInfoCollection;
 import cn.nobitastudio.oss.model.vo.RegistrationRecordAndOrder;
 import cn.nobitastudio.oss.model.vo.SmsSendResult;
@@ -188,7 +188,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
      * @return
      */
     @Override
-    public ConfirmOrCancelRegisterVO confirmRegister(ConfirmRegisterDTO confirmRegisterDTO) {
+    public ConfirmOrCancelRegisterDTO confirmRegister(ConfirmRegisterDTO confirmRegisterDTO) {
         RegistrationRecord registrationRecord = registrationRecordRepo.findById(confirmRegisterDTO.getRegistrationRecordId()).orElseThrow(() -> new AppException("未查找到指定的挂号"));
         OSSOrder ossOrder = ossOrderRepo.findByRegistrationId(confirmRegisterDTO.getRegistrationRecordId()).orElseThrow(() -> new AppException("未查找到该挂号单对应的订单"));
         Visit visit = visitRepo.findById(registrationRecord.getVisitId()).orElseThrow(() -> new AppException("未查询到指定号源信息"));
@@ -198,6 +198,10 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
         Department department = departmentRepo.findById(doctor.getDepartmentId()).orElseThrow(() -> new AppException("未查找到指定科室信息"));
         DiagnosisRoom diagnosisRoom = diagnosisRoomRepo.findById(visit.getDiagnosisRoomId()).orElseThrow(() -> new AppException("未查询到指定诊疗室"));
         // 更改订单状态
+//        if (ossOrder.getState().equals(OrderState.WAITING_PAY)) {
+//            // 仅允许等待状态进行状态更换
+//            ossOrder.setState(OrderState.HAVE_PAY);
+//        }
         ossOrder.setState(OrderState.HAVE_PAY);
         // 设置支付渠道
         ossOrder.setPaymentChannel(confirmRegisterDTO.getPaymentChannel());
@@ -229,7 +233,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
                 logger.info("取消未来就诊提醒quartz计划失败,triggerKey:" + triggerKey);
             }
         });
-        return new ConfirmOrCancelRegisterVO(ossOrder, registrationRecord);
+        return new ConfirmOrCancelRegisterDTO(ossOrder, registrationRecord);
     }
 
     /**
@@ -239,7 +243,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
      * @return
      */
     @Override
-    public ConfirmOrCancelRegisterVO cancelRegister(String id) {
+    public ConfirmOrCancelRegisterDTO cancelRegister(String id) {
         RegistrationRecord registrationRecord = registrationRecordRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定的挂号"));
         OSSOrder ossOrder = ossOrderRepo.findByRegistrationId(id).orElseThrow(() -> new AppException("未查找到该挂号单对应的订单"));
         Visit visit = visitRepo.findById(registrationRecord.getVisitId()).orElseThrow(() -> new AppException("未查询到指定号源信息"));
@@ -274,7 +278,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
         } else {
             throw new AppException("该挂号单已处于取消预约状态,请勿重复取消");
         }
-        return new ConfirmOrCancelRegisterVO(ossOrder, registrationRecord);
+        return new ConfirmOrCancelRegisterDTO(ossOrder, registrationRecord);
     }
 
     /**

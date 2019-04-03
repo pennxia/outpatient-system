@@ -8,7 +8,7 @@ import cn.nobitastudio.oss.entity.RegistrationRecord;
 import cn.nobitastudio.oss.model.dto.ConfirmRegisterDTO;
 import cn.nobitastudio.oss.model.dto.RegisterDTO;
 import cn.nobitastudio.oss.model.error.ErrorCode;
-import cn.nobitastudio.oss.model.vo.ConfirmOrCancelRegisterVO;
+import cn.nobitastudio.oss.model.dto.ConfirmOrCancelRegisterDTO;
 import cn.nobitastudio.oss.model.vo.RegistrationBasicInfoCollection;
 import cn.nobitastudio.oss.model.vo.RegistrationRecordAndOrder;
 import cn.nobitastudio.oss.service.inter.RegistrationRecordService;
@@ -81,9 +81,9 @@ public class RegistrationRecordController {
         }
     }
 
-    @ApiOperation("用户支付完成")
+    @ApiOperation("用户支付完成.用户不调用")
     @PutMapping("/confirm")
-    public ServiceResult<ConfirmOrCancelRegisterVO> confirmRegister(@RequestBody ConfirmRegisterDTO confirmRegisterDTO) {
+    public ServiceResult<ConfirmOrCancelRegisterDTO> confirmRegister(@RequestBody ConfirmRegisterDTO confirmRegisterDTO) {
         try {
             return ServiceResult.success(registrationRecordService.confirmRegister(confirmRegisterDTO));
         } catch (AppException e) {
@@ -95,7 +95,7 @@ public class RegistrationRecordController {
 
     @ApiOperation("用户取消预约挂号")
     @GetMapping("/{id}/cancel")
-    public ServiceResult<ConfirmOrCancelRegisterVO> cancelRegister(@PathVariable(name = "id") String id) {
+    public ServiceResult<ConfirmOrCancelRegisterDTO> cancelRegister(@PathVariable(name = "id") String id) {
         try {
             return ServiceResult.success(registrationRecordService.cancelRegister(id));
         } catch (AppException e) {

@@ -5,6 +5,7 @@ import cn.nobitastudio.common.criteria.CriteriaException;
 import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.OSSOrder;
+import cn.nobitastudio.oss.model.error.ErrorCode;
 import cn.nobitastudio.oss.service.inter.OrderService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageImpl;
@@ -32,7 +33,7 @@ public class OrderController {
         try {
             return ServiceResult.success(orderService.getById(id));
         } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
+            return ServiceResult.failure(ErrorCode.get(e.getErrorCode()), e.getErrorCode());
         }
     }
 
@@ -79,5 +80,16 @@ public class OrderController {
         }
     }
 
+    @ApiOperation("支付完成后查询订单状态：仅有两种状态合法:待支付，自动取消(回调超时),此时一直处于等待状态,持续10s")
+    @GetMapping("/status/{id}")
+    public ServiceResult<OSSOrder> getStatusByIdAfterPay(@PathVariable(name = "id") String id) {
+        try {
+            return ServiceResult.success(orderService.getByIdForPayResult(id));
+        } catch (AppException e) {
+            return ServiceResult.failure(e.getErrorInfo(),e.getErrorCode());
+        } catch (InterruptedException e) {
+            return ServiceResult.failure(e.getMessage(),ErrorCode.UNKNOWN_ERROR);
+        }
+    }
 
 }

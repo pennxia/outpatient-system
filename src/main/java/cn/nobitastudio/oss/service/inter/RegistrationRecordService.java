@@ -4,10 +4,9 @@ import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.RegistrationRecord;
 import cn.nobitastudio.oss.model.dto.ConfirmRegisterDTO;
 import cn.nobitastudio.oss.model.dto.RegisterDTO;
-import cn.nobitastudio.oss.model.vo.ConfirmOrCancelRegisterVO;
+import cn.nobitastudio.oss.model.dto.ConfirmOrCancelRegisterDTO;
 import cn.nobitastudio.oss.model.vo.RegistrationBasicInfoCollection;
 import cn.nobitastudio.oss.model.vo.RegistrationRecordAndOrder;
-import cn.nobitastudio.oss.model.vo.StandardMessage;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,14 +68,14 @@ public interface RegistrationRecordService {
      * @param confirmRegisterDTO
      * @return
      */
-    ConfirmOrCancelRegisterVO confirmRegister(ConfirmRegisterDTO confirmRegisterDTO);
+    ConfirmOrCancelRegisterDTO confirmRegister(ConfirmRegisterDTO confirmRegisterDTO);
 
     /**
      * 用户取消预约该挂号单.
      * @param id
      * @return
      */
-    ConfirmOrCancelRegisterVO cancelRegister(String id);
+    ConfirmOrCancelRegisterDTO cancelRegister(String id);
 
     /**
      * 得到挂号单以及对应的订单

@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class CheckOrderStateJob implements Job {
 
     // todo 可以写成application.yml 中的配置项
-    public static final Integer LEFT_PAY_TIME = 30;  // 默认支付时间为30分钟;
+    public static final Integer LEFT_PAY_TIME = 30 + 5;  // 默认支付时间为35分钟 多5分钟用于缓冲网络以及用户支付操作的时间;
     public static final String OSS_ORDER = "ossOrder";
 
     @Override

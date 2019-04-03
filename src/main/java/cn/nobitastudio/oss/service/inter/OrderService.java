@@ -60,4 +60,5 @@ public interface OrderService {
      */
     OSSOrder getByMedicalCardIdAndVisitId(String medicalCardId,Integer visitId);
 
+    OSSOrder getByIdForPayResult(String id) throws InterruptedException;
 }
