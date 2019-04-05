@@ -94,6 +94,7 @@ public class SmsHelper {
         return smsSendResult;
     }
 
+    // 待修改todo smsMessageType.ordinal() -> smsMessageType
     public SmsSendResult sendSms(Map<String, String> paramsMap) {
         ArrayList<String> params = new ArrayList<>();  // 发送的实际参数
         String mobile = paramsMap.get(MOBILE);      // 接收者的手机号
@@ -112,7 +113,7 @@ public class SmsHelper {
                 break;
             case CANCEL_REGISTER:
                 params.add(paramsMap.get(REGISTRATON_RECORD_ID));
-                params.add(ORDER_ID);
+                params.add(paramsMap.get(ORDER_ID));
                 params.add(paramsMap.getOrDefault(HOSPITAL_NAME, DEFAULT_HOSPITAL_NAME));
                 break;
             case REGISTER_SUCCESS_WAITING_PAY:
@@ -157,6 +158,7 @@ public class SmsHelper {
      * @param diagnosisNo
      * @return
      */
+    // todo 接口待修改.不需要传入messageType
     public Map<String, String> initRegisterSuccessOrDiagnosisRemindSms(User user, MedicalCard medicalCard, Doctor doctor, Department department, Visit visit, DiagnosisRoom diagnosisRoom, Integer diagnosisNo, SmsMessageType smsMessageType) {
         Map<String, String> params = new HashMap<>();
         if (smsMessageType.equals(SmsMessageType.REGISTER_SUCCESS_HAVE_PAY) || smsMessageType.equals(SmsMessageType.REGISTER_SUCCESS_WAITING_PAY)) {
@@ -182,7 +184,7 @@ public class SmsHelper {
     public Map<String, String> initCancelRegisterSms(User user, RegistrationRecord registrationRecord, OSSOrder ossOrder) {
         Map<String, String> params = new HashMap<>();
         params.put(MOBILE, user.getMobile());
-        params.put(MESSAGE_TYPE, String.valueOf(CANCEL_REGISTER));
+        params.put(MESSAGE_TYPE, SmsMessageType.CANCEL_REGISTER.name());
         params.put(REGISTRATON_RECORD_ID, registrationRecord.getId());
         params.put(ORDER_ID, ossOrder.getId());
         return params;

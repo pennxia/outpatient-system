@@ -21,6 +21,7 @@ import cn.nobitastudio.oss.helper.SmsHelper;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,6 +74,9 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
     private ExecutorService executorService;  //  cacheThreadPool
     @Inject
     private RedisHelper redisHelper;
+
+    @Value(value = "${oss.app.debugModel:true}")
+    private boolean debugModel;
 
     /**
      * 查询指定id挂号记录信息
@@ -127,6 +131,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
      * 产生一个挂号单 以及 一个待支付的订单
      * 强制串行执行
      * 待优化，不同科室不需要串行，使用多个锁来实现。
+     *
      * @param registerDTO
      * @return
      */
@@ -134,20 +139,20 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
     @Override
     public synchronized RegistrationRecord register(RegisterDTO registerDTO) {
         // 检查图片验证码
-        ImageValidateCode imageValidateCode = redisHelper.get(registerDTO.getUserId().toString(),ImageValidateCode.class);
+        ImageValidateCode imageValidateCode = redisHelper.get(registerDTO.getUserId().toString(), ImageValidateCode.class);
         redisHelper.del(registerDTO.getUserId().toString());  // 验证过的验证码一定清除不管是否正确
         if (imageValidateCode == null || !imageValidateCode.getCaptcha().equals(registerDTO.getCaptcha())) {
             // 验证码错误 ：因为请求验证码或者验证码保存时间超时:3600秒 输入错误
-            throw new AppException("验证码错误",ErrorCode.CAPTCHA_ERROR);
+            throw new AppException("验证码错误", ErrorCode.CAPTCHA_ERROR);
         } else if (imageValidateCode.getExpireTime().isBefore(LocalDateTime.now())) {
             // 验证码已过有效期
-            throw new AppException("验证码已过时",ErrorCode.CAPTCHA_EXPIRE);
+            throw new AppException("验证码已过时", ErrorCode.CAPTCHA_EXPIRE);
         }
 
         // 待实现
         Visit visit = visitRepo.findById(registerDTO.getVisitId()).orElseThrow(() -> new AppException("未查询到指定号源信息"));
         if (visit.getLeftAmount().equals(0)) {
-            throw new AppException("挂号失败,该号源已全部挂完",ErrorCode.VISIT_NO_LEFT);
+            throw new AppException("挂号失败,该号源已全部挂完", ErrorCode.VISIT_NO_LEFT);
         }
         User user = userRepo.findById(registerDTO.getUserId()).orElseThrow(() -> new AppException("未查找到指定用户"));
         MedicalCard medicalCard = medicalCardRepo.findById(registerDTO.getMedicalCardId()).orElseThrow(() -> new AppException("未查找到指定诊疗卡"));
@@ -155,7 +160,10 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
         Department department = departmentRepo.findById(doctor.getDepartmentId()).orElseThrow(() -> new AppException("未查找到指定科室信息"));
         DiagnosisRoom diagnosisRoom = diagnosisRoomRepo.findById(visit.getDiagnosisRoomId()).orElseThrow(() -> new AppException("未查询到指定诊疗室"));
         // 检测是否已经成功挂了该号或者存在等待支付的订单.
-        checkWhetherRegister(medicalCard, visit);
+        if (!debugModel) {
+            // 如果是debugModel就不检查.这样一张诊疗卡可以挂多个号,方便测试
+            checkWhetherRegister(medicalCard, visit);
+        }
         // 生成 挂号单单号,挂号单id,并保存 现在只支持 ANDRIOD 客户端进行挂号
         Integer diagnosisNo = visit.getAmount() - visit.getLeftAmount() + 1; // 就诊序号
         RegistrationRecord registrationRecord = new RegistrationRecord(Channel.OSS_ANDROID_APP, user.getId(), visit.getId(), medicalCard.getId(), diagnosisNo);
@@ -172,7 +180,9 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
         // 挂号成功等待支付,直接发送通知短信.
         executorService.execute(() -> {
             // todo 如果短信发送失败,尝试重新发送. 暂时未实现
-            SmsSendResult smsSendResult = smsHelper.sendSms(smsHelper.initRegisterSuccessOrDiagnosisRemindSms(user, medicalCard, doctor, department, visit, diagnosisRoom, diagnosisNo, SmsMessageType.REGISTER_SUCCESS_WAITING_PAY));
+            if (!debugModel) {
+                SmsSendResult smsSendResult = smsHelper.sendSms(smsHelper.initRegisterSuccessOrDiagnosisRemindSms(user, medicalCard, doctor, department, visit, diagnosisRoom, diagnosisNo, SmsMessageType.REGISTER_SUCCESS_WAITING_PAY));
+            }
         });
         // 生成订单是否支付检测,30分钟后发现未支付则更新订单状态状态为AUTO_CANCEL_PAY,检测若该订单还未支付,则改变支付状态位自动取消. 可能需要将其让如主线程执行
         executorService.execute(() -> createCheckOrderStateQuartzPlan(ossOrder));
@@ -267,14 +277,23 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
             ossOrderRepo.save(ossOrder);
             // todo 取消Jpush Quartz计划推送
             // todo 如果是在线支付方式,进行退款操作
-            if (!ossOrder.getPaymentChannel().equals(PaymentChannel.HOSPITAL_MEDICAL_CAR) && !ossOrder.getPaymentChannel().equals(PaymentChannel.HOSPITAL_MONEY)) {
+            if (ossOrder.getState().equals(OrderState.HAVE_PAY) &&
+                    !ossOrder.getPaymentChannel().equals(PaymentChannel.HOSPITAL_MEDICAL_CAR) &&
+                    !ossOrder.getPaymentChannel().equals(PaymentChannel.HOSPITAL_MONEY)) {
                 // 退款
                 executorService.execute(() -> {
 
                 });
             }
+            // 发送取消成功
+            if (!debugModel) {
+                executorService.execute(() -> {
+                    // todo 发送失败时尝试重新发送
+                    SmsSendResult smsSendResult = smsHelper.sendSms(smsHelper.initCancelRegisterSms(user, registrationRecord, ossOrder));
+                });
+            }
         } else {
-            throw new AppException("该挂号单已处于取消预约状态,请勿重复取消",ErrorCode.NOT_FIND_ORDER);
+            throw new AppException("该挂号单已处于取消预约状态,请勿重复取消", ErrorCode.HAS_CANCEL_REGISTER);
         }
         return new ConfirmOrCancelRegisterDTO(ossOrder, registrationRecord);
     }

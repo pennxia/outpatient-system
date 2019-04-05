@@ -1,0 +1,1 @@
+java -cp "../conf;../lib/*" -Dspring.profiles.active=dev cn.nobitastudio.oss.OSSApplication -Xms1024m -Xmx1024m
