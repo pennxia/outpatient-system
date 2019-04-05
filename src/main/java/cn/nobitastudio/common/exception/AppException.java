@@ -98,10 +98,10 @@ public class AppException extends RuntimeException {
     }
 
     public String getErrorCode() {
-        return errorCode;
+        return errorCode == null ? ErrorCode.UNDEFINED_ERROR : errorCode;
     }
 
     public String getErrorInfo() {
-        return ErrorCode.get(errorCode);
+        return ErrorCode.get(getErrorCode());
     }
 }

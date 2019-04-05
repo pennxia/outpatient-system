@@ -253,30 +253,28 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
             if (ossOrder.getState().equals(OrderState.HAVE_PAY)) {
                 // 已经支付的情况下
                 // 取消未来就诊提醒quartz计划
-                executorService.execute(() -> {
-                    TriggerKey triggerKey = quartzHelper.createDiagnosisRemindTriggerKey(user, medicalCard, RemindType.DIAGNOSIS_REMIND, visit, registrationRecord.getDiagnosisNo());
-                    try {
-                        scheduler.unscheduleJob(triggerKey);
-                    } catch (SchedulerException e) {
-                        // todo 取消失败了，应当尝试重新取消,虽然RemindJob做了兼容处理，即便是取消失败也没事.但最好是取消调度计划
-                        logger.info("取消未来就诊提醒quartz计划失败,triggerKey:" + triggerKey);
-                    }
-                });
-                // todo 取消Jpush Quartz计划推送
-                // todo 如果是在线支付方式,进行退款操作
-                if (!ossOrder.getPaymentChannel().equals(PaymentChannel.HOSPITAL_MEDICAL_CAR) && !ossOrder.getPaymentChannel().equals(PaymentChannel.HOSPITAL_MONEY)) {
-                    // 退款
-                    executorService.execute(() -> {
-
-                    });
+                TriggerKey triggerKey = quartzHelper.createDiagnosisRemindTriggerKey(user, medicalCard, RemindType.DIAGNOSIS_REMIND, visit, registrationRecord.getDiagnosisNo());
+                try {
+                    scheduler.unscheduleJob(triggerKey);
+                } catch (SchedulerException e) {
+                    // todo 取消失败了，应当尝试重新取消,虽然RemindJob做了兼容处理，即便是取消失败也没事.但最好是取消调度计划
+                    logger.info("取消未来就诊提醒quartz计划失败,triggerKey:" + triggerKey);
                 }
             }
-            // 更新订单状态  必须在取消未来就诊提醒quartz计划之后
+            // 更新订单状态  必须在取消未来就诊提醒quartz计划之后且取消成功(不一定。更改未来就诊的提醒模板，新增:如以取消挂号，请忽略本次短信)
             ossOrder.setState(OrderState.CANCEL_PAY);
             ossOrder.setCancelTime(LocalDateTime.now());
             ossOrderRepo.save(ossOrder);
+            // todo 取消Jpush Quartz计划推送
+            // todo 如果是在线支付方式,进行退款操作
+            if (!ossOrder.getPaymentChannel().equals(PaymentChannel.HOSPITAL_MEDICAL_CAR) && !ossOrder.getPaymentChannel().equals(PaymentChannel.HOSPITAL_MONEY)) {
+                // 退款
+                executorService.execute(() -> {
+
+                });
+            }
         } else {
-            throw new AppException("该挂号单已处于取消预约状态,请勿重复取消");
+            throw new AppException("该挂号单已处于取消预约状态,请勿重复取消",ErrorCode.NOT_FIND_ORDER);
         }
         return new ConfirmOrCancelRegisterDTO(ossOrder, registrationRecord);
     }

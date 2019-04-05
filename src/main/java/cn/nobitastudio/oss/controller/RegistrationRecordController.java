@@ -75,7 +75,7 @@ public class RegistrationRecordController {
         try {
             return ServiceResult.success(registrationRecordService.register(registerDTO));
         } catch (AppException e) {
-            return ServiceResult.failure(ErrorCode.get(e.getErrorCode()),e.getErrorCode());
+            return ServiceResult.failure(e);
         } catch (Exception e) {
             return ServiceResult.failure(ErrorCode.get(ErrorCode.UNKNOWN_ERROR),ErrorCode.UNKNOWN_ERROR);
         }
@@ -99,7 +99,7 @@ public class RegistrationRecordController {
         try {
             return ServiceResult.success(registrationRecordService.cancelRegister(id));
         } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
+            return ServiceResult.failure(e);
         }
     }
 

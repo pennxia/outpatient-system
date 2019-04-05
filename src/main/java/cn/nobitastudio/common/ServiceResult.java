@@ -1,5 +1,6 @@
 package cn.nobitastudio.common;
 
+import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.view.EditableView;
 import cn.nobitastudio.common.view.ListView;
 import cn.nobitastudio.common.view.ReadableView;
@@ -99,6 +100,12 @@ public class ServiceResult<T> {
     public static <T> ServiceResult<T> failure(Object result, String errorCode) {
         ServiceResult<T> f = new ServiceResult<>(null, STATE_APP_EXCEPTION);
         f.setError(result).setErrorCode(errorCode);
+        return f;
+    }
+
+    public static <T> ServiceResult<T> failure(AppException e) {
+        ServiceResult<T> f = new ServiceResult<>(null, STATE_APP_EXCEPTION);
+        f.setError(e.getErrorInfo()).setErrorCode(e.getErrorCode());
         return f;
     }
 

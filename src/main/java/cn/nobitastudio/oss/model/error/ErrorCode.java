@@ -23,6 +23,7 @@ public class ErrorCode {
     public static final String CAPTCHA_EXPIRE = "CAPTCHA_EXPIRE"; // 验证码已过时
     public static final String VISIT_NO_LEFT = "VISIT_NO_LEFT"; // 挂号失败,该号源已全部挂完
     public static final String NOT_FIND_ORDER = "NOT_FIND_ORDER"; // 未找到指定订单
+    public static final String HAS_CANCEL_REGISTER = "HAS_CANCEL_REGISTER"; // 订单已经处于取消装填
 
     public static String get(String errorCode) {
         if (errorCodeContainer == null) {
@@ -37,11 +38,12 @@ public class ErrorCode {
         errorCodeContainer.put(UNKNOWN_ERROR, "发生未知错误,请联系系统管理员");
         errorCodeContainer.put(NOT_FIND_USER_BY_MOBILE, "该手机号尚未注册");
         errorCodeContainer.put(MOBILE_OR_PASSWORD_ERROR, "账号或密码错误");
-        errorCodeContainer.put(HAS_COLLECT_DOCTOR,"您以收藏该医生,请勿重复收藏");
+        errorCodeContainer.put(HAS_COLLECT_DOCTOR, "您以收藏该医生,请勿重复收藏");
         errorCodeContainer.put(CAPTCHA_ERROR, "验证码错误");
-        errorCodeContainer.put(CAPTCHA_EXPIRE,"验证码已过时");
-        errorCodeContainer.put(VISIT_NO_LEFT,"挂号失败,该号源已全部挂完");
-        errorCodeContainer.put(NOT_FIND_ORDER,"未找到指定订单");
+        errorCodeContainer.put(CAPTCHA_EXPIRE, "验证码已过时");
+        errorCodeContainer.put(VISIT_NO_LEFT, "挂号失败,该号源已全部挂完");
+        errorCodeContainer.put(NOT_FIND_ORDER, "未找到指定订单");
+        errorCodeContainer.put(HAS_CANCEL_REGISTER, "该挂号单已处于取消预约状态,请勿重复取消");
     }
 
 }
