@@ -178,12 +178,12 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
         Contain contain = new Contain(ossOrder.getId(), ItemType.REGISTRATION_RECORD, registrationRecord.getId());
         containRepo.save(contain);
         // 挂号成功等待支付,直接发送通知短信.
-        executorService.execute(() -> {
-            // todo 如果短信发送失败,尝试重新发送. 暂时未实现
-            if (!debugModel) {
+        if (!debugModel) {
+            executorService.execute(() -> {
+                // todo 如果短信发送失败,尝试重新发送. 暂时未实现
                 SmsSendResult smsSendResult = smsHelper.sendSms(smsHelper.initRegisterSuccessOrDiagnosisRemindSms(user, medicalCard, doctor, department, visit, diagnosisRoom, diagnosisNo, SmsMessageType.REGISTER_SUCCESS_WAITING_PAY));
-            }
-        });
+            });
+        }
         // 生成订单是否支付检测,30分钟后发现未支付则更新订单状态状态为AUTO_CANCEL_PAY,检测若该订单还未支付,则改变支付状态位自动取消. 可能需要将其让如主线程执行
         executorService.execute(() -> createCheckOrderStateQuartzPlan(ossOrder));
         return registrationRecord;
@@ -229,10 +229,12 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
             createDiagnosisRemindQuartzPlan(ossOrder, visit, user, medicalCard, doctor, department, diagnosisRoom, registrationRecord.getDiagnosisNo());
         });
         // 发送支付成功
-        executorService.execute(() -> {
-            // todo 发送失败时尝试重新发送
-            SmsSendResult smsSendResult = smsHelper.sendSms(smsHelper.initRegisterSuccessOrDiagnosisRemindSms(user, medicalCard, doctor, department, visit, diagnosisRoom, registrationRecord.getDiagnosisNo(), SmsMessageType.REGISTER_SUCCESS_HAVE_PAY));
-        });
+        if (!debugModel) {
+            executorService.execute(() -> {
+                // todo 发送失败时尝试重新发送
+                SmsSendResult smsSendResult = smsHelper.sendSms(smsHelper.initRegisterSuccessOrDiagnosisRemindSms(user, medicalCard, doctor, department, visit, diagnosisRoom, registrationRecord.getDiagnosisNo(), SmsMessageType.REGISTER_SUCCESS_HAVE_PAY));
+            });
+        }
         // 取消 checkOrderStateJob 的quartz检测计划
         executorService.execute(() -> {
             TriggerKey triggerKey = quartzHelper.createCheckOrderStateTriggerKey(ossOrder);
