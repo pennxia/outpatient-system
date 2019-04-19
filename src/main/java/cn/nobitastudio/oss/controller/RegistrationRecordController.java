@@ -87,7 +87,7 @@ public class RegistrationRecordController {
         try {
             return ServiceResult.success(registrationRecordService.confirmRegister(confirmRegisterDTO));
         } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
+            return ServiceResult.failure(e);
         } catch (Exception e) {
             return ServiceResult.failure("未知异常:" + e.getMessage());
         }

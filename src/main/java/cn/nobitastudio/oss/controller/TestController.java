@@ -315,7 +315,7 @@ public class TestController {
     @GetMapping("/test-validate")
     public ServiceResult testValidate() {
         try {
-            return ServiceResult.success(validateService.requestValidateCode(new RequestValidateCodeDTO(9, SmsMessageType.ENROLL)));
+            return ServiceResult.success(validateService.requestValidateCode(new RequestValidateCodeDTO("15709932234", SmsMessageType.ENROLL)));
         } catch (AppException e) {
             return ServiceResult.failure(e.getMessage());
         }

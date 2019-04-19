@@ -22,8 +22,8 @@ public class ConfirmValidateCodeDTO implements Serializable {
 
     private static final long serialVersionUID = 2242134464115320507L;
 
-    @ApiModelProperty("请求的用户id")
-    private Integer userId;
+    @ApiModelProperty("请求的手机号")
+    private String mobile;
     @ApiModelProperty("待验证的验证码")
     private String code;
 }

@@ -4,7 +4,7 @@ import cn.nobitastudio.common.criteria.SpecificationBuilder;
 import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.*;
-import cn.nobitastudio.oss.helper.RedisHelper;
+import cn.nobitastudio.oss.cache.RedisHelper;
 import cn.nobitastudio.oss.model.dto.ConfirmRegisterDTO;
 import cn.nobitastudio.oss.model.dto.ImageValidateCode;
 import cn.nobitastudio.oss.model.dto.RegisterDTO;

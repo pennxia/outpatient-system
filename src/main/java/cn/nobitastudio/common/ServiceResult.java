@@ -103,9 +103,13 @@ public class ServiceResult<T> {
         return f;
     }
 
-    public static <T> ServiceResult<T> failure(AppException e) {
+    public static <T> ServiceResult<T> failure(Exception e) {
         ServiceResult<T> f = new ServiceResult<>(null, STATE_APP_EXCEPTION);
-        f.setError(e.getErrorInfo()).setErrorCode(e.getErrorCode());
+        if (e instanceof AppException) {
+            f.setError(((AppException)e).getErrorInfo()).setErrorCode(((AppException)e).getErrorCode());
+        } else {
+            f.setError("发生未知错误").setErrorCode(ErrorCode.UNKNOWN_ERROR);
+        }
         return f;
     }
 

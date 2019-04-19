@@ -1,4 +1,4 @@
-package cn.nobitastudio.oss.helper;
+package cn.nobitastudio.oss.cache;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;

@@ -76,7 +76,7 @@ public class OrderController {
         try {
             return ServiceResult.success(orderService.getByMedicalCardIdAndVisitId(medicalCardId, visitId));
         } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
+            return ServiceResult.failure(e);
         }
     }
 

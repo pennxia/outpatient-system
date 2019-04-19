@@ -23,7 +23,7 @@ public class ValidateCode implements Serializable {
 
     private static final long serialVersionUID = 3394256602040426665L;
 
-    private static final Integer DEFAUL_EFFCTIVE_TIME = 120; // 默认时间有效期为120秒
+    private static final Integer DEFAULT_EFFECTIVE_TIME = 120; // 默认时间有效期为120秒
 
     /**
      * 创建具有有限期的验证码,默认传入以秒为单位有效时间长度
@@ -40,7 +40,7 @@ public class ValidateCode implements Serializable {
      */
     public ValidateCode() {
         this.code = String.valueOf(CommonUtil.getRandom(100000, 999999));
-        this.expireTime = LocalDateTime.now().plusSeconds(DEFAUL_EFFCTIVE_TIME);
+        this.expireTime = LocalDateTime.now().plusSeconds(DEFAULT_EFFECTIVE_TIME);
     }
 
     @ApiModelProperty("验证码")

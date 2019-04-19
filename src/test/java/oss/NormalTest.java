@@ -188,5 +188,75 @@ public class NormalTest {
         System.out.println(System.currentTimeMillis());
     }
 
+    @Test
+    public void test9() {
+
+//        while (in.hasNextInt()) {// 注意，如果输入是多个测试用例，请通过while循环处理多个测试用例
+//            int a = in.nextInt();
+//            int b = in.nextInt();
+//            System.out.println(a + b);
+//        }
+        Scanner in = new Scanner(System.in);
+        List<List<Integer>> arr = new ArrayList<>();
+        int n = 0;
+        String s = "";
+        while ((s = in.nextLine()) != "" || (s = in.nextLine()) != null) {
+            List<Integer> cc = new ArrayList<>();
+            String[] str = s.split(" ");
+            for (String string : str) {
+                cc.add(Integer.valueOf(string));
+            }
+            arr.add(cc);
+            n++;
+        }
+
+        int min = 0;
+
+        for (int i = 0; i < arr.size(); i++) {
+            List<Integer> c = arr.get(i);
+            for (int j = 0; j < c.size(); j++) {
+                if (c.get(j).equals(2)) {
+                    // 转换
+                    if (!(i - 1 < 0)) {
+                        arr.get(i - 1).set(j, 2);
+                    }
+                    if ( i + 1 < n) {
+                        arr.get(i + 1).set(j, 2);
+                    }
+                    if (!(j - 1 < 0)) {
+                        arr.get(i + 1).set(j, 2);
+                    }
+                    if ( j + 1 < n) {
+                        arr.get(j + 1).set(j, 2);
+                    }
+                }
+            }
+            min++;
+        }
+
+        for (int i = 0; i < arr.size(); i++) {
+            for (int j = 0; j < arr.get(i).size();j++) {
+                if (arr.get(i).get(j).equals(1)) {
+                    System.out.println(-1);
+                    return;
+                }
+            }
+        }
+
+        System.out.println(min);
+    }
+
+    @Test
+    public void test10() {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        List<Integer> value = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            value.add(in.nextInt());
+        }
+
+
+    }
+
 
 }

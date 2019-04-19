@@ -15,7 +15,7 @@ import java.io.Serializable;
  * @author chenxiong
  * @email nobita0522@qq.com
  * @date 2019/01/14 13:53
- * @description 用户请求短信验证码时发出的请求
+ * @description 用户（指定的mobile）请求短信验证码时发出的请求
  */
 @Getter
 @Setter
@@ -25,8 +25,8 @@ public class RequestValidateCodeDTO implements Serializable {
 
     private static final long serialVersionUID = 206780351192055927L;
 
-    @ApiModelProperty("请求的用户id")
-    private Integer userId;
+    @ApiModelProperty("接收验证码的手机号,正常情况下")
+    private String mobile;
 
     @ApiModelProperty("请求的短信验证码类型,即文本类型")
     @Enumerated(EnumType.STRING)

@@ -2,6 +2,7 @@ package cn.nobitastudio.oss.service.inter;
 
 import cn.nobitastudio.oss.model.dto.ConfirmValidateCodeDTO;
 import cn.nobitastudio.oss.model.dto.RequestValidateCodeDTO;
+import cn.nobitastudio.oss.model.dto.StandardInfo;
 import cn.nobitastudio.oss.model.vo.StandardMessage;
 
 /**
@@ -17,14 +18,14 @@ public interface ValidateService {
      * @param requestValidateCodeDTO
      * @return
      */
-    StandardMessage requestValidateCode(RequestValidateCodeDTO requestValidateCodeDTO);
+    StandardInfo requestValidateCode(RequestValidateCodeDTO requestValidateCodeDTO);
 
     /**
      * 用户确认验证码
      * @param confirmValidateCodeDTO
      * @return
      */
-    StandardMessage confirmValidateCode(ConfirmValidateCodeDTO confirmValidateCodeDTO);
+    StandardInfo confirmValidateCode(ConfirmValidateCodeDTO confirmValidateCodeDTO);
 
 
 }

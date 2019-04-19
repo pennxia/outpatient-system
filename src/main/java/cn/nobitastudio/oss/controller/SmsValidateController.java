@@ -4,6 +4,7 @@ import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.oss.model.dto.ConfirmValidateCodeDTO;
 import cn.nobitastudio.oss.model.dto.RequestValidateCodeDTO;
+import cn.nobitastudio.oss.model.dto.StandardInfo;
 import cn.nobitastudio.oss.model.vo.StandardMessage;
 import cn.nobitastudio.oss.service.inter.ValidateService;
 import io.swagger.annotations.ApiOperation;
@@ -28,23 +29,23 @@ public class SmsValidateController {
     private ValidateService validateService;
 
     @ApiOperation("用户请求短息验证码")
-    @PutMapping("/requst-code")
-    public ServiceResult<StandardMessage> requestValidateCode(@RequestBody RequestValidateCodeDTO requestValidateCodeDTO) {
+    @PutMapping("/request-code")
+    public ServiceResult<StandardInfo> requestValidateCode(@RequestBody RequestValidateCodeDTO requestValidateCodeDTO) {
         try {
             return ServiceResult.success(validateService.requestValidateCode(requestValidateCodeDTO));
         } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
+            return ServiceResult.failure(e);
         }
 
     }
 
     @ApiOperation("用户验证验证码")
     @PutMapping("/confirm-code")
-    public ServiceResult<StandardMessage> confirmValidateCode(@RequestBody ConfirmValidateCodeDTO confirmValidateCodeDTO) {
+    public ServiceResult<StandardInfo> confirmValidateCode(@RequestBody ConfirmValidateCodeDTO confirmValidateCodeDTO) {
         try {
             return ServiceResult.success(validateService.confirmValidateCode(confirmValidateCodeDTO));
         } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
+            return ServiceResult.failure(e);
         }
     }
 

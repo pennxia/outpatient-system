@@ -1,6 +1,6 @@
 package cn.nobitastudio.oss.controller;
 
-import cn.nobitastudio.oss.helper.RedisHelper;
+import cn.nobitastudio.oss.cache.RedisHelper;
 import cn.nobitastudio.oss.model.dto.ImageValidateCode;
 import com.google.code.kaptcha.Producer;
 import io.swagger.annotations.ApiOperation;
