@@ -5,6 +5,8 @@ import cn.nobitastudio.oss.entity.Visit;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * @author chenxiong
  * @email nobita0522@qq.com
@@ -62,4 +64,11 @@ public interface VisitService {
      */
     @Transactional
     Visit minus(Integer id,Integer count);
+
+    /**
+     * 查询指定医生下的号源信息
+     * @param doctorId
+     * @return
+     */
+    List<Visit> getByDoctorId(Integer doctorId);
 }

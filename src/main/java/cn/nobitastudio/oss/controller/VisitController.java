@@ -6,11 +6,13 @@ import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.Visit;
 import cn.nobitastudio.oss.service.inter.VisitService;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * @author chenxiong
@@ -59,6 +61,12 @@ public class VisitController {
     @GetMapping("/{id}/{count}/minus")
     public ServiceResult<Visit> minus(@PathVariable(name = "id") Integer id, @PathVariable(name = "count") Integer count) {
         return ServiceResult.success(visitService.minus(id, count));
+    }
+
+    @ApiModelProperty("查询指定医生下的号源信息")
+    @GetMapping("/get-by-doctor/{doctorId}")
+    public ServiceResult<List<Visit>> getVisitByDoctorId(@PathVariable(name = "doctorId") Integer doctorId) {
+        return ServiceResult.success(visitService.getByDoctorId(doctorId));
     }
 
 

@@ -6,11 +6,14 @@ import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.Visit;
 import cn.nobitastudio.oss.repo.VisitRepo;
 import cn.nobitastudio.oss.service.inter.VisitService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author chenxiong
@@ -26,6 +29,8 @@ public class VisitServiceImpl implements VisitService {
 
     @Inject
     private VisitRepo visitRepo;
+    @Value(value = "${oss.app.visit.interval:7}")
+    private Integer visitInterval;
 
     /**
      * 查询指定id号源信息
@@ -47,9 +52,9 @@ public class VisitServiceImpl implements VisitService {
      */
     @Override
     public PageImpl<Visit> getAll(Visit visit, Pager pager) {
-        Pageable pageable = PageRequest.of(pager.getPage(),pager.getLimit(),Sort.by(Sort.Direction.DESC,"diagnosisTime"));
-        Page<Visit> visits = visitRepo.findAll(SpecificationBuilder.toSpecification(visit),pageable);
-        return new PageImpl<>(visits.getContent(),pageable,visits.getTotalElements());
+        Pageable pageable = PageRequest.of(pager.getPage(), pager.getLimit(), Sort.by(Sort.Direction.DESC, "diagnosisTime"));
+        Page<Visit> visits = visitRepo.findAll(SpecificationBuilder.toSpecification(visit), pageable);
+        return new PageImpl<>(visits.getContent(), pageable, visits.getTotalElements());
     }
 
     /**
@@ -108,5 +113,18 @@ public class VisitServiceImpl implements VisitService {
         // 存储用户挂号记录
         visit.setLeftAmount(visit.getLeftAmount() - 1);
         return visitRepo.save(visit);
+    }
+
+    /**
+     * 查询指定医生下的号源信息
+     *
+     * @param doctorId
+     * @return
+     */
+    @Override
+    public List<Visit> getByDoctorId(Integer doctorId) {
+        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime endTime = LocalDateTime.now().plusDays(visitInterval);
+        return visitRepo.findByDoctorIdAndAndDiagnosisTimeBetween(doctorId, startTime, endTime);
     }
 }

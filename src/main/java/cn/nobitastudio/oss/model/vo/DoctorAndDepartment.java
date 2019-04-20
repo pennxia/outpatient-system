@@ -30,10 +30,10 @@ public class DoctorAndDepartment implements Serializable {
      * 对连表结果强转时进行调用
      */
     public DoctorAndDepartment(Integer doctorId, String doctorName, String doctorSpecialty, String doctorSubMajor, String doctorIntroduction,  // docor
-                               String doctorLevel, Integer doctorDepartmentId,
+                               String doctorLevel, String iconUrl, Integer doctorDepartmentId,
                                Integer departmentId, String departmentName, String departmentAddress, Integer departmentLocation,  // department
                                Integer departmentFloor, String area, String departmentIntroduction) {
-//        this.doctor = new Doctor(doctorId, doctorName, doctorSpecialty, doctorSubMajor, doctorIntroduction, DoctorLevel.valueOf(doctorLevel), doctorDepartmentId);
+        this.doctor = new Doctor(doctorId, doctorName, doctorSpecialty, doctorSubMajor, doctorIntroduction, DoctorLevel.valueOf(doctorLevel), iconUrl, doctorDepartmentId);
         this.department = new Department(departmentId, departmentName, departmentAddress, departmentLocation, departmentFloor, Area.valueOf(area), departmentIntroduction);
     }
 
