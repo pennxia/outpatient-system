@@ -58,10 +58,6 @@ public class ImageValidateController {
     public void get(HttpServletResponse response, @PathVariable(name = "userId") String userId) throws IOException {
         String c = redisHelper.get(userId,ImageValidateCode.class).getCaptcha();
         response.getWriter().write(c);
-//
-//
-////        ServletOutputStream out = response.getOutputStream();
-////        ImageIO.write(bufferedImage, "jpg", out);
     }
 
 

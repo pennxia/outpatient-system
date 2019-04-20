@@ -36,31 +36,19 @@ public class RegistrationRecordController {
     @ApiOperation("查询指定挂号记录")
     @GetMapping("/{id}")
     public ServiceResult<RegistrationRecord> getById(@PathVariable("id") String id) {
-        try {
-            return ServiceResult.success(registrationRecordService.getById(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(registrationRecordService.getById(id));
     }
 
     @ApiOperation("查询分页后的挂号记录")
     @PutMapping("/query")
     public ServiceResult<PageImpl<RegistrationRecord>> query(@RequestBody RegistrationRecord registrationRecord, Pager pager) {
-        try {
-            return ServiceResult.success(registrationRecordService.getAll(registrationRecord, pager));
-        } catch (CriteriaException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(registrationRecordService.getAll(registrationRecord, pager));
     }
 
     @ApiOperation("删除指定挂号记录")
     @DeleteMapping("/{id}")
     public ServiceResult<String> deleteById(@PathVariable("id") String id) {
-        try {
-            return ServiceResult.success(registrationRecordService.delete(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(registrationRecordService.delete(id));
     }
 
     @ApiOperation("保存或更新挂号记录")
@@ -72,55 +60,31 @@ public class RegistrationRecordController {
     @ApiOperation("用户进行挂号操作,进入等待支付状态")
     @PostMapping("/register")
     public ServiceResult<RegistrationRecord> register(@RequestBody RegisterDTO registerDTO) {
-        try {
-            return ServiceResult.success(registrationRecordService.register(registerDTO));
-        } catch (AppException e) {
-            return ServiceResult.failure(e);
-        } catch (Exception e) {
-            return ServiceResult.failure(ErrorCode.get(ErrorCode.UNKNOWN_ERROR),ErrorCode.UNKNOWN_ERROR);
-        }
+        return ServiceResult.success(registrationRecordService.register(registerDTO));
     }
 
     @ApiOperation("用户支付完成.用户不调用")
     @PutMapping("/confirm")
     public ServiceResult<ConfirmOrCancelRegisterDTO> confirmRegister(@RequestBody ConfirmRegisterDTO confirmRegisterDTO) {
-        try {
-            return ServiceResult.success(registrationRecordService.confirmRegister(confirmRegisterDTO));
-        } catch (AppException e) {
-            return ServiceResult.failure(e);
-        } catch (Exception e) {
-            return ServiceResult.failure("未知异常:" + e.getMessage());
-        }
+        return ServiceResult.success(registrationRecordService.confirmRegister(confirmRegisterDTO));
     }
 
     @ApiOperation("用户取消预约挂号")
     @GetMapping("/{id}/cancel")
     public ServiceResult<ConfirmOrCancelRegisterDTO> cancelRegister(@PathVariable(name = "id") String id) {
-        try {
-            return ServiceResult.success(registrationRecordService.cancelRegister(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e);
-        }
+        return ServiceResult.success(registrationRecordService.cancelRegister(id));
     }
 
     @ApiOperation("得到挂号单以及对应的订单")
     @GetMapping("{userId}/rgt-and-ord")
     public ServiceResult<List<RegistrationRecordAndOrder>> getRegistrationAndOrder(@PathVariable(name = "userId") Integer userId) {
-        try {
-            return ServiceResult.success(registrationRecordService.getRegistrationAndOrder(userId));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(registrationRecordService.getRegistrationAndOrder(userId));
     }
 
     @ApiOperation("查询指定挂号的基础信息集合详情")
     @GetMapping("/{registrationId}/basic-info-collection")
     public ServiceResult<RegistrationBasicInfoCollection> getRegistrationBasicInfoCollection(@PathVariable(name = "registrationId") String registrationRecordId) {
-        try {
-            return ServiceResult.success(registrationRecordService.getRegistrationBasicInfoCollection(registrationRecordId));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(registrationRecordService.getRegistrationBasicInfoCollection(registrationRecordId));
     }
 
 }

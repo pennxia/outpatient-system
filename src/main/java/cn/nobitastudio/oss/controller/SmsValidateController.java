@@ -31,22 +31,13 @@ public class SmsValidateController {
     @ApiOperation("用户请求短息验证码")
     @PutMapping("/request-code")
     public ServiceResult<StandardInfo> requestValidateCode(@RequestBody RequestValidateCodeDTO requestValidateCodeDTO) {
-        try {
-            return ServiceResult.success(validateService.requestValidateCode(requestValidateCodeDTO));
-        } catch (AppException e) {
-            return ServiceResult.failure(e);
-        }
-
+        return ServiceResult.success(validateService.requestValidateCode(requestValidateCodeDTO));
     }
 
     @ApiOperation("用户验证验证码")
     @PutMapping("/confirm-code")
     public ServiceResult<StandardInfo> confirmValidateCode(@RequestBody ConfirmValidateCodeDTO confirmValidateCodeDTO) {
-        try {
-            return ServiceResult.success(validateService.confirmValidateCode(confirmValidateCodeDTO));
-        } catch (AppException e) {
-            return ServiceResult.failure(e);
-        }
+        return ServiceResult.success(validateService.confirmValidateCode(confirmValidateCodeDTO));
     }
 
 

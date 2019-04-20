@@ -29,31 +29,19 @@ public class HealthArticleController {
     @ApiOperation("查询指定资讯信息")
     @GetMapping("/{id}")
     public ServiceResult<HealthArticle> getById(@PathVariable("id") Integer id) {
-        try {
-            return ServiceResult.success(healthArticleService.getById(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(healthArticleService.getById(id));
     }
 
     @ApiOperation("查询分页后的健康资讯信息")
     @PostMapping("/query")
     public ServiceResult<PageImpl<HealthArticle>> query(@RequestBody HealthArticle healthArticle, Pager pager) {
-        try {
-            return ServiceResult.success(healthArticleService.getAll(healthArticle, pager));
-        } catch (CriteriaException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(healthArticleService.getAll(healthArticle, pager));
     }
 
     @ApiOperation("删除指定健康资讯信息")
     @DeleteMapping("/{id}")
     public ServiceResult<String> deleteById(@PathVariable("id") Integer id) {
-        try {
-            return ServiceResult.success(healthArticleService.delete(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(healthArticleService.delete(id));
     }
 
     @ApiOperation("保存或更新健康资讯信息")

@@ -29,31 +29,19 @@ public class RoleController {
     @ApiOperation("查询分页后的所有角色信息")
     @GetMapping("/{id}")
     public ServiceResult<Role> getById(Integer id) {
-        try {
-            return ServiceResult.success(roleService.getById(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(roleService.getById(id));
     }
 
     @ApiOperation("查询分页后的角色信息")
     @PutMapping("/query")
     public ServiceResult<PageImpl<Role>> query(@RequestBody Role role, Pager pager) {
-        try {
-            return ServiceResult.success(roleService.getAll(role, pager));
-        } catch (CriteriaException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(roleService.getAll(role, pager));
     }
 
     @ApiOperation("删除指定角色信息")
     @DeleteMapping("/{id}")
     public ServiceResult<String> deleteById(@PathVariable("id") Integer id) {
-        try {
-            return ServiceResult.success(roleService.deleteById(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(roleService.deleteById(id));
     }
 
     @ApiOperation("保存或更新角色信息")
@@ -65,21 +53,13 @@ public class RoleController {
     @ApiOperation("给用户进行授予相应角色")
     @PostMapping("/bind-role")
     public ServiceResult<UserRole> bindRole(@RequestBody UserRole userRole) {
-        try {
-            return ServiceResult.success(roleService.bindRole(userRole));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(roleService.bindRole(userRole));
     }
 
     @ApiOperation("给用户进行取消授权相应角色")
     @PostMapping("/unbind-role")
     public ServiceResult<String> unbindRole(@RequestBody UserRole userRole) {
-        try {
-            return ServiceResult.success(roleService.unbindRole(userRole));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(roleService.unbindRole(userRole));
     }
 
 

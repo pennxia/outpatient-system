@@ -32,31 +32,19 @@ public class DoctorController {
     @ApiOperation("查询指定医生信息")
     @GetMapping("/{id}")
     public ServiceResult<Doctor> getById(@PathVariable("id") Integer id) {
-        try {
-            return ServiceResult.success(doctorService.getById(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(doctorService.getById(id));
     }
 
     @ApiOperation("查询分页后的医生信息")
     @PutMapping("/query")
     public ServiceResult<PageImpl<Doctor>> query(@RequestBody Doctor doctor, Pager pager) {
-        try {
-            return ServiceResult.success(doctorService.getAll(doctor, pager));
-        } catch (CriteriaException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(doctorService.getAll(doctor, pager));
     }
 
     @ApiOperation("删除指定医生基础信息")
     @DeleteMapping("/{id}")
     public ServiceResult<String> deleteById(@PathVariable("id") Integer id) {
-        try {
-            return ServiceResult.success(doctorService.delete(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(doctorService.delete(id));
     }
 
     @ApiOperation("保存或更新医生信息")
@@ -75,7 +63,6 @@ public class DoctorController {
     @GetMapping("/byDepartment/{departmentId}")
     public ServiceResult<List<DoctorAndVisit>> getDoctorByDepartmentId(@PathVariable(name = "departmentId") Integer departmentId) {
         return ServiceResult.success(doctorService.getDoctorsByDepartmentId(departmentId));
-//        return ServiceResult.failure("", ErrorCode.UNKNOWN_ERROR);
     }
 
 

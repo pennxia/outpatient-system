@@ -28,31 +28,19 @@ public class DrugController {
     @ApiOperation("查询指定药品信息")
     @GetMapping("/{id}")
     public ServiceResult<Drug> getById(@PathVariable("id") Integer id) {
-        try {
-            return ServiceResult.success(drugService.getById(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(drugService.getById(id));
     }
 
     @ApiOperation("查询分页后的药品信息")
     @PutMapping("/query")
     public ServiceResult<PageImpl<Drug>> query(@RequestBody Drug drug, Pager pager) {
-        try {
-            return ServiceResult.success(drugService.getAll(drug, pager));
-        } catch (CriteriaException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(drugService.getAll(drug, pager));
     }
 
     @ApiOperation("删除指定药品信息")
     @DeleteMapping("/{id}")
     public ServiceResult<String> deleteById(@PathVariable("id") Integer id) {
-        try {
-            return ServiceResult.success(drugService.delete(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(drugService.delete(id));
     }
 
     @ApiOperation("保存或更新药品信息")

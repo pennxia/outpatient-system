@@ -29,31 +29,19 @@ public class BindController {
     @ApiOperation("查询指定绑定关系")
     @GetMapping("/{id}")
     public ServiceResult<Bind> getById(@PathVariable("id") Integer id) {
-        try {
-            return ServiceResult.success(bindService.getById(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(bindService.getById(id));
     }
 
     @ApiOperation("查询分页后的绑定关系")
     @PutMapping("/query")
     public ServiceResult<PageImpl<Bind>> query(@RequestBody Bind bind, Pager pager) {
-        try {
-            return ServiceResult.success(bindService.getAll(bind, pager));
-        } catch (CriteriaException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(bindService.getAll(bind, pager));
     }
 
     @ApiOperation("删除指定绑定")
     @DeleteMapping("/{id}")
     public ServiceResult<String> deleteById(@PathVariable("id") Integer id) {
-        try {
-            return ServiceResult.success(bindService.delete(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(bindService.delete(id));
     }
 
     @ApiOperation("保存或更新绑定信息")
@@ -65,20 +53,12 @@ public class BindController {
     @ApiOperation("用户绑定诊疗卡")
     @PutMapping("/bind")
     public ServiceResult<Bind> bind(@RequestBody Bind bind) {
-        try {
-            return ServiceResult.success(bindService.bind(bind));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(bindService.bind(bind));
     }
 
     @ApiModelProperty("用户解绑诊疗卡")
     @PutMapping("/unbind")
     public ServiceResult<String> unbind(@RequestBody Bind bind) {
-        try {
-            return ServiceResult.success(bindService.unbind(bind));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(bindService.unbind(bind));
     }
 }

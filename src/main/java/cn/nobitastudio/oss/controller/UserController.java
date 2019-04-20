@@ -48,21 +48,13 @@ public class UserController {
     @ApiOperation("通过用户id获取用户信息")
     @GetMapping("/{id}")
     public ServiceResult<User> getById(@PathVariable(name = "id") Integer id) {
-        try {
-            return ServiceResult.success(userService.getById(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(userService.getById(id));
     }
 
     @ApiOperation("通过指定手机号的用户信息")
     @GetMapping("/{mobile}/mobile")
     public ServiceResult<User> getByPhone(@PathVariable(name = "mobile") String mobile) {
-        try {
-            return ServiceResult.success(userService.getByMobile(mobile));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(userService.getByMobile(mobile));
     }
 
     @ApiOperation("用户登录请求")
@@ -82,11 +74,7 @@ public class UserController {
     @ApiOperation("用户登陆成功")
     @GetMapping("/{userId}/login-success")
     public ServiceResult<UserLoginResult> loginSuccess(@PathVariable(name = "userId") Integer userId) {
-        try {
-            return ServiceResult.success(userService.loginSuccess(userId));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(userService.loginSuccess(userId));
     }
 
     @ApiOperation("用户验证")
@@ -116,11 +104,7 @@ public class UserController {
     @ApiOperation("用户注册,或者新增用户")
     @PostMapping("/enroll")
     public ServiceResult<User> enroll(@RequestBody @JsonView(User.UserCreateView.class) User user) {
-        try {
-            return ServiceResult.success(userService.add(user));
-        } catch (AppException e) {
-            return ServiceResult.failure(e);
-        }
+        return ServiceResult.success(userService.add(user));
     }
 
     @ApiOperation("获取认证信息")
@@ -152,11 +136,7 @@ public class UserController {
     @ApiOperation("用户通过手机号校验更新密码,无需知晓原密码,用于更新以及找回密码")
     @PutMapping("/pw-by-sms")
     public ServiceResult<User> modifyPasswordBySms(@RequestBody @JsonView(User.UserFindPasswordView.class) User user) {
-        try {
-            return ServiceResult.success(userService.modifyPasswordBySms(user));
-        } catch (AppException e) {
-            return ServiceResult.failure(e);
-        }
+        return ServiceResult.success(userService.modifyPasswordBySms(user));
     }
 
 

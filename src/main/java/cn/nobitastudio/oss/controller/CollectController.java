@@ -27,31 +27,19 @@ public class CollectController {
     @ApiOperation("用户收藏某个医生")
     @PostMapping
     public ServiceResult<CollectDoctor> collect(@RequestBody CollectDoctor collectDoctor) {
-        try {
-            return ServiceResult.success(collectDoctorService.collect(collectDoctor));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(collectDoctorService.collect(collectDoctor));
     }
 
     @ApiOperation("用户取消收藏")
     @PostMapping("/cancel-collect")
     public ServiceResult<String> cancelCollect(@RequestBody CollectDoctor collectDoctor) {
-        try {
-            return ServiceResult.success(collectDoctorService.unCollect(collectDoctor));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(collectDoctorService.unCollect(collectDoctor));
     }
 
     @ApiOperation("查询指定用户收藏的医生以及对应科室封装信息")
     @GetMapping("/{userId}/dt-and-dp")
     public ServiceResult<List<DoctorAndDepartment>> getDoctorAndDepartments(@PathVariable(name = "userId") Integer userId) {
-        try {
-            return ServiceResult.success(collectDoctorService.getDoctorAndDepartments(userId));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(collectDoctorService.getDoctorAndDepartments(userId));
     }
 
 

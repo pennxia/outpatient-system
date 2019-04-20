@@ -1,7 +1,7 @@
 package cn.nobitastudio.oss.exception;
 
+import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.common.exception.AppException;
-import com.iwellmass.common.ServiceResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,16 +25,16 @@ public class ExceptionAdvice {
 
     @ExceptionHandler({AppException.class})
     @ResponseBody
-    public ServiceResult<String> handAppException(HttpServletRequest request, AppException e) throws Exception {
+    public ServiceResult handAppException(HttpServletRequest request, AppException e) throws Exception {
         logError(e, request);
         return ServiceResult.failure(e);
     }
 
     @ExceptionHandler({Exception.class})
     @ResponseBody
-    public ServiceResult<String> handException(HttpServletRequest request, Exception e) throws Exception {
+    public ServiceResult handException(HttpServletRequest request, Exception e) throws Exception {
         logError(e, request);
-        return ServiceResult.failure("未知错误:" + e.getMessage());
+        return ServiceResult.failure(e);
     }
 
 

@@ -30,21 +30,13 @@ public class OrderController {
     @ApiOperation("查询指定订单信息")
     @GetMapping("/{id}")
     public ServiceResult<OSSOrder> getById(@PathVariable("id") String id) {
-        try {
-            return ServiceResult.success(orderService.getById(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(ErrorCode.get(e.getErrorCode()), e.getErrorCode());
-        }
+        return ServiceResult.success(orderService.getById(id));
     }
 
     @ApiOperation("查询指定用户的全部订单信息，分页查询.默认不调用该接口")
     @PostMapping("/query")
     public ServiceResult<PageImpl<OSSOrder>> query(@RequestBody OSSOrder ossOrder, Pager pager) {
-        try {
-            return ServiceResult.success(orderService.getAll(ossOrder, pager));
-        } catch (CriteriaException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(orderService.getAll(ossOrder, pager));
     }
 
     @ApiOperation("查询指定用户的全部订单信息")
@@ -56,11 +48,7 @@ public class OrderController {
     @ApiOperation("删除指定订单")
     @DeleteMapping("/{id}")
     public ServiceResult<String> deleteById(@PathVariable("id") String id) {
-        try {
-            return ServiceResult.success(orderService.delete(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(orderService.delete(id));
     }
 
     @ApiOperation("保存或更新订单信息")
@@ -73,23 +61,13 @@ public class OrderController {
     @GetMapping("/{medicalCardId}/{visitId}")
     public ServiceResult<OSSOrder> getByMedicalCardIdAndVisitId(@PathVariable(name = "medicalCardId") String medicalCardId,
                                                                 @PathVariable(name = "visitId") Integer visitId) {
-        try {
-            return ServiceResult.success(orderService.getByMedicalCardIdAndVisitId(medicalCardId, visitId));
-        } catch (AppException e) {
-            return ServiceResult.failure(e);
-        }
+        return ServiceResult.success(orderService.getByMedicalCardIdAndVisitId(medicalCardId, visitId));
     }
 
     @ApiOperation("支付完成后查询订单状态：仅有两种状态合法:待支付，自动取消(回调超时),此时一直处于等待状态,持续10s")
     @GetMapping("/status/{id}")
-    public ServiceResult<OSSOrder> getStatusByIdAfterPay(@PathVariable(name = "id") String id) {
-        try {
-            return ServiceResult.success(orderService.getByIdForPayResult(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getErrorInfo(),e.getErrorCode());
-        } catch (InterruptedException e) {
-            return ServiceResult.failure(e.getMessage(),ErrorCode.UNKNOWN_ERROR);
-        }
+    public ServiceResult<OSSOrder> getStatusByIdAfterPay(@PathVariable(name = "id") String id) throws InterruptedException {
+        return ServiceResult.success(orderService.getByIdForPayResult(id));
     }
 
 }

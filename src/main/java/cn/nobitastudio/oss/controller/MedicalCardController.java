@@ -34,31 +34,19 @@ public class MedicalCardController {
     @ApiOperation("查询指定诊疗卡信息")
     @GetMapping("/{id}")
     public ServiceResult<MedicalCard> getById(@PathVariable("id") String id) {
-        try {
-            return ServiceResult.success(medicalCardService.getById(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(medicalCardService.getById(id));
     }
 
     @ApiOperation("查询分页后的诊疗卡信息")
     @PutMapping("/query")
     public ServiceResult<PageImpl<MedicalCard>> query(@RequestBody MedicalCard medicalCard, Pager pager) {
-        try {
-            return ServiceResult.success(medicalCardService.getAll(medicalCard, pager));
-        } catch (CriteriaException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(medicalCardService.getAll(medicalCard, pager));
     }
 
     @ApiOperation("删除指定诊疗卡信息")
     @DeleteMapping("/{id}")
     public ServiceResult<String> deleteById(@PathVariable("id") String id) {
-        try {
-            return ServiceResult.success(medicalCardService.delete(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(medicalCardService.delete(id));
     }
 
     @ApiOperation("保存诊疗卡信息")
@@ -70,23 +58,15 @@ public class MedicalCardController {
     @ApiOperation("更新诊疗卡信息")
     @PutMapping
     public ServiceResult<MedicalCard> modify(@RequestBody MedicalCard medicalCard) {
-        try {
-            return ServiceResult.success(medicalCardService.modify(medicalCard));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(medicalCardService.modify(medicalCard));
     }
 
     @ApiOperation("用户创建诊疗卡,创建完成后自动绑定诊疗卡")
     @PostMapping("/create-and-bind")
     public ServiceResult<MedicalCard> userCreateMedicalCard(@RequestBody CreateMedicalCardDTO createMedicalCardDTO) {
-        try {
-            MedicalCard medicalCard = medicalCardService.save(createMedicalCardDTO.getMedicalCard());
-            bindService.bind(new Bind(createMedicalCardDTO.getUserId(), medicalCard.getId()));
-            return ServiceResult.success(medicalCard);
-        } catch (AppException e) {
-            return ServiceResult.failure(e);
-        }
+        MedicalCard medicalCard = medicalCardService.save(createMedicalCardDTO.getMedicalCard());
+        bindService.bind(new Bind(createMedicalCardDTO.getUserId(), medicalCard.getId()));
+        return ServiceResult.success(medicalCard);
     }
 
     @ApiOperation("查询用户绑定的诊疗卡")

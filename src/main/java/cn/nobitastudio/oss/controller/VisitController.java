@@ -28,31 +28,19 @@ public class VisitController {
     @ApiOperation("查询指定号源信息")
     @GetMapping("/{id}")
     public ServiceResult<Visit> getById(@PathVariable("id") Integer id) {
-        try {
-            return ServiceResult.success(visitService.getById(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(visitService.getById(id));
     }
 
     @ApiOperation("查询分页后的号源信息")
     @PutMapping("/query")
     public ServiceResult<PageImpl<Visit>> query(@RequestBody Visit visit, Pager pager) {
-        try {
-            return ServiceResult.success(visitService.getAll(visit, pager));
-        } catch (CriteriaException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(visitService.getAll(visit, pager));
     }
 
     @ApiOperation("删除指定号源信息")
     @DeleteMapping("/{id}")
     public ServiceResult<String> deleteById(@PathVariable("id") Integer id) {
-        try {
-            return ServiceResult.success(visitService.delete(id));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(visitService.delete(id));
     }
 
     @ApiOperation("保存或更新号源信息")
@@ -64,21 +52,13 @@ public class VisitController {
     @ApiOperation("增加指定号源资源数量")
     @GetMapping("/{id}/{count}/plus")
     public ServiceResult<Visit> plus(@PathVariable(name = "id") Integer id, @PathVariable(name = "count") Integer count) {
-        try {
-            return ServiceResult.success(visitService.plus(id, count));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(visitService.plus(id, count));
     }
 
     @ApiOperation("用户进行挂号操作-减少指定号源资源")
     @GetMapping("/{id}/{count}/minus")
     public ServiceResult<Visit> minus(@PathVariable(name = "id") Integer id, @PathVariable(name = "count") Integer count) {
-        try {
-            return ServiceResult.success(visitService.minus(id, count));
-        } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
-        }
+        return ServiceResult.success(visitService.minus(id, count));
     }
 
 
