@@ -15,7 +15,7 @@
         <property name="yearIsDateType" value="false" />
       </driver-properties>
     </data-source>
-    <data-source source="LOCAL" name="@www.nobitastudio.cn" read-only="true" uuid="a29d2978-c0a2-479c-a3a1-fc85cb54ee9d">
+    <data-source source="LOCAL" name="@www.nobitastudio.cn" uuid="a29d2978-c0a2-479c-a3a1-fc85cb54ee9d">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
