@@ -108,7 +108,6 @@ public class OrderServiceImpl implements OrderService {
             if (ossOrder.getState().equals(OrderState.HAVE_PAY)) {
                 return ossOrder;
             } else {
-                System.out.println(ossOrder.getState().name());
                 Thread.sleep(1000);
             }
         }

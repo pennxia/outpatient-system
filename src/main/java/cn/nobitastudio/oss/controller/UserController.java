@@ -115,11 +115,11 @@ public class UserController {
 
     @ApiOperation("用户注册,或者新增用户")
     @PostMapping("/enroll")
-    public ServiceResult<User> register(@RequestBody @JsonView(User.UserCreateView.class) User user) {
+    public ServiceResult<User> enroll(@RequestBody @JsonView(User.UserCreateView.class) User user) {
         try {
             return ServiceResult.success(userService.add(user));
         } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
+            return ServiceResult.failure(e);
         }
     }
 
@@ -155,7 +155,7 @@ public class UserController {
         try {
             return ServiceResult.success(userService.modifyPasswordBySms(user));
         } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
+            return ServiceResult.failure(e);
         }
     }
 

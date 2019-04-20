@@ -85,7 +85,7 @@ public class MedicalCardController {
             bindService.bind(new Bind(createMedicalCardDTO.getUserId(), medicalCard.getId()));
             return ServiceResult.success(medicalCard);
         } catch (AppException e) {
-            return ServiceResult.failure(e.getMessage());
+            return ServiceResult.failure(e);
         }
     }
 

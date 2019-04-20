@@ -7,6 +7,7 @@ import cn.nobitastudio.oss.entity.MedicalCard;
 import cn.nobitastudio.oss.repo.MedicalCardRepo;
 import cn.nobitastudio.oss.service.inter.MedicalCardService;
 import org.springframework.data.domain.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -26,6 +27,8 @@ public class MedicalCardServiceImpl implements MedicalCardService {
 
     @Inject
     private MedicalCardRepo medicalCardRepo;
+    @Inject
+    private PasswordEncoder passwordEncoder;
 
     /**
      * 查询指定id诊疗卡信息
@@ -72,7 +75,7 @@ public class MedicalCardServiceImpl implements MedicalCardService {
      */
     @Override
     public MedicalCard save(MedicalCard medicalCard) {
-        medicalCard.init();
+        medicalCard.init(passwordEncoder);
         return medicalCardRepo.save(medicalCard);
     }
 

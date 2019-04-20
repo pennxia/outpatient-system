@@ -99,6 +99,10 @@ public class User implements Serializable {
     @JsonView(UserIdCardView.class)
     private String idCard;
 
+    @ApiModelProperty("用户头像")
+    @Column(name = "head_img")
+    private String headImg;
+
     /**
      * 用户更新 仅更新用户名以及身份证号
      *
@@ -122,6 +126,7 @@ public class User implements Serializable {
      * @return
      */
     public void init(PasswordEncoder passwordEncoder) {
+        this.name = "用户" + mobile; // 初始化用户的基本用户名为 "用户15709932234"
         this.password = passwordEncoder.encode(this.password);
         this.lastChangePassword = LocalDateTime.now();
         this.enable = Boolean.TRUE;

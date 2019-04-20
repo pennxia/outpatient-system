@@ -10,6 +10,7 @@ import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.model.dto.ModifyUserMobileDTO;
 import cn.nobitastudio.oss.model.dto.ModifyUserPasswordDTO;
 import cn.nobitastudio.oss.model.enumeration.HealthArticleType;
+import cn.nobitastudio.oss.model.error.ErrorCode;
 import cn.nobitastudio.oss.model.vo.DoctorAndDepartment;
 import cn.nobitastudio.oss.model.vo.UserLoginResult;
 import cn.nobitastudio.oss.repo.*;
@@ -110,7 +111,7 @@ public class UserServiceImpl implements UserService {
     public User add(User user) {
         // 检查该手机号是否已被注册
         if (userRepo.findByMobile(user.getMobile()).isPresent()) {
-            throw new AppException("该手机号已注册");
+            throw new AppException("该手机号已注册",ErrorCode.MOBILE_OR_PASSWORD_ERROR);
         }
         // 创建用户 初始化
         user.init(passwordEncoder);
@@ -166,7 +167,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User modifyPasswordBySms(User user) {
-        User oldUser = userRepo.findById(user.getId()).orElseThrow(() -> new AppException("未查找到指定用户"));
+        User oldUser = userRepo.findById(user.getId()).orElseThrow(() -> new AppException("未查找到指定用户",ErrorCode.NOT_FIND_USER_BY_MOBILE));
         oldUser.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepo.save(oldUser);
     }

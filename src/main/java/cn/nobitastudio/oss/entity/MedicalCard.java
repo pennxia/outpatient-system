@@ -9,6 +9,7 @@ import cn.nobitastudio.oss.util.SnowFlakeUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -69,6 +70,10 @@ public class MedicalCard implements Serializable {
     @Equal
     private LocalDateTime createTime;
 
+    @ApiModelProperty("诊疗卡密码")
+    @Column(name = "password")
+    private String password;
+
     /**
      * 更新诊疗卡信息
      * @param medicalCard
@@ -95,9 +100,15 @@ public class MedicalCard implements Serializable {
     /**
      * 创建诊疗卡时,对这诊疗卡进行初始化
      */
-    public void init() {
+    public void init(PasswordEncoder passwordEncoder) {
         this.setId(SnowFlakeUtil.getUniqueId(ItemType.MEDICAL_CARD.ordinal() + 1 + Channel.values().length).toString());
         this.createTime = LocalDateTime.now();
+        this.password = passwordEncoder.encode(this.password); // 加密密码
+    }
+
+    // 检查创建时的诊疗卡信息是否完整
+    public boolean createInfoIsComplete() {
+        return ownerName != null && ownerIdCard != null && ownerSex != null && ownerAddress != null && password != null;
     }
 
 }
