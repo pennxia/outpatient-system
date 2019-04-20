@@ -167,7 +167,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User modifyPasswordBySms(User user) {
-        User oldUser = userRepo.findById(user.getId()).orElseThrow(() -> new AppException("未查找到指定用户",ErrorCode.NOT_FIND_USER_BY_MOBILE));
+        User oldUser = userRepo.findByMobile(user.getMobile()).orElseThrow(() -> new AppException("未查找到指定用户",ErrorCode.NOT_FIND_USER_BY_MOBILE));
         oldUser.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepo.save(oldUser);
     }
