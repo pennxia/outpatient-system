@@ -111,7 +111,7 @@ public class UserServiceImpl implements UserService {
     public User add(User user) {
         // 检查该手机号是否已被注册
         if (userRepo.findByMobile(user.getMobile()).isPresent()) {
-            throw new AppException("该手机号已注册",ErrorCode.MOBILE_OR_PASSWORD_ERROR);
+            throw new AppException("该手机号已注册",ErrorCode.MOBILE_HAS_REGISTER);
         }
         // 创建用户 初始化
         user.init(passwordEncoder);
