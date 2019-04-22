@@ -7,6 +7,7 @@ import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.RegistrationRecord;
 import cn.nobitastudio.oss.model.dto.ConfirmRegisterDTO;
 import cn.nobitastudio.oss.model.dto.RegisterDTO;
+import cn.nobitastudio.oss.model.dto.RegistrationAll;
 import cn.nobitastudio.oss.model.error.ErrorCode;
 import cn.nobitastudio.oss.model.dto.ConfirmOrCancelRegisterDTO;
 import cn.nobitastudio.oss.model.vo.RegistrationBasicInfoCollection;
@@ -85,6 +86,12 @@ public class RegistrationRecordController {
     @GetMapping("/{registrationId}/basic-info-collection")
     public ServiceResult<RegistrationBasicInfoCollection> getRegistrationBasicInfoCollection(@PathVariable(name = "registrationId") String registrationRecordId) {
         return ServiceResult.success(registrationRecordService.getRegistrationBasicInfoCollection(registrationRecordId));
+    }
+
+    @ApiOperation("查询指定用户的全部挂号单详情情况")
+    @GetMapping("/registrationAll/{userId}")
+    public ServiceResult<List<RegistrationAll>> getRegistrationAll(@PathVariable(name = "userId") Integer userId) {
+        return ServiceResult.success(registrationRecordService.getRegistrationAll(userId));
     }
 
 }

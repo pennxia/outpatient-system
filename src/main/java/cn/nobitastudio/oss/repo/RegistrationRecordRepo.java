@@ -2,6 +2,7 @@ package cn.nobitastudio.oss.repo;
 
 import cn.nobitastudio.oss.entity.RegistrationRecord;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -18,4 +19,6 @@ public interface RegistrationRecordRepo extends CrudRepository<RegistrationRecor
     List<RegistrationRecord> findByMedicalCardIdAndVisitId(String medicalCardId, Integer visitId);
 
     List<RegistrationRecord> findByUserIdOrderByCreateTimeDesc(Integer userId);
+
+    List<RegistrationRecord> findByUserId(Integer userId);
 }

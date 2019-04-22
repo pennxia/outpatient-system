@@ -5,6 +5,7 @@ import cn.nobitastudio.oss.entity.RegistrationRecord;
 import cn.nobitastudio.oss.model.dto.ConfirmRegisterDTO;
 import cn.nobitastudio.oss.model.dto.RegisterDTO;
 import cn.nobitastudio.oss.model.dto.ConfirmOrCancelRegisterDTO;
+import cn.nobitastudio.oss.model.dto.RegistrationAll;
 import cn.nobitastudio.oss.model.vo.RegistrationBasicInfoCollection;
 import cn.nobitastudio.oss.model.vo.RegistrationRecordAndOrder;
 import org.springframework.data.domain.PageImpl;
@@ -90,4 +91,11 @@ public interface RegistrationRecordService {
      * @return
      */
     RegistrationBasicInfoCollection getRegistrationBasicInfoCollection(String registrationRecordId);
+
+    /**
+     * 获取指定用户的挂号单信息抽象集合详情
+     * @param userId
+     * @return
+     */
+    List<RegistrationAll> getRegistrationAll(Integer userId);
 }
