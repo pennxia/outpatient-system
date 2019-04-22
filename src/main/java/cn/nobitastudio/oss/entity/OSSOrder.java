@@ -33,13 +33,14 @@ public class OSSOrder implements Serializable {
 
     private static final long serialVersionUID = -8428754043223464384L;
 
-    public OSSOrder(ItemType itemType, Integer userId, String medicalCardId) {
+    public OSSOrder(ItemType itemType, Integer userId, String medicalCardId,Double cost) {
         this.id =  SnowFlakeUtil.getUniqueId(itemType.ordinal() + 1 + Channel.values().length).toString(); // 生成挂号单号时,dataCenterId默认从id开始;
         this.userId = userId;
         this.medicalCardId = medicalCardId;
-        this.name = itemType;
+        this.itemType = itemType;
         this.state = OrderState.WAITING_PAY;
         this.createTime = LocalDateTime.now();
+        this.cost = cost;
     }
 
     @ApiModelProperty("订单id,流水号")
@@ -58,11 +59,11 @@ public class OSSOrder implements Serializable {
     @Equal
     private String medicalCardId;
 
-    @ApiModelProperty("订单名称")
-    @Column(name = "name")
+    @ApiModelProperty("订单内包含的子项类型,枚举类型")
+    @Column(name = "item_type")
     @Enumerated(EnumType.STRING)
     @Equal
-    private ItemType name;
+    private ItemType itemType;
 
     @ApiModelProperty("支付状态,枚举值")
     @Column(name = "state")
@@ -93,4 +94,8 @@ public class OSSOrder implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Equal
     private LocalDateTime cancelTime;
+
+    @ApiModelProperty("订单花费")
+    @Column(name = "cost")
+    private Double cost;
 }

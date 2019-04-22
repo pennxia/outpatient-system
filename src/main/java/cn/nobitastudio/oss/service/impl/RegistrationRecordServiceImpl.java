@@ -172,10 +172,10 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
         visit.setLeftAmount(visit.getLeftAmount() - 1);
         visitRepo.save(visit);  // 可能不需要此操作,保险起见
         // 生成 订单信息
-        OSSOrder ossOrder = new OSSOrder(ItemType.REGISTRATION_RECORD, user.getId(), medicalCard.getId());
+        OSSOrder ossOrder = new OSSOrder(ItemType.REGISTER, user.getId(), medicalCard.getId(), visit.getCost());
         ossOrderRepo.save(ossOrder);
         // 生成订单和挂号单之间的绑定关系
-        Contain contain = new Contain(ossOrder.getId(), ItemType.REGISTRATION_RECORD, registrationRecord.getId());
+        Contain contain = new Contain(ossOrder.getId(), ItemType.REGISTER, registrationRecord.getId());
         containRepo.save(contain);
         // 挂号成功等待支付,直接发送通知短信.
         if (!debugModel) {

@@ -61,4 +61,11 @@ public interface OrderService {
     OSSOrder getByMedicalCardIdAndVisitId(String medicalCardId,Integer visitId);
 
     OSSOrder getByIdForPayResult(String id) throws InterruptedException;
+
+    /**
+     * 查询指定用户的全部订单信息
+     * @param userId
+     * @return
+     */
+    List<OSSOrder> getAllOrdersByUserId(Integer userId);
 }

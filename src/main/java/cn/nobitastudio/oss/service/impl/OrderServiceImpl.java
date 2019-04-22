@@ -5,9 +5,11 @@ import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.OSSOrder;
 import cn.nobitastudio.oss.entity.OSSOrder;
+import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.model.enumeration.OrderState;
 import cn.nobitastudio.oss.model.error.ErrorCode;
 import cn.nobitastudio.oss.repo.OSSOrderRepo;
+import cn.nobitastudio.oss.repo.UserRepo;
 import cn.nobitastudio.oss.service.inter.OrderService;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Inject
     private OSSOrderRepo ossOrderRepo;
+    @Inject
+    private UserRepo userRepo;
 
     /**
      * 查询指定id订单信息
@@ -113,5 +117,17 @@ public class OrderServiceImpl implements OrderService {
         }
         return ossOrderRepo.findById(id).orElseThrow(
                 () -> new AppException(ErrorCode.get(ErrorCode.NOT_FIND_ORDER), ErrorCode.NOT_FIND_ORDER));
+    }
+
+    /**
+     * 查询指定用户的全部订单信息
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<OSSOrder> getAllOrdersByUserId(Integer userId) {
+        userRepo.findById(userId).orElseThrow(() -> new AppException("未查找到指定用户",ErrorCode.NOT_FIND_USER_BY_ID));
+        return ossOrderRepo.findByUserIdOrderByCreateTimeDesc(userId);
     }
 }

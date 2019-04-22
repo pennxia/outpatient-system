@@ -126,8 +126,8 @@ public class AppBeanConfig implements ApplicationListener<ApplicationReadyEvent>
                     scheduler.startDelayed(5);
                     LOGGER.info("启动 schedule");
                 }
-                createCheckValidateCodeQuartzPlan();
-                LOGGER.info("启动 Scheduler Job计划成功");
+//                createCheckValidateCodeQuartzPlan();
+//                LOGGER.info("启动 Scheduler Job计划成功");  // 已经采用redis来代替.
             }
         } catch (SchedulerException e) {
             LOGGER.error("启动 Scheduler 失败: " + e.getMessage(), e);

@@ -39,7 +39,7 @@ public class OrderController {
         return ServiceResult.success(orderService.getAll(ossOrder, pager));
     }
 
-    @ApiOperation("查询指定用户的全部订单信息")
+    @ApiOperation("查询全部订单信息")
     @GetMapping
     public ServiceResult<List<OSSOrder>> query() {
         return ServiceResult.success(orderService.getAll());
@@ -68,6 +68,12 @@ public class OrderController {
     @GetMapping("/status/{id}")
     public ServiceResult<OSSOrder> getStatusByIdAfterPay(@PathVariable(name = "id") String id) throws InterruptedException {
         return ServiceResult.success(orderService.getByIdForPayResult(id));
+    }
+
+    @ApiOperation("查询指定用户的全部订单")
+    @GetMapping("/queryAll/{userId}")
+    public ServiceResult<List<OSSOrder>> getAllOrdersByUserId(@PathVariable(name = "userId") Integer userId) {
+        return ServiceResult.success(orderService.getAllOrdersByUserId(userId));
     }
 
 }
