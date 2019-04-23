@@ -3,6 +3,7 @@ package cn.nobitastudio.oss.controller;
 import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.oss.model.dto.ConfirmValidateCodeDTO;
+import cn.nobitastudio.oss.model.dto.ForBindMedicalCardDTO;
 import cn.nobitastudio.oss.model.dto.RequestValidateCodeDTO;
 import cn.nobitastudio.oss.model.dto.StandardInfo;
 import cn.nobitastudio.oss.model.vo.StandardMessage;
@@ -28,7 +29,7 @@ public class SmsValidateController {
     @Inject
     private ValidateService validateService;
 
-    @ApiOperation("用户请求短息验证码")
+    @ApiOperation("用户请求短信验证码-仅需要发送验证码")
     @PutMapping("/request-code")
     public ServiceResult<StandardInfo> requestValidateCode(@RequestBody RequestValidateCodeDTO requestValidateCodeDTO) {
         return ServiceResult.success(validateService.requestValidateCode(requestValidateCodeDTO));
@@ -39,6 +40,13 @@ public class SmsValidateController {
     public ServiceResult<StandardInfo> confirmValidateCode(@RequestBody ConfirmValidateCodeDTO confirmValidateCodeDTO) {
         return ServiceResult.success(validateService.confirmValidateCode(confirmValidateCodeDTO));
     }
+
+    @ApiOperation("用户请求短信验证码-绑定诊疗卡")
+    @PutMapping("/bind-medicalcard")
+    public ServiceResult<StandardInfo> requestValidateCode(@RequestBody ForBindMedicalCardDTO forBindMedicalCardDTO) {
+        return ServiceResult.success(validateService.bindMedicalCard(forBindMedicalCardDTO));
+    }
+
 
 
 

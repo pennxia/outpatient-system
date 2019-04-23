@@ -4,10 +4,8 @@ import cn.nobitastudio.oss.cache.RedisHelper;
 import cn.nobitastudio.oss.entity.MedicalCard;
 import cn.nobitastudio.oss.helper.ValidateCodeContainHelper;
 import cn.nobitastudio.common.exception.AppException;
-import cn.nobitastudio.oss.model.dto.ConfirmValidateCodeDTO;
-import cn.nobitastudio.oss.model.dto.RequestValidateCodeDTO;
-import cn.nobitastudio.oss.model.dto.StandardInfo;
-import cn.nobitastudio.oss.model.dto.ValidateCode;
+import cn.nobitastudio.oss.model.dto.*;
+import cn.nobitastudio.oss.model.enumeration.SmsMessageType;
 import cn.nobitastudio.oss.model.error.ErrorCode;
 import cn.nobitastudio.oss.model.vo.SmsSendResult;
 import cn.nobitastudio.oss.model.vo.StandardMessage;
@@ -40,6 +38,8 @@ public class ValidateServiceImpl implements ValidateService {
     private ExecutorService executorService;
     @Inject
     private RedisHelper redisHelper;
+    @Inject
+    private MedicalCardRepo medicalCardRepo;
     @Value(value = "${oss.app.captcha.expireTime:3600}")
     private long captchaExpireTime;  // 验证码的保存时间 默认一个小时
 
@@ -58,7 +58,7 @@ public class ValidateServiceImpl implements ValidateService {
             return new StandardInfo("发送成功");
         } else {
             // 发送失败
-            throw new AppException("验证码发送失败,请稍后重试", ErrorCode.NOT_FIND_ORDER);
+            throw new AppException("验证码发送失败,请稍后重试", ErrorCode.SMS_CODE_SEND_FAIL);
         }
     }
 
@@ -82,6 +82,31 @@ public class ValidateServiceImpl implements ValidateService {
         } else {
             redisHelper.del(confirmValidateCodeDTO.getMobile());
             return new StandardInfo("认证成功");
+        }
+    }
+
+    /**
+     * 绑定诊疗卡时需要发送的验证码
+     *
+     * @param forBindMedicalCardDTO
+     * @return
+     */
+    @Override
+    public StandardInfo bindMedicalCard(ForBindMedicalCardDTO forBindMedicalCardDTO) {
+        MedicalCard medicalCard = medicalCardRepo.findById(forBindMedicalCardDTO.getMedicalCardId()).orElseThrow(() -> new AppException("未找到指定诊疗卡", ErrorCode.NOT_FIND_MEDICAL_CARD_BY_ID));
+        ValidateCode validateCode = new ValidateCode();
+        // 进行发送
+        // 直接给指定手机号发送验证码
+        SmsSendResult smsSendResult = smsHelper.sendSms(smsHelper.initBindMedicalCardSms(medicalCard.getOwnerMobile(), SmsMessageType.BIND_MEDICAL_CARD,
+                validateCode, medicalCard));
+        if (smsSendResult.getResult().equals(Boolean.TRUE)) {
+            // 发送成功
+            //保存到redis
+            redisHelper.set(medicalCard.getOwnerMobile(), validateCode, captchaExpireTime, TimeUnit.SECONDS);
+            return new StandardInfo("发送成功");
+        } else {
+            // 发送失败
+            throw new AppException("验证码发送失败,请稍后重试", ErrorCode.SMS_CODE_SEND_FAIL);
         }
     }
 }

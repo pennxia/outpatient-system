@@ -4,6 +4,7 @@ import cn.nobitastudio.common.criteria.SpecificationBuilder;
 import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.MedicalCard;
+import cn.nobitastudio.oss.model.error.ErrorCode;
 import cn.nobitastudio.oss.repo.MedicalCardRepo;
 import cn.nobitastudio.oss.service.inter.MedicalCardService;
 import org.springframework.data.domain.*;
@@ -38,7 +39,7 @@ public class MedicalCardServiceImpl implements MedicalCardService {
      */
     @Override
     public MedicalCard getById(String id) {
-        return medicalCardRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定诊疗卡信息"));
+        return medicalCardRepo.findById(id).orElseThrow(() -> new AppException("未查找到指定诊疗卡信息",ErrorCode.NOT_FIND_MEDICAL_CARD_BY_ID));
     }
 
     /**

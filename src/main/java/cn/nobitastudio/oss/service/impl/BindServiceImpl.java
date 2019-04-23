@@ -4,6 +4,7 @@ import cn.nobitastudio.common.criteria.SpecificationBuilder;
 import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.Bind;
+import cn.nobitastudio.oss.model.error.ErrorCode;
 import cn.nobitastudio.oss.repo.BindRepo;
 import cn.nobitastudio.oss.service.inter.BindService;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 
 /**
  * @author chenxiong
@@ -90,18 +92,19 @@ public class BindServiceImpl implements BindService {
     @Override
     public Bind bind(Bind bind) {
         if (bindRepo.findByUserIdAndMedicalCardId(bind.getUserId(), bind.getMedicalCardId()).isPresent()) {
-            throw new AppException("您已绑定该诊疗卡");
+            throw new AppException("您已绑定该诊疗卡",ErrorCode.MOBILE_HAVE_BIND);
         }
         Integer medicalCardBindCount = bindRepo.countAllByMedicalCardId(bind.getMedicalCardId());
         if (medicalCardBindCount >= maxBindCount) {
             // 诊疗卡绑定数已上限
-            throw new AppException("绑定失败,该诊疗卡绑定数已上限");
+            throw new AppException("绑定失败,该诊疗卡绑定数已上限",ErrorCode.MEDICAL_CARD_BIND_UPPER_LIMIT);
         }
         Integer mobileBindCount = bindRepo.countAllByUserId(bind.getUserId());
-        if (medicalCardBindCount >= maxBindCount) {
+        if (mobileBindCount >= maxBindCount) {
             // 号码绑定数已上限
-            throw new AppException("绑定失败,该号码绑定数已上限");
+            throw new AppException("绑定失败,该号码绑定数已上限",ErrorCode.MOBILE_BIND_UPPER_LIMIT);
         }
+        bind.setCreateTime(LocalDateTime.now());
         return bindRepo.save(bind);
     }
 

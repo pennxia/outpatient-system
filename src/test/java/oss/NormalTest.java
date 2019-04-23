@@ -5,6 +5,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalField;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -255,6 +258,15 @@ public class NormalTest {
             value.add(in.nextInt());
         }
 
+
+    }
+
+    @Test
+    public void test20() {
+        LocalDateTime l = LocalDateTime.now();
+        LocalDateTime c = l.plusHours(1);
+        Duration duration = Duration.between(l,c);
+        System.out.println(duration.toMillis());
 
     }
 

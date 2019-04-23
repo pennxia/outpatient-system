@@ -198,6 +198,16 @@ public class SmsHelper {
         return params;
     }
 
+    public Map<String,String> initBindMedicalCardSms(String mobile,SmsMessageType smsMessageType,ValidateCode validateCode,MedicalCard medicalCard) {
+        Map<String, String> params = new HashMap<>();
+        params.put(MOBILE, mobile);
+        params.put(MESSAGE_TYPE, smsMessageType.name());
+        params.put(VALIDATE_CODE, validateCode.getCode());
+        params.put(MEDICAL_CARD_ID,medicalCard.getId());
+        params.put(MEDICAL_CARD_OWNER,medicalCard.getOwnerName());
+        return params;
+    }
+
 
     public Map<String, String> castJobDataMapToMap(JobDataMap jobDataMap) {
         Map<String, String> params = new HashMap<>();

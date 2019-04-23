@@ -408,7 +408,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
      */
     @Override
     public List<RegistrationAll> getRegistrationAll(Integer userId) {
-        List<RegistrationRecord> registrationRecords = registrationRecordRepo.findByUserId(userId);
+        List<RegistrationRecord> registrationRecords = registrationRecordRepo.findByUserIdOrderByCreateTimeDesc(userId);
         List<RegistrationAll> registrationAlls = new ArrayList<>();
         for (RegistrationRecord registrationRecord : registrationRecords) {
             User user = userRepo.findById(registrationRecord.getUserId()).orElseThrow(() -> new AppException("未找到指定用户", ErrorCode.NOT_FIND_USER_BY_ID));

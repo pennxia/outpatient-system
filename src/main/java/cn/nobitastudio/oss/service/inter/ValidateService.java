@@ -1,6 +1,7 @@
 package cn.nobitastudio.oss.service.inter;
 
 import cn.nobitastudio.oss.model.dto.ConfirmValidateCodeDTO;
+import cn.nobitastudio.oss.model.dto.ForBindMedicalCardDTO;
 import cn.nobitastudio.oss.model.dto.RequestValidateCodeDTO;
 import cn.nobitastudio.oss.model.dto.StandardInfo;
 import cn.nobitastudio.oss.model.vo.StandardMessage;
@@ -27,5 +28,11 @@ public interface ValidateService {
      */
     StandardInfo confirmValidateCode(ConfirmValidateCodeDTO confirmValidateCodeDTO);
 
+    /**
+     * 绑定诊疗卡时需要发送的验证码
+     * @param forBindMedicalCardDTO
+     * @return
+     */
+    StandardInfo bindMedicalCard(ForBindMedicalCardDTO forBindMedicalCardDTO);
 
 }
