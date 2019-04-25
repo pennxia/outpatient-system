@@ -2,9 +2,12 @@ package cn.nobitastudio.oss.service.inter;
 
 import cn.nobitastudio.common.util.Pager;
 import cn.nobitastudio.oss.entity.ElectronicCase;
+import cn.nobitastudio.oss.model.dto.ElectronicCaseDTO;
 import cn.nobitastudio.oss.model.dto.StandardInfo;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author chenxiong
@@ -45,4 +48,11 @@ public interface ElectronicService {
      * @return
      */
     ElectronicCase save(ElectronicCase electronicCase);
+
+    /**
+     * 查询指定诊疗卡的全部电子病历.根据电子病历中的就诊时间排序.
+     * @param medicalCardId
+     * @return
+     */
+    List<ElectronicCaseDTO> findByMedicalCardId(String medicalCardId);
 }

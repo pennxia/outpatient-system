@@ -3,14 +3,24 @@ package cn.nobitastudio.oss.service.impl;
 import cn.nobitastudio.common.criteria.SpecificationBuilder;
 import cn.nobitastudio.common.exception.AppException;
 import cn.nobitastudio.common.util.Pager;
-import cn.nobitastudio.oss.entity.ElectronicCase;
+import cn.nobitastudio.oss.entity.*;
+import cn.nobitastudio.oss.model.dto.ElectronicCaseDTO;
 import cn.nobitastudio.oss.model.dto.StandardInfo;
 import cn.nobitastudio.oss.model.error.ErrorCode;
-import cn.nobitastudio.oss.repo.ElectronicCaseRepo;
+import cn.nobitastudio.oss.repo.*;
 import cn.nobitastudio.oss.service.inter.ElectronicService;
+import cn.nobitastudio.oss.service.inter.RegistrationRecordService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.*;
+import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author chenxiong
@@ -18,10 +28,28 @@ import javax.inject.Inject;
  * @date 2019/04/25 16:17
  * @description
  */
+@Service
 public class ElectronicServiceImpl implements ElectronicService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ElectronicServiceImpl.class);
 
     @Inject
     private ElectronicCaseRepo electronicCaseRepo;
+    @Inject
+    private RegistrationRecordRepo registrationRecordRepo;
+    @Inject
+    private OSSOrderRepo ossOrderRepo;
+    @Inject
+    private ContainRepo containRepo;
+    @Inject
+    private DrugRepo drugRepo;
+    @Inject
+    private CheckItemRepo checkItemRepo;
+    @Inject
+    private OperationItemRepo operationItemRepo;
+
+    @Inject
+    private RegistrationRecordService registrationRecordService;
 
     /**
      * 查询指定id的电子病历
@@ -69,5 +97,70 @@ public class ElectronicServiceImpl implements ElectronicService {
     @Override
     public ElectronicCase save(ElectronicCase electronicCase) {
         return electronicCaseRepo.save(electronicCase);
+    }
+
+    /**
+     * 查询指定诊疗卡的全部电子病历.根据电子病历中的就诊时间排序.
+     *
+     * @param medicalCardId
+     * @return
+     */
+    @Override
+    public List<ElectronicCaseDTO> findByMedicalCardId(String medicalCardId) {
+        List<ElectronicCaseDTO> electronicCaseDTOs = new ArrayList<>();
+        List<RegistrationRecord> registrationRecords = registrationRecordRepo.findByMedicalCardId(medicalCardId);
+        List<ElectronicCase> electronicCases = new ArrayList<>();
+        for (RegistrationRecord registrationRecord : registrationRecords) {
+            // 已经存在病历情况.否则即为只挂了号但是未就诊情况(未调用模拟的就诊方法)
+            electronicCaseRepo.findByRegistrationRecordId(registrationRecord.getId()).ifPresent(electronicCases::add);
+        }
+        // 排序 electronicCases 根据diagnosis_time
+        electronicCases = electronicCases.stream().sorted((o1, o2) -> o1.getDiagnosisTime().isAfter(o2.getDiagnosisTime()) ? 1 : -1).collect(Collectors.toList());
+        for (ElectronicCase electronicCase : electronicCases) {
+            ElectronicCaseDTO electronicCaseDTO = new ElectronicCaseDTO();
+            // 查找对应的药品-检查-手术 详情
+            List<Contain> contains = containRepo.findByOssOrderIdOrderByIdAsc(electronicCase.getOrderId());
+            List<Drug> drugs = new ArrayList<>();
+            List<Integer> drugCount = new ArrayList<>();
+
+            List<CheckItem> checkItems = new ArrayList<>();
+            List<Integer> checkItemCount = new ArrayList<>();
+
+            List<OperationItem> operationItems = new ArrayList<>();
+            List<Integer> operationItemCount = new ArrayList<>();
+            for (Contain contain : contains) {
+                switch (contain.getItemType()) {
+                    case DRUG:
+                        Drug drug = drugRepo.findById(Integer.valueOf(contain.getItemId()))
+                                .orElseThrow(() -> new AppException("未查找到指定药品", ErrorCode.NOT_FIND_DRUG_BY_ID));
+                        drugs.add(drug);
+                        drugCount.add(contain.getAmount());
+                        break;
+                    case CHECK:
+                        CheckItem checkItem = checkItemRepo.findById(Integer.valueOf(contain.getItemId()))
+                                .orElseThrow(() -> new AppException("未查找到指定检查项", ErrorCode.NOT_FIND_CHECK_ITEM_BY_ID));
+                        checkItems.add(checkItem);
+                        checkItemCount.add(contain.getAmount());
+                        break;
+                    case OPERATION:
+                        OperationItem operationItem = operationItemRepo.findById(Integer.valueOf(contain.getItemId()))
+                                .orElseThrow(() -> new AppException("未查找到指定手术项", ErrorCode.NOT_FIND_OPERATION_ITEM_BY_ID));
+                        operationItems.add(operationItem);
+                        operationItemCount.add(contain.getAmount());
+                        break;
+                }
+            }
+            electronicCaseDTO.setElectronicCase(electronicCase); //病历基础信息 - 医嘱.就诊时间等等
+            electronicCaseDTO.setDrugs(drugs); // 药品信息
+            electronicCaseDTO.setDrugCount(drugCount); // 药品对应的数量
+            electronicCaseDTO.setCheckItems(checkItems); // 检查项
+            electronicCaseDTO.setCheckItemCount(checkItemCount);//检查项对应的数量
+            electronicCaseDTO.setOperationItems(operationItems);// 手术项
+            electronicCaseDTO.setOperationItemCount(operationItemCount);// 手术项对应的数量
+            electronicCaseDTO.setRegistrationAll(registrationRecordService.getByRegistrationRecordId(electronicCase.getRegistrationRecordId())); // 对应的挂号单全部信息
+            electronicCaseDTOs.add(electronicCaseDTO);
+        }
+        LOGGER.info("electronicCaseDTOs.size():" + electronicCaseDTOs.size());
+        return electronicCaseDTOs;
     }
 }

@@ -26,14 +26,14 @@ public class Contain implements Serializable {
     private static final long serialVersionUID = 7468056643932027289L;
 
     public Contain(String orderId, ItemType itemType, String itemId) {
-        this.orderId = orderId;
+        this.ossOrderId = orderId;
         this.itemType = itemType;
         this.itemId = itemId;
         this.amount = 1;
     }
 
     public Contain(String orderId, ItemType itemType, String itemId, Integer amount) {
-        this.orderId = orderId;
+        this.ossOrderId = orderId;
         this.itemType = itemType;
         this.itemId = itemId;
         this.amount = amount;
@@ -49,7 +49,7 @@ public class Contain implements Serializable {
     @ApiModelProperty("订单id")
     @Column(name = "order_id")
     @Equal
-    private String orderId;
+    private String ossOrderId;
 
     @ApiModelProperty("订单内包含的子项类型,枚举类型")
     @Column(name = "item_type")

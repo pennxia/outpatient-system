@@ -15,5 +15,6 @@ import java.util.Optional;
  */
 public interface ElectronicCaseRepo extends CrudRepository<ElectronicCase, Integer>, JpaSpecificationExecutor {
 
+    Optional<ElectronicCase> findByRegistrationRecordId(String registrationRecordId);
 
 }

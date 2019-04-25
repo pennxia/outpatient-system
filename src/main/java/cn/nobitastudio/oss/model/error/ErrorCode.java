@@ -38,6 +38,9 @@ public class ErrorCode {
     public static final String MOBILE_BIND_UPPER_LIMIT = "MEDICAL_CARD_BIND_UPPER_LIMIT"; // 手机号绑定数以上限
     public static final String MOBILE_HAVE_BIND = "MOBILE_HAVE_BIND"; // 您已绑定该诊疗卡
     public static final String NOT_FIND_ELECTRONIC_CASE_BY_ID = "NOT_FIND_ELECTRONIC_CASE_BY_ID"; // 未查找到指定电子病历
+    public static final String NOT_FIND_DRUG_BY_ID = "NOT_FIND_DRUG_BY_ID"; // 未查找到指定药品信息
+    public static final String NOT_FIND_CHECK_ITEM_BY_ID = "NOT_FIND_CHECK_ITEM_BY_ID"; // 未查找到指定检查项信息
+    public static final String NOT_FIND_OPERATION_ITEM_BY_ID = "NOT_FIND_OPERATION_ITEM_BY_ID"; // 未查找到指定手术项信息
 
     public static String get(String errorCode) {
         if (errorCodeContainer == null) {

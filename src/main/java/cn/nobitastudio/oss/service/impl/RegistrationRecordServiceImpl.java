@@ -433,15 +433,28 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
         List<RegistrationRecord> registrationRecords = registrationRecordRepo.findByUserIdOrderByCreateTimeDesc(userId);
         List<RegistrationAll> registrationAlls = new ArrayList<>();
         for (RegistrationRecord registrationRecord : registrationRecords) {
-            User user = userRepo.findById(registrationRecord.getUserId()).orElseThrow(() -> new AppException("未找到指定用户", ErrorCode.NOT_FIND_USER_BY_ID));
-            OSSOrder ossOrder = ossOrderRepo.findByRegistrationId(registrationRecord.getId()).orElseThrow(() -> new AppException("未查找到该挂号单对应的订单", ErrorCode.NOT_FIND_REGISTRATION_BY_ID));
-            Visit visit = visitRepo.findById(registrationRecord.getVisitId()).orElseThrow(() -> new AppException("未查询到指定号源信息", ErrorCode.NOT_FIND_REGISTRATION_BY_ID));
-            MedicalCard medicalCard = medicalCardRepo.findById(registrationRecord.getMedicalCardId()).orElseThrow(() -> new AppException("未查找到指定诊疗卡", ErrorCode.NOT_FIND_REGISTRATION_BY_ID));
-            Doctor doctor = doctorRepo.findById(visit.getDoctorId()).orElseThrow(() -> new AppException("未查找到指定医生信息", ErrorCode.NOT_FIND_REGISTRATION_BY_ID));
-            Department department = departmentRepo.findById(doctor.getDepartmentId()).orElseThrow(() -> new AppException("未查找到指定科室信息", ErrorCode.NOT_FIND_REGISTRATION_BY_ID));
-            DiagnosisRoom diagnosisRoom = diagnosisRoomRepo.findById(visit.getDiagnosisRoomId()).orElseThrow(() -> new AppException("未查询到指定诊疗室", ErrorCode.NOT_FIND_REGISTRATION_BY_ID));
-            registrationAlls.add(new RegistrationAll(registrationRecord, department, doctor, user, visit, medicalCard, ossOrder, diagnosisRoom));
+            registrationAlls.add(getByRegistrationRecordId(registrationRecord.getId()));
         }
         return registrationAlls;
+    }
+
+    /**
+     * 通过 registrationRecordId 查询挂号单信息抽象集合详情
+     *
+     * @param registrationRecordId
+     * @return
+     */
+    @Override
+    public RegistrationAll getByRegistrationRecordId(String registrationRecordId) {
+        RegistrationRecord registrationRecord = registrationRecordRepo.findById(registrationRecordId)
+                .orElseThrow(() -> new AppException("未找到指定挂号单信息",ErrorCode.NOT_FIND_REGISTRATION_BY_ID));
+        User user = userRepo.findById(registrationRecord.getUserId()).orElseThrow(() -> new AppException("未找到指定用户", ErrorCode.NOT_FIND_USER_BY_ID));
+        OSSOrder ossOrder = ossOrderRepo.findByRegistrationId(registrationRecord.getId()).orElseThrow(() -> new AppException("未查找到该挂号单对应的订单", ErrorCode.NOT_FIND_REGISTRATION_BY_ID));
+        Visit visit = visitRepo.findById(registrationRecord.getVisitId()).orElseThrow(() -> new AppException("未查询到指定号源信息", ErrorCode.NOT_FIND_REGISTRATION_BY_ID));
+        MedicalCard medicalCard = medicalCardRepo.findById(registrationRecord.getMedicalCardId()).orElseThrow(() -> new AppException("未查找到指定诊疗卡", ErrorCode.NOT_FIND_REGISTRATION_BY_ID));
+        Doctor doctor = doctorRepo.findById(visit.getDoctorId()).orElseThrow(() -> new AppException("未查找到指定医生信息", ErrorCode.NOT_FIND_REGISTRATION_BY_ID));
+        Department department = departmentRepo.findById(doctor.getDepartmentId()).orElseThrow(() -> new AppException("未查找到指定科室信息", ErrorCode.NOT_FIND_REGISTRATION_BY_ID));
+        DiagnosisRoom diagnosisRoom = diagnosisRoomRepo.findById(visit.getDiagnosisRoomId()).orElseThrow(() -> new AppException("未查询到指定诊疗室", ErrorCode.NOT_FIND_REGISTRATION_BY_ID));
+        return new RegistrationAll(registrationRecord, department, doctor, user, visit, medicalCard, ossOrder, diagnosisRoom);
     }
 }

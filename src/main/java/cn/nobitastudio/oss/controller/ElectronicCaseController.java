@@ -2,14 +2,17 @@ package cn.nobitastudio.oss.controller;
 
 import cn.nobitastudio.common.ServiceResult;
 import cn.nobitastudio.common.util.Pager;
-import cn.nobitastudio.oss.entity.Bind;
-import cn.nobitastudio.oss.service.inter.BindService;
+import cn.nobitastudio.oss.entity.ElectronicCase;
+import cn.nobitastudio.oss.model.dto.ElectronicCaseDTO;
+import cn.nobitastudio.oss.model.dto.StandardInfo;
+import cn.nobitastudio.oss.service.inter.ElectronicService;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * @author chenxiong
@@ -22,41 +25,37 @@ import javax.inject.Inject;
 public class ElectronicCaseController {
 
     @Inject
-    private BindService bindService;
+    private ElectronicService electronicService;
 
     @ApiOperation("查询指定绑定关系")
     @GetMapping("/{id}")
-    public ServiceResult<Bind> getById(@PathVariable("id") Integer id) {
-        return ServiceResult.success(bindService.getById(id));
+    public ServiceResult<ElectronicCase> getById(@PathVariable("id") Integer id) {
+        return ServiceResult.success(electronicService.getById(id));
     }
 
     @ApiOperation("查询分页后的绑定关系")
     @PutMapping("/query")
-    public ServiceResult<PageImpl<Bind>> query(@RequestBody Bind bind, Pager pager) {
-        return ServiceResult.success(bindService.getAll(bind, pager));
+    public ServiceResult<PageImpl<ElectronicCase>> query(@RequestBody ElectronicCase electronicCase, Pager pager) {
+        return ServiceResult.success(electronicService.getAll(electronicCase, pager));
     }
 
     @ApiOperation("删除指定绑定")
     @DeleteMapping("/{id}")
-    public ServiceResult<String> deleteById(@PathVariable("id") Integer id) {
-        return ServiceResult.success(bindService.delete(id));
+    public ServiceResult<StandardInfo> deleteById(@PathVariable("id") Integer id) {
+        return ServiceResult.success(electronicService.delete(id));
     }
 
     @ApiOperation("保存或更新绑定信息")
     @PostMapping
-    public ServiceResult<Bind> save(@RequestBody Bind bind) {
-        return ServiceResult.success(bindService.save(bind));
+    public ServiceResult<ElectronicCase> save(@RequestBody ElectronicCase electronicCase) {
+        return ServiceResult.success(electronicService.save(electronicCase));
     }
 
-    @ApiOperation("用户绑定诊疗卡")
-    @PutMapping("/bind")
-    public ServiceResult<Bind> bind(@RequestBody Bind bind) {
-        return ServiceResult.success(bindService.bind(bind));
+    @ApiOperation("查询指定诊疗卡的全部电子病历")
+    @GetMapping("/{medicalCardId}/findAll")
+    public ServiceResult<List<ElectronicCaseDTO>> getAllByMedicalCardId(@PathVariable(name = "medicalCardId")
+                                                                          String medicalCardId) {
+        return ServiceResult.success(electronicService.findByMedicalCardId(medicalCardId));
     }
 
-    @ApiModelProperty("用户解绑诊疗卡")
-    @PutMapping("/unbind")
-    public ServiceResult<String> unbind(@RequestBody Bind bind) {
-        return ServiceResult.success(bindService.unbind(bind));
-    }
 }

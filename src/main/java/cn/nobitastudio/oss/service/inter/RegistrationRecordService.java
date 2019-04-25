@@ -98,4 +98,11 @@ public interface RegistrationRecordService {
      * @return
      */
     List<RegistrationAll> getRegistrationAll(Integer userId);
+
+    /**
+     * 通过 registrationRecordId 查询挂号单信息抽象集合详情
+     * @param registrationRecordId
+     * @return
+     */
+    RegistrationAll getByRegistrationRecordId(String registrationRecordId);
 }

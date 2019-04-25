@@ -21,4 +21,6 @@ public interface RegistrationRecordRepo extends CrudRepository<RegistrationRecor
     List<RegistrationRecord> findByUserIdOrderByCreateTimeDesc(Integer userId);
 
     List<RegistrationRecord> findByUserId(Integer userId);
+
+    List<RegistrationRecord> findByMedicalCardId(String medicalCardId);
 }
