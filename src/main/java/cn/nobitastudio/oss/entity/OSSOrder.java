@@ -43,6 +43,19 @@ public class OSSOrder implements Serializable {
         this.cost = cost;
     }
 
+    // 用于生成电子病历时使用
+    public OSSOrder(String medicalCardId,double cost) {
+        this.id =  SnowFlakeUtil.getUniqueId(ItemType.ELECTRONIC_CASE.ordinal() + 1 + Channel.values().length).toString(); // 生成挂号单号时,dataCenterId默认从id开始;
+        this.userId = null;  // 没有 APP支付者
+        this.medicalCardId = medicalCardId;
+        this.itemType = ItemType.ELECTRONIC_CASE;
+        this.state = OrderState.HAVE_PAY; // 生成时即完成支付了
+        this.createTime = LocalDateTime.now();
+        this.paymentChannel = PaymentChannel.HOSPITAL_MEDICAL_CAR; //  在医院使用诊疗卡余额支付
+        this.payTime = createTime.plusHours(1).plusMinutes(10).plusSeconds(20); // 默认创建时间的1小时10分钟20秒后
+        this.cost = cost;
+    }
+
     @ApiModelProperty("订单id,流水号")
     @Column(name = "id")
     @Id

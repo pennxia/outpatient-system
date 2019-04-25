@@ -6,6 +6,7 @@ import cn.nobitastudio.oss.model.enumeration.RemindType;
 import cn.nobitastudio.oss.model.enumeration.SmsMessageType;
 import cn.nobitastudio.oss.scheduler.job.CheckOrderStateJob;
 import cn.nobitastudio.oss.scheduler.job.RemindJob;
+import cn.nobitastudio.oss.scheduler.job.SimulatePatientJob;
 import cn.nobitastudio.oss.util.DateUtil;
 import org.quartz.*;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ import static cn.nobitastudio.oss.helper.SmsHelper.*;
  * @description quartz调度计划工具
  */
 @Component
-public class QuartzHelper{
+public class QuartzHelper {
 
     public static final String DEFAULT_CHECK_VALIDATE_CODE_CONTAINER_TRIGGER_NAME = "defaultCheckValidateCodeContainerTriggerName";
     public static final String DEFAULT_CHECK_VALIDATE_CODE_CONTAINER_TRIGGER_GROUP = "defaultCheckValidateCodeContainerTriggerGroup";
@@ -43,15 +44,27 @@ public class QuartzHelper{
                 QuartzPlanType.DIAGNOSIS_REMIND.name() + "." + user.getId() + "." + medicalCard.getId());
     }
 
+    // 生成检查订单的 JobKey  jobName:  订单id       jobGroup: QuartzPlanType
+    public JobKey createCheckOrderStateJobKey(OSSOrder ossOrder) {
+        return new JobKey(ossOrder.getId(), QuartzPlanType.CHECK_ORDER_STATE.name());
+    }
+
     // 生成检查订单的triggerKey   jobName:  订单id       jobGroup: QuartzPlanType
     public TriggerKey createCheckOrderStateTriggerKey(OSSOrder ossOrder) {
         return new TriggerKey(ossOrder.getId(), QuartzPlanType.CHECK_ORDER_STATE.name());
     }
 
-    // 生成检查订单的 JobKey  jobName:  订单id       jobGroup: QuartzPlanType
-    public JobKey createCheckOrderStateJobKey(OSSOrder ossOrder) {
-        return new JobKey(ossOrder.getId(), QuartzPlanType.CHECK_ORDER_STATE.name());
+    // 生成未来模拟病人就诊的jobKey
+    public JobKey createSimulatePatientDiagnosisJobKey(RegistrationRecord registrationRecord) {
+        return new JobKey(registrationRecord.getId(), QuartzPlanType.SIMULATE_DIAGNOSIS.name());
     }
+
+    // 生成未来模拟病人就诊的triggerKey
+    public TriggerKey createSimulatePatientDiagnosisTriggerKey(RegistrationRecord registrationRecord) {
+        return new TriggerKey(registrationRecord.getId(), QuartzPlanType.SIMULATE_DIAGNOSIS.name());
+    }
+
+    // 生成未来模拟病人就真的jobKey
 
     /**
      * 初始化 jobDetail
@@ -61,7 +74,7 @@ public class QuartzHelper{
      * @param department
      * @return
      */
-    public JobDetail newDiagnosisRemindJobDetailInstance(OSSOrder ossOrder, Visit visit, User user, Department department, MedicalCard medicalCard, Doctor doctor, DiagnosisRoom diagnosisRoom, Integer diagnosisNo) {
+    public JobDetail newDiagnosisRemindJob(OSSOrder ossOrder, Visit visit, User user, Department department, MedicalCard medicalCard, Doctor doctor, DiagnosisRoom diagnosisRoom, Integer diagnosisNo) {
         JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put(ORDER_ID, ossOrder.getId());  // 执行前检查订单状态所需要的参数
         jobDataMap.putAll(smsHelper.initRegisterSuccessOrDiagnosisRemindSms(user, medicalCard, doctor, department, visit, diagnosisRoom, diagnosisNo, SmsMessageType.DIAGNOSIS_REMIND));  // 发送短信的参数
@@ -79,7 +92,7 @@ public class QuartzHelper{
      * @param visit
      * @return
      */
-    public Trigger newDiagnosisRemindTriggerInstance(Visit visit, User user, MedicalCard medicalCard, Integer diagnosisNo) {
+    public Trigger newDiagnosisRemindTrigger(Visit visit, User user, MedicalCard medicalCard, Integer diagnosisNo) {
         Trigger trigger = TriggerBuilder.newTrigger() // 使用TriggerBuilder创建Trigger
                 .withIdentity(createDiagnosisRemindTriggerKey(user, medicalCard, RemindType.DIAGNOSIS_REMIND, visit, diagnosisNo))  // 设置唯一标识符
                 .startAt(DateUtil.formatLocalDateTimeToDate(visit.getDiagnosisTime().minusHours(RemindJob.AHEAD_HOUR_TIME))) // 就诊时间前两小时进行提醒
@@ -108,6 +121,26 @@ public class QuartzHelper{
         Trigger trigger = TriggerBuilder.newTrigger() // 使用TriggerBuilder创建Trigger
                 .withIdentity(createCheckOrderStateTriggerKey(ossOrder))  // 设置唯一标识符
                 .startAt(DateUtil.formatLocalDateTimeToDate(ossOrder.getCreateTime().plusMinutes(CheckOrderStateJob.LEFT_PAY_TIME))) // 就诊时间前两小时进行提醒
+                .withSchedule(SimpleScheduleBuilder.simpleSchedule()) // 使用SimpleScheduleBuilder创建simpleSchedule)
+                .build();
+        return trigger;
+    }
+
+
+    public JobDetail newSimulateJob(RegistrationRecord registrationRecord) {
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put(REGISTRATON_RECORD_ID, registrationRecord.getId());
+        JobDetail detail = JobBuilder.newJob(SimulatePatientJob.class)
+                .withIdentity(createSimulatePatientDiagnosisJobKey(registrationRecord))
+                .usingJobData(jobDataMap)
+                .build();
+        return detail;
+    }
+
+    public Trigger newSimulateTrigger(OSSOrder ossOrder, RegistrationRecord registrationRecord) {
+        Trigger trigger = TriggerBuilder.newTrigger() // 使用TriggerBuilder创建Trigger
+                .withIdentity(createSimulatePatientDiagnosisTriggerKey(registrationRecord))  // 设置唯一标识符
+                .startAt(DateUtil.formatLocalDateTimeToDate(ossOrder.getPayTime().plusSeconds(10))) // 用于测试，支付后的5分钟即进行模拟测试
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()) // 使用SimpleScheduleBuilder创建simpleSchedule)
                 .build();
         return trigger;

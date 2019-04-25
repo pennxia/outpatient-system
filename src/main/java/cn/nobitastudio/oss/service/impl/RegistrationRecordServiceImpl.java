@@ -168,7 +168,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
         // visit 资源减少1
         visit.setLeftAmount(visit.getLeftAmount() - 1);
         visitRepo.save(visit);  // 可能不需要此操作,保险起见
-        // 生成 订单信息
+        // 生成 订单信息  // 初始化为 挂号所需要的钱 visit.getCost（）
         OSSOrder ossOrder = new OSSOrder(ItemType.REGISTER, user.getId(), medicalCard.getId(), visit.getCost());
         ossOrderRepo.save(ossOrder);
         // 生成订单和挂号单之间的绑定关系
@@ -242,7 +242,16 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
                 logger.info("取消未来就诊提醒quartz计划失败,triggerKey:" + triggerKey);
             }
         });
+
+        // 测试：生成需要展示的病历信息(正常情况下，是在后期病人去医院后就诊了之后根据实际情况生成，这里只是模拟)
+        simulatePatientDiagnosis(ossOrder, registrationRecord);
         return new ConfirmOrCancelRegisterDTO(ossOrder, registrationRecord);
+    }
+
+    // 模拟病人就诊  向订单中添加 药品项 检查项信息 更新订单花费
+    private void simulatePatientDiagnosis(OSSOrder ossOrder, RegistrationRecord registrationRecord) {
+        // 当时间实际到达时,使用quartz ，模拟病人就诊完成
+        createSimulatePatientDiagnosisQuartzPlan(ossOrder,registrationRecord);
     }
 
     /**
@@ -261,10 +270,11 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
         if (ossOrder.getState().equals(OrderState.HAVE_PAY) || ossOrder.getState().equals(OrderState.WAITING_PAY)) {
             if (ossOrder.getState().equals(OrderState.HAVE_PAY)) {
                 // 已经支付的情况下
-                // 取消未来就诊提醒quartz计划
                 TriggerKey triggerKey = quartzHelper.createDiagnosisRemindTriggerKey(user, medicalCard, RemindType.DIAGNOSIS_REMIND, visit, registrationRecord.getDiagnosisNo());
+                TriggerKey simulateDiagnosisTriggerKey = quartzHelper.createSimulatePatientDiagnosisTriggerKey(registrationRecord);
                 try {
-                    scheduler.unscheduleJob(triggerKey);
+                    scheduler.unscheduleJob(triggerKey);  // 取消未来就诊提醒quartz计划
+                    scheduler.unscheduleJob(simulateDiagnosisTriggerKey);  // 取消 模拟就诊
                 } catch (SchedulerException e) {
                     // todo 取消失败了，应当尝试重新取消,虽然RemindJob做了兼容处理，即便是取消失败也没事.但最好是取消调度计划
                     logger.info("取消未来就诊提醒quartz计划失败,triggerKey:" + triggerKey);
@@ -349,6 +359,18 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
         }
     }
 
+    private void createSimulatePatientDiagnosisQuartzPlan(OSSOrder ossOrder,RegistrationRecord registrationRecord) {
+        JobDetail simulateJob = quartzHelper.newSimulateJob(registrationRecord);
+        Trigger simulateTrigger = quartzHelper.newSimulateTrigger(ossOrder,registrationRecord);
+        try {
+            scheduler.scheduleJob(simulateJob, simulateTrigger);
+        } catch (SchedulerException e) {
+            logger.info("订单支付状态检查调度计划调度失败.jobDetail:" + simulateJob + ".trigger:" + simulateTrigger);
+            e.printStackTrace();
+        }
+    }
+
+
     /**
      * 通过Jpush 发送通知信息
      */
@@ -369,8 +391,8 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
      * @throws SchedulerException
      */
     private void createDiagnosisRemindQuartzPlan(OSSOrder ossOrder, Visit visit, User user, MedicalCard medicalCard, Doctor doctor, Department department, DiagnosisRoom diagnosisRoom, Integer diagnosisNo) {
-        JobDetail registerJobDetail = quartzHelper.newDiagnosisRemindJobDetailInstance(ossOrder, visit, user, department, medicalCard, doctor, diagnosisRoom, diagnosisNo);
-        Trigger trigger = quartzHelper.newDiagnosisRemindTriggerInstance(visit, user, medicalCard, diagnosisNo);
+        JobDetail registerJobDetail = quartzHelper.newDiagnosisRemindJob(ossOrder, visit, user, department, medicalCard, doctor, diagnosisRoom, diagnosisNo);
+        Trigger trigger = quartzHelper.newDiagnosisRemindTrigger(visit, user, medicalCard, diagnosisNo);
         try {
             scheduler.scheduleJob(registerJobDetail, trigger);
         } catch (SchedulerException e) {

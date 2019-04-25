@@ -5,9 +5,7 @@ import cn.nobitastudio.common.criteria.Like;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,6 +22,8 @@ import java.time.LocalDateTime;
 @Table(name = "drug")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Drug implements Serializable {
 
     private static final long serialVersionUID = -235446322829903865L;
@@ -32,7 +32,7 @@ public class Drug implements Serializable {
     @Column(name = "id")
     @Id
     @Equal
-    private String id;
+    private Integer id;
 
     @ApiModelProperty("药品名称")
     @Column(name = "name")
@@ -64,4 +64,9 @@ public class Drug implements Serializable {
     @Column(name = "effective_time")
     @Equal
     private Integer effectiveTime;
+
+    @ApiModelProperty("药品编码")
+    @Column(name = "code")
+    @Equal
+    private String code;
 }

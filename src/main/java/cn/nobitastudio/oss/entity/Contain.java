@@ -32,6 +32,13 @@ public class Contain implements Serializable {
         this.amount = 1;
     }
 
+    public Contain(String orderId, ItemType itemType, String itemId, Integer amount) {
+        this.orderId = orderId;
+        this.itemType = itemType;
+        this.itemId = itemId;
+        this.amount = amount;
+    }
+
     @ApiModelProperty("物理id")
     @Column(name = "id")
     @Id

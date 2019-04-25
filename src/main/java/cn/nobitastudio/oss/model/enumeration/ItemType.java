@@ -22,5 +22,7 @@ public enum ItemType {
     @ApiModelProperty("住院")
     HOSPITALIZE,
     @ApiModelProperty("诊疗卡类型")
-    MEDICAL_CARD;
+    MEDICAL_CARD,
+    @ApiModelProperty("电子病历：包含 药品，检查，手术")
+    ELECTRONIC_CASE;
 }

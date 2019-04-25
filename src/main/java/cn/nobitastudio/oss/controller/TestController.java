@@ -6,7 +6,9 @@ import cn.nobitastudio.oss.entity.Test;
 import cn.nobitastudio.oss.entity.User;
 import cn.nobitastudio.oss.helper.QuartzHelper;
 import cn.nobitastudio.oss.helper.ValidateCodeContainHelper;
+import cn.nobitastudio.oss.model.dto.ConfirmRegisterDTO;
 import cn.nobitastudio.oss.model.dto.RequestValidateCodeDTO;
+import cn.nobitastudio.oss.model.enumeration.PaymentChannel;
 import cn.nobitastudio.oss.model.enumeration.SmsMessageType;
 import cn.nobitastudio.oss.model.error.ErrorCode;
 import cn.nobitastudio.oss.repo.DepartmentRepo;
@@ -17,10 +19,7 @@ import cn.nobitastudio.oss.scheduler.job.CheckRemindJob;
 import cn.nobitastudio.oss.scheduler.job.CheckValidateCodeContainerJob;
 import cn.nobitastudio.oss.scheduler.job.EatDrugRemindJob;
 import cn.nobitastudio.oss.scheduler.job.RemindJob;
-import cn.nobitastudio.oss.service.inter.TestService;
-import cn.nobitastudio.oss.service.inter.UserService;
-import cn.nobitastudio.oss.service.inter.ValidateService;
-import cn.nobitastudio.oss.service.inter.VisitService;
+import cn.nobitastudio.oss.service.inter.*;
 import cn.nobitastudio.oss.util.CommonUtil;
 import cn.nobitastudio.oss.util.DateUtil;
 import cn.nobitastudio.oss.model.normal.InitSchedulerJobVO;
@@ -81,6 +80,8 @@ public class TestController {
     private ValidateCodeContainHelper validateCodeContainHelper;
     @Inject
     private UserService userService;
+    @Inject
+    RegistrationRecordService registrationRecordService;
 
 
     @ApiModelProperty("测试方法")
@@ -325,6 +326,13 @@ public class TestController {
     @PostMapping("/test-login")
     public ServiceResult<User> testLogin(@RequestBody User user) {
         return testService.login(user);
+    }
+
+    @ApiOperation("测试自动生成电子病历")
+    @GetMapping("/test-electronic-case/{registrationRecordId}")
+    public ServiceResult testElectronicCase(@PathVariable(name = "registrationRecordId")
+                                                        String registrationRecordId) {
+        return ServiceResult.success(registrationRecordService.confirmRegister(new ConfirmRegisterDTO(registrationRecordId,PaymentChannel.HOSPITAL_MEDICAL_CAR)));
     }
 
 }

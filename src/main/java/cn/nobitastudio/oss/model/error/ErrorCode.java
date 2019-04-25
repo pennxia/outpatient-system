@@ -37,6 +37,7 @@ public class ErrorCode {
     public static final String MEDICAL_CARD_BIND_UPPER_LIMIT = "MEDICAL_CARD_BIND_UPPER_LIMIT"; // 诊疗卡绑定数以上限
     public static final String MOBILE_BIND_UPPER_LIMIT = "MEDICAL_CARD_BIND_UPPER_LIMIT"; // 手机号绑定数以上限
     public static final String MOBILE_HAVE_BIND = "MOBILE_HAVE_BIND"; // 您已绑定该诊疗卡
+    public static final String NOT_FIND_ELECTRONIC_CASE_BY_ID = "NOT_FIND_ELECTRONIC_CASE_BY_ID"; // 未查找到指定电子病历
 
     public static String get(String errorCode) {
         if (errorCodeContainer == null) {
@@ -70,6 +71,7 @@ public class ErrorCode {
         errorCodeContainer.put(MEDICAL_CARD_BIND_UPPER_LIMIT,"绑定失败,该诊疗卡绑定数已上限");
         errorCodeContainer.put(MOBILE_BIND_UPPER_LIMIT,"绑定失败,该号码绑定数已上限");
         errorCodeContainer.put(MOBILE_HAVE_BIND,"绑定失败,您已绑定该诊疗卡");
+        errorCodeContainer.put(NOT_FIND_ELECTRONIC_CASE_BY_ID,"绑定失败,未查找到指定电子病历");
     }
 
 }

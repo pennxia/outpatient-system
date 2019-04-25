@@ -14,5 +14,6 @@ public enum QuartzPlanType {
     DIAGNOSIS_REMIND,
     @ApiModelProperty("检测订单状态类型")
     CHECK_ORDER_STATE,
-
+    @ApiModelProperty("模拟病人就诊")
+    SIMULATE_DIAGNOSIS;
 }
