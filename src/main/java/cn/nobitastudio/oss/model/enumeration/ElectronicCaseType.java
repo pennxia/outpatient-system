@@ -21,9 +21,9 @@ public enum ElectronicCaseType {
             case 0:
                 return OUTPATIENT;
             case 1:
-                return OUTPATIENT;
+                return HOSPITALIZE;
             case 2:
-                return OUTPATIENT;
+                return EMERGENCY;
             default:
                 return OUTPATIENT;
         }

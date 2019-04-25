@@ -92,7 +92,7 @@ public class SimulatePatientJob implements Job {
                     selectedOperationItems.add(operationItem);
                     int count = CommonUtil.getRandom(1, 3);
                     operationCount.add(count);
-                    allCost += allCost + operationItem.getPrice() * count; // 更新新订单总价
+                    allCost += operationItem.getPrice() * count; // 更新新订单总价
                 }
             }
         }
@@ -101,7 +101,7 @@ public class SimulatePatientJob implements Job {
 
 
         // 向 订单中新增对应的 contain中新增  医生医嘱，用药信息,检查信息，等
-        ElectronicCase electronicCase = electronicCaseRepo.save(new ElectronicCase(ossOrder.getId(), registrationRecord.getId(), LocalDateTime.now(), null,
+        ElectronicCase electronicCase = electronicCaseRepo.save(new ElectronicCase(ossOrder.getId(), registrationRecord.getId(), LocalDateTime.now(),
                 "这是诊断描述这是诊断描述这是诊断描述这是诊断描述这是诊断描述这是诊断描述这是诊断描述这是诊断描述",
                 "这是诊断医嘱这是诊断医嘱这是诊断医嘱这是诊断医嘱这是诊断医嘱这是诊断医嘱这是诊断医嘱这是诊断医嘱",
                 "这是用药医嘱这是用药医嘱这是用药医嘱这是用药医嘱这是用药医嘱这是用药医嘱这是用药医嘱这是用药医嘱",

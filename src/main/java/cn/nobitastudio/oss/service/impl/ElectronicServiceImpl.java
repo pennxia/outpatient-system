@@ -116,9 +116,9 @@ public class ElectronicServiceImpl implements ElectronicService {
         // 先验证诊疗卡管理密码
         if (!passwordEncoder.matches(medicalCardPassword,
                 medicalCardRepo.findById(medicalCardId)
-                        .orElseThrow(() -> new AppException("未查找到指定诊疗卡",ErrorCode.NOT_FIND_MEDICAL_CARD_BY_ID))
+                        .orElseThrow(() -> new AppException("未查找到指定诊疗卡", ErrorCode.NOT_FIND_MEDICAL_CARD_BY_ID))
                         .getPassword())) {
-            throw new AppException("诊疗卡密码错误",ErrorCode.MEDICAL_CARD_PASSWORD_ERROR);
+            throw new AppException("诊疗卡密码错误", ErrorCode.MEDICAL_CARD_PASSWORD_ERROR);
         }
 
         List<ElectronicCaseDTO> electronicCaseDTOs = new ArrayList<>();
@@ -129,7 +129,7 @@ public class ElectronicServiceImpl implements ElectronicService {
             electronicCaseRepo.findByRegistrationRecordId(registrationRecord.getId()).ifPresent(electronicCases::add);
         }
         // 排序 electronicCases 根据diagnosis_time
-        electronicCases = electronicCases.stream().sorted((o1, o2) -> o1.getDiagnosisTime().isAfter(o2.getDiagnosisTime()) ? 1 : -1).collect(Collectors.toList());
+        electronicCases = electronicCases.stream().sorted((o1, o2) -> o1.getDiagnosisTime().isAfter(o2.getDiagnosisTime()) ? -1 : 1).collect(Collectors.toList());
         for (ElectronicCase electronicCase : electronicCases) {
             ElectronicCaseDTO electronicCaseDTO = new ElectronicCaseDTO();
             // 查找对应的药品-检查-手术 详情
@@ -164,6 +164,8 @@ public class ElectronicServiceImpl implements ElectronicService {
                         break;
                 }
             }
+            electronicCaseDTO.setOssOrder(ossOrderRepo.findById(electronicCase.getOrderId())
+                    .orElseThrow(() -> new AppException("未找到指定订单", ErrorCode.NOT_FIND_ORDER_BY_ID)));  // 药品，手术，检查等对应订单实体
             electronicCaseDTO.setElectronicCase(electronicCase); //病历基础信息 - 医嘱.就诊时间等等
             electronicCaseDTO.setDrugs(drugs); // 药品信息
             electronicCaseDTO.setDrugCount(drugCount); // 药品对应的数量

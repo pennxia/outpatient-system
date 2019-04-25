@@ -24,17 +24,27 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ElectronicCase {
 
-    public ElectronicCase(String orderId, String registrationRecordId, LocalDateTime diagnosisTime, LocalDateTime recoverTime, String diagnosisDes, String diagnosisAdvise, String useDrugAdvise, String checkDes, String otherAdvise, ElectronicCaseType caseType) {
+    public ElectronicCase(String orderId, String registrationRecordId, LocalDateTime diagnosisTime, String diagnosisDes, String diagnosisAdvise, String useDrugAdvise, String checkDes, String otherAdvise, ElectronicCaseType caseType) {
         this.orderId = orderId;
         this.registrationRecordId = registrationRecordId;
         this.diagnosisTime = diagnosisTime;
-        this.recoverTime = recoverTime;
         this.diagnosisDes = diagnosisDes;
         this.diagnosisAdvise = diagnosisAdvise;
         this.useDrugAdvise = useDrugAdvise;
         this.checkDes = checkDes;
         this.otherAdvise = otherAdvise;
         this.caseType = caseType;
+        switch (caseType) {
+            case HOSPITALIZE:
+                this.recoverTime = diagnosisTime.plusDays(14);
+                break;
+            case OUTPATIENT:
+                this.recoverTime = diagnosisTime.plusHours(3);
+                break;
+            case EMERGENCY:
+                this.recoverTime = diagnosisTime.plusMonths(2);
+                break;
+        }
     }
 
     @ApiModelProperty("绑定物理id,每一次就诊的病历详情")

@@ -1,9 +1,6 @@
 package cn.nobitastudio.oss.model.dto;
 
-import cn.nobitastudio.oss.entity.CheckItem;
-import cn.nobitastudio.oss.entity.Drug;
-import cn.nobitastudio.oss.entity.ElectronicCase;
-import cn.nobitastudio.oss.entity.OperationItem;
+import cn.nobitastudio.oss.entity.*;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +20,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ElectronicCaseDTO {
+
+    @ApiModelProperty("产生电子病历时生成的订单实体")
+    private OSSOrder ossOrder;
 
     @ApiModelProperty("电子病历实体信息")
     private ElectronicCase electronicCase;

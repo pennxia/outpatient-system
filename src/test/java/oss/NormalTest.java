@@ -6,7 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.temporal.TemporalField;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -223,13 +225,13 @@ public class NormalTest {
                     if (!(i - 1 < 0)) {
                         arr.get(i - 1).set(j, 2);
                     }
-                    if ( i + 1 < n) {
+                    if (i + 1 < n) {
                         arr.get(i + 1).set(j, 2);
                     }
                     if (!(j - 1 < 0)) {
                         arr.get(i + 1).set(j, 2);
                     }
-                    if ( j + 1 < n) {
+                    if (j + 1 < n) {
                         arr.get(j + 1).set(j, 2);
                     }
                 }
@@ -238,7 +240,7 @@ public class NormalTest {
         }
 
         for (int i = 0; i < arr.size(); i++) {
-            for (int j = 0; j < arr.get(i).size();j++) {
+            for (int j = 0; j < arr.get(i).size(); j++) {
                 if (arr.get(i).get(j).equals(1)) {
                     System.out.println(-1);
                     return;
@@ -262,12 +264,29 @@ public class NormalTest {
     }
 
     @Test
+    public void test11() {
+        List<Integer> a = Arrays.asList(1, 2, 3);
+        System.out.println(a.stream().sorted((o1, o2) -> o1 > o2 ? -1 : 1).collect(Collectors.toList()));
+
+    }
+
+    @Test
     public void test20() {
         LocalDateTime l = LocalDateTime.now();
         LocalDateTime c = l.plusHours(1);
-        Duration duration = Duration.between(l,c);
+        Duration duration = Duration.between(l, c);
         System.out.println(duration.toMillis());
 
+    }
+
+    @Test
+    public void test12() {
+        String idcard = "511602199705220175";
+
+        LocalDate bir = LocalDate.of(Integer.valueOf(idcard.substring(6,10)),Integer.valueOf(idcard.substring(10,12)),Integer.valueOf(idcard.substring(12,14)));
+        LocalDate now = LocalDate.now();
+        Period duration = Period.between(bir, now);
+        System.out.println(duration.getYears());
     }
 
 
