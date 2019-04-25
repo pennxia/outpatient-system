@@ -52,10 +52,10 @@ public class ElectronicCaseController {
     }
 
     @ApiOperation("查询指定诊疗卡的全部电子病历")
-    @GetMapping("/{medicalCardId}/findAll")
-    public ServiceResult<List<ElectronicCaseDTO>> getAllByMedicalCardId(@PathVariable(name = "medicalCardId")
-                                                                          String medicalCardId) {
-        return ServiceResult.success(electronicService.findByMedicalCardId(medicalCardId));
+    @GetMapping("/{medicalCardId}/{medicalCardPassword}/findAll")
+    public ServiceResult<List<ElectronicCaseDTO>> getAllByMedicalCardId(@PathVariable(name = "medicalCardId") String medicalCardId,
+                                                                        @PathVariable(name = "medicalCardPassword") String medicalCardPassword) {
+        return ServiceResult.success(electronicService.findByMedicalCardId(medicalCardId, medicalCardPassword));
     }
 
 }

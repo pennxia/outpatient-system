@@ -13,6 +13,7 @@ import cn.nobitastudio.oss.service.inter.RegistrationRecordService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -47,6 +48,10 @@ public class ElectronicServiceImpl implements ElectronicService {
     private CheckItemRepo checkItemRepo;
     @Inject
     private OperationItemRepo operationItemRepo;
+    @Inject
+    private MedicalCardRepo medicalCardRepo;
+    @Inject
+    private PasswordEncoder passwordEncoder;
 
     @Inject
     private RegistrationRecordService registrationRecordService;
@@ -106,7 +111,16 @@ public class ElectronicServiceImpl implements ElectronicService {
      * @return
      */
     @Override
-    public List<ElectronicCaseDTO> findByMedicalCardId(String medicalCardId) {
+    public List<ElectronicCaseDTO> findByMedicalCardId(String medicalCardId, String medicalCardPassword) {
+
+        // 先验证诊疗卡管理密码
+        if (!passwordEncoder.matches(medicalCardPassword,
+                medicalCardRepo.findById(medicalCardId)
+                        .orElseThrow(() -> new AppException("未查找到指定诊疗卡",ErrorCode.NOT_FIND_MEDICAL_CARD_BY_ID))
+                        .getPassword())) {
+            throw new AppException("诊疗卡密码错误",ErrorCode.MEDICAL_CARD_PASSWORD_ERROR);
+        }
+
         List<ElectronicCaseDTO> electronicCaseDTOs = new ArrayList<>();
         List<RegistrationRecord> registrationRecords = registrationRecordRepo.findByMedicalCardId(medicalCardId);
         List<ElectronicCase> electronicCases = new ArrayList<>();

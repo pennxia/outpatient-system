@@ -54,5 +54,5 @@ public interface ElectronicService {
      * @param medicalCardId
      * @return
      */
-    List<ElectronicCaseDTO> findByMedicalCardId(String medicalCardId);
+    List<ElectronicCaseDTO> findByMedicalCardId(String medicalCardId,String medicalCardPassword);
 }
