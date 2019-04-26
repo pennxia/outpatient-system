@@ -57,7 +57,7 @@ public class OrderController {
         return ServiceResult.success(orderService.save(ossOrder));
     }
 
-    @ApiOperation("通过诊疗卡id.号源id查询订单")
+    @ApiOperation("通过诊疗卡id.号源id查询订单--设计存在问题，已弃用")
     @GetMapping("/{medicalCardId}/{visitId}")
     public ServiceResult<OSSOrder> getByMedicalCardIdAndVisitId(@PathVariable(name = "medicalCardId") String medicalCardId,
                                                                 @PathVariable(name = "visitId") Integer visitId) {

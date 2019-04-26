@@ -157,10 +157,10 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
         Department department = departmentRepo.findById(doctor.getDepartmentId()).orElseThrow(() -> new AppException("未查找到指定科室信息"));
         DiagnosisRoom diagnosisRoom = diagnosisRoomRepo.findById(visit.getDiagnosisRoomId()).orElseThrow(() -> new AppException("未查询到指定诊疗室"));
         // 检测是否已经成功挂了该号或者存在等待支付的订单.
-//        if (!debugModel) {
+        if (!debugModel) {
             // 如果是debugModel就不检查.这样一张诊疗卡可以挂多个号,方便测试
             checkWhetherRegister(medicalCard, visit);
-//        }
+        }
         // 生成 挂号单单号,挂号单id,并保存 现在只支持 ANDRIOD 客户端进行挂号
         Integer diagnosisNo = visit.getAmount() - visit.getLeftAmount() + 1; // 就诊序号
         RegistrationRecord registrationRecord = new RegistrationRecord(Channel.OSS_ANDROID_APP, user.getId(), visit.getId(), medicalCard.getId(), diagnosisNo);
@@ -209,6 +209,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
 //            // 仅允许等待状态进行状态更换
 //            ossOrder.setState(OrderState.HAVE_PAY);
 //        }
+        // 支付成功了一定要更改.即便不是在支付时间内(用户一直处于支付宝的支付活动内)
         ossOrder.setState(OrderState.HAVE_PAY);
         // 设置支付渠道
         ossOrder.setPaymentChannel(confirmRegisterDTO.getPaymentChannel());
@@ -416,7 +417,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
                 // 关联对应的订单.如果存在支付成功或者等待支付.则挂号失败.
                 OSSOrder ossOrder = ossOrderRepo.findByRegistrationId(registrationRecord.getId()).orElseThrow(() -> new AppException("未查找该挂号单对应的订单信息"));
                 if (ossOrder.getState().equals(OrderState.WAITING_PAY) || ossOrder.getState().equals(OrderState.HAVE_PAY)) {
-                    throw new AppException("已挂该号,请勿重复挂号");
+                    throw new AppException("已挂该号,请勿重复挂号",ErrorCode.HAS_CANCEL_REGISTER);
                 }
             }
         }

@@ -42,6 +42,7 @@ public class ErrorCode {
     public static final String NOT_FIND_CHECK_ITEM_BY_ID = "NOT_FIND_CHECK_ITEM_BY_ID"; // 未查找到指定检查项信息
     public static final String NOT_FIND_OPERATION_ITEM_BY_ID = "NOT_FIND_OPERATION_ITEM_BY_ID"; // 未查找到指定手术项信息
     public static final String MEDICAL_CARD_PASSWORD_ERROR = "MEDICAL_CARD_PASSWORD_ERROR"; // 诊疗卡密码错误
+    public static final String HAVE_REGISTER = "HAVE_REGISTER" ; // 已挂该号,请勿重复挂号
 
     public static String get(String errorCode) {
         if (errorCodeContainer == null) {
@@ -77,6 +78,7 @@ public class ErrorCode {
         errorCodeContainer.put(MOBILE_HAVE_BIND,"绑定失败,您已绑定该诊疗卡");
         errorCodeContainer.put(NOT_FIND_ELECTRONIC_CASE_BY_ID,"绑定失败,未查找到指定电子病历");
         errorCodeContainer.put(MEDICAL_CARD_PASSWORD_ERROR,"诊疗卡密码错误");
+        errorCodeContainer.put(HAVE_REGISTER,"已挂该号,请勿重复挂号");
     }
 
 }
