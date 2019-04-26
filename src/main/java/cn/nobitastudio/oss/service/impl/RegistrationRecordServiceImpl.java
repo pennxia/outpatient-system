@@ -417,7 +417,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
                 // 关联对应的订单.如果存在支付成功或者等待支付.则挂号失败.
                 OSSOrder ossOrder = ossOrderRepo.findByRegistrationId(registrationRecord.getId()).orElseThrow(() -> new AppException("未查找该挂号单对应的订单信息"));
                 if (ossOrder.getState().equals(OrderState.WAITING_PAY) || ossOrder.getState().equals(OrderState.HAVE_PAY)) {
-                    throw new AppException("已挂该号,请勿重复挂号",ErrorCode.HAS_CANCEL_REGISTER);
+                    throw new AppException("已挂该号,请勿重复挂号",ErrorCode.HAVE_REGISTER);
                 }
             }
         }
