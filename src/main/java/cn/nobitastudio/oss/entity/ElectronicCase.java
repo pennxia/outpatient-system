@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ElectronicCase {
 
-    public ElectronicCase(String orderId, String registrationRecordId, LocalDateTime diagnosisTime, String diagnosisDes, String diagnosisAdvise, String useDrugAdvise, String checkDes, String otherAdvise, ElectronicCaseType caseType) {
+    public ElectronicCase(String orderId, String registrationRecordId, LocalDateTime diagnosisTime, String diagnosisDes, String diagnosisAdvise, String useDrugAdvise, String checkDes, String operationAdvise,String otherAdvise, ElectronicCaseType caseType) {
         this.orderId = orderId;
         this.registrationRecordId = registrationRecordId;
         this.diagnosisTime = diagnosisTime;
@@ -32,6 +32,7 @@ public class ElectronicCase {
         this.diagnosisAdvise = diagnosisAdvise;
         this.useDrugAdvise = useDrugAdvise;
         this.checkDes = checkDes;
+        this.operationAdvise = operationAdvise;
         this.otherAdvise = otherAdvise;
         this.caseType = caseType;
         switch (caseType) {
@@ -91,6 +92,10 @@ public class ElectronicCase {
     @ApiModelProperty("检查描述")
     @Column(name = "check_des")
     private String checkDes;
+
+    @ApiModelProperty("术后医嘱")
+    @Column(name = "operation_advise")
+    private String operationAdvise;
 
     @ApiModelProperty("其他医嘱")
     @Column(name = "other_advise")
