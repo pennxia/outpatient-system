@@ -50,7 +50,7 @@ public class User implements Serializable {
     public interface UserModifyView extends UserIdView, UserNameView, UserIdCardView {
     }  // 用户更改基本信息  id name idCard
 
-    public interface UserFindPasswordView extends UserIdView,UserPasswordView {} // 用户找回密码视图
+    public interface UserFindPasswordView extends UserIdView,UserPasswordView,UserMobileView {} // 用户找回密码视图
 
     public interface UserModifyMobileView extends UserIdView,UserMobileView {} // 用户更改绑定的手机号
 

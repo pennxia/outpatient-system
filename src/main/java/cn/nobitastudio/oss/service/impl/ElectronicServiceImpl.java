@@ -176,7 +176,6 @@ public class ElectronicServiceImpl implements ElectronicService {
             electronicCaseDTO.setRegistrationAll(registrationRecordService.getByRegistrationRecordId(electronicCase.getRegistrationRecordId())); // 对应的挂号单全部信息
             electronicCaseDTOs.add(electronicCaseDTO);
         }
-        LOGGER.info("electronicCaseDTOs.size():" + electronicCaseDTOs.size());
         return electronicCaseDTOs;
     }
 }
