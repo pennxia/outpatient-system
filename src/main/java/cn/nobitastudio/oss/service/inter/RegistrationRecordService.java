@@ -61,7 +61,7 @@ public interface RegistrationRecordService {
      * @return
      */
     @Transactional
-    RegistrationRecord register(RegisterDTO registerDTO);
+    RegistrationAll register(RegisterDTO registerDTO);
 
     /**
      * 用户支付完成.确认还挂号单以及对应的订单.

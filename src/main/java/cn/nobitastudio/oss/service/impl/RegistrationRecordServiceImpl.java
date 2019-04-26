@@ -134,7 +134,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
      */
     @Transactional
     @Override
-    public synchronized RegistrationRecord register(RegisterDTO registerDTO) {
+    public synchronized RegistrationAll register(RegisterDTO registerDTO) {
         // 检查图片验证码
         ImageValidateCode imageValidateCode = redisHelper.get(registerDTO.getUserId().toString(), ImageValidateCode.class);
         redisHelper.del(registerDTO.getUserId().toString());  // 验证过的验证码一定清除不管是否正确
@@ -183,7 +183,7 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
         }
         // 生成订单是否支付检测,30分钟后发现未支付则更新订单状态状态为AUTO_CANCEL_PAY,检测若该订单还未支付,则改变支付状态位自动取消. 可能需要将其让如主线程执行
         executorService.execute(() -> createCheckOrderStateQuartzPlan(ossOrder));
-        return registrationRecord;
+        return new RegistrationAll(registrationRecord,department,doctor,user,visit,medicalCard,ossOrder,diagnosisRoom);
     }
 
     /**

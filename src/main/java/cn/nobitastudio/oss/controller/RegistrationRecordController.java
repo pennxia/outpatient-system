@@ -60,7 +60,7 @@ public class RegistrationRecordController {
 
     @ApiOperation("用户进行挂号操作,进入等待支付状态")
     @PostMapping("/register")
-    public ServiceResult<RegistrationRecord> register(@RequestBody RegisterDTO registerDTO) {
+    public ServiceResult<RegistrationAll> register(@RequestBody RegisterDTO registerDTO) {
         return ServiceResult.success(registrationRecordService.register(registerDTO));
     }
 
