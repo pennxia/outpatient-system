@@ -157,10 +157,10 @@ public class RegistrationRecordServiceImpl implements RegistrationRecordService 
         Department department = departmentRepo.findById(doctor.getDepartmentId()).orElseThrow(() -> new AppException("未查找到指定科室信息"));
         DiagnosisRoom diagnosisRoom = diagnosisRoomRepo.findById(visit.getDiagnosisRoomId()).orElseThrow(() -> new AppException("未查询到指定诊疗室"));
         // 检测是否已经成功挂了该号或者存在等待支付的订单.
-        if (!debugModel) {
+//        if (!debugModel) {
             // 如果是debugModel就不检查.这样一张诊疗卡可以挂多个号,方便测试
             checkWhetherRegister(medicalCard, visit);
-        }
+//        }
         // 生成 挂号单单号,挂号单id,并保存 现在只支持 ANDRIOD 客户端进行挂号
         Integer diagnosisNo = visit.getAmount() - visit.getLeftAmount() + 1; // 就诊序号
         RegistrationRecord registrationRecord = new RegistrationRecord(Channel.OSS_ANDROID_APP, user.getId(), visit.getId(), medicalCard.getId(), diagnosisNo);
